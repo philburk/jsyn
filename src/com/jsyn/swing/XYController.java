@@ -91,23 +91,23 @@ public class XYController extends JPanel {
 
     /** Convert from graphics coordinates (pixels) to world coordinates. */
     public double convertGXtoWX(int gx) {
-        int width = bounds().width;
+        int width = getWidth();
         return minWorldX + ((maxWorldX - minWorldX) * gx) / width;
     }
 
     public double convertGYtoWY(int gy) {
-        int height = bounds().height;
+        int height = getHeight();
         return minWorldY + ((maxWorldY - minWorldY) * (height - gy)) / height;
     }
 
     /** Convert from world coordinates to graphics coordinates (pixels). */
     public int convertWXtoGX(double wx) {
-        int width = bounds().width;
+        int width = getWidth();
         return (int) (((wx - minWorldX) * width) / (maxWorldX - minWorldX));
     }
 
     public int convertWYtoGY(double wy) {
-        int height = bounds().height;
+        int height = getHeight();
         return height - (int) (((wy - minWorldY) * height) / (maxWorldY - minWorldY));
     }
 

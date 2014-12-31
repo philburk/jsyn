@@ -18,16 +18,19 @@ package com.jsyn.scope.swing;
 
 import java.awt.BorderLayout;
 
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import com.jsyn.scope.AudioScopeModel;
 import com.jsyn.scope.TriggerModel;
+import com.jsyn.scope.AudioScope.TriggerMode;
 import com.jsyn.swing.RotaryTextController;
 
 public class ScopeTriggerPanel extends JPanel {
     private static final long serialVersionUID = 4511589171299298548L;
-    private JComboBox triggerModeComboBox;
+    private JComboBox<DefaultComboBoxModel<TriggerMode>> triggerModeComboBox;
     private RotaryTextController triggerLevelKnob;
 
     public ScopeTriggerPanel(AudioScopeModel audioScopeModel) {

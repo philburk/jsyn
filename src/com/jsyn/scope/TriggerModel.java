@@ -16,6 +16,7 @@
 
 package com.jsyn.scope;
 
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 
 import com.jsyn.scope.AudioScope.TriggerMode;
