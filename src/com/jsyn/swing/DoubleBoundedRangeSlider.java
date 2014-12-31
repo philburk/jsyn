@@ -25,7 +25,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.softsynth.util.NumericOutput;
+import com.jsyn.util.NumericOutput;
 
 /**
  * Slider that takes a DoubleBoundedRangeModel. It displays the current value in a titled border.

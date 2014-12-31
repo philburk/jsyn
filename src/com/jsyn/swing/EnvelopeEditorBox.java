@@ -23,8 +23,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
-import com.softsynth.util.NumericOutput;
-
 /**
  * Edit a list of ordered duration,value pairs suitable for use with a SegmentedEnvelope.
  * 
@@ -381,7 +379,7 @@ public class EnvelopeEditorBox extends XYController implements MouseListener, Mo
      */
     private void drawRange(Graphics g) {
         if (rangeStart >= 0) {
-            int height = bounds().height;
+            int height = getHeight();
             int gx0 = 0, gx1 = 0;
 
             if (rangeEnd < rangeStart) {
@@ -559,11 +557,11 @@ public class EnvelopeEditorBox extends XYController implements MouseListener, Mo
         drawAllPoints(g);
 
         /* Show X,Y,TotalX as text. */
-        g.drawString(points.getName() + ", len=" + NumericOutput.doubleToString(wx, 7, 3), 5, 15);
+        g.drawString(points.getName() + ", len=" + String.format("%7.3f", wx), 5, 15);
         if ((draggedPoint != null) && (dragIndex >= 0)) {
             String s = "i=" + dragIndex + ", dur="
-                    + NumericOutput.doubleToString(draggedPoint[0], 7, 3) + ", y = "
-                    + NumericOutput.doubleToString(draggedPoint[1], 8, 4);
+                    + String.format("%7.3f", draggedPoint[0]) + ", y = "
+                    + String.format("%8.4f", draggedPoint[1]);
             g.drawString(s, 5, 30);
         }
     }

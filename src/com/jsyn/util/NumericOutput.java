@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.softsynth.util;
+package com.jsyn.util;
 
 /**
  * Formatted numeric output. Convert integers and floats to strings based on field widths and

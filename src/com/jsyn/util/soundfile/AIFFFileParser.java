@@ -101,6 +101,7 @@ public class AIFFFileParser extends AudioFileParser {
     }
 
     /* parse tuning and multi-sample info */
+    @SuppressWarnings("unused")
     void parseINSTChunk(IFFParser parser, int ckSize) throws IOException {
         int baseNote = parser.readByte();
         int detune = parser.readByte();

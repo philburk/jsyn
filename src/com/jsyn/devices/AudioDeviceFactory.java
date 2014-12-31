@@ -64,6 +64,7 @@ public class AudioDeviceFactory {
     private static void tryJavaSound() {
         if (instance == null) {
             try {
+                @SuppressWarnings("unchecked")
                 Class<AudioDeviceManager> clazz = JavaTools.loadClass(
                         "com.jsyn.devices.javasound.JavaSoundAudioDevice", false);
                 if (clazz != null) {

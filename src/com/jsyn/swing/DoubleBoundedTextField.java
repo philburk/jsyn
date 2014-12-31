@@ -25,8 +25,6 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.softsynth.util.NumericOutput;
-
 /**
  * TextField that turns pink when modified, and white when the value is entered.
  * 
@@ -90,7 +88,7 @@ public class DoubleBoundedTextField extends JTextField {
     }
 
     private void setValue(double value) {
-        super.setText(NumericOutput.doubleToString(value, 1, 4));
+        super.setText(String.format("%6.4f", value));
         markClean();
     }
 }
