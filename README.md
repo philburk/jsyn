@@ -15,12 +15,12 @@ in real-time from a Java program.
 
 The JSyn source code is available at:
 
-    https://github.com/philburk/jsyn
+https://github.com/philburk/jsyn
     
 More information about JSyn, including documentation, is at:
 
-    http://www.softsynth.com/jsyn/
+http://www.softsynth.com/jsyn/
 
 Pre-compiled JSyn JAR files are at:
 
-    http://www.softsynth.com/jsyn/developers/download.php
+http://www.softsynth.com/jsyn/developers/download.php
