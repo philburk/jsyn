@@ -22,9 +22,13 @@ package com.jsyn.benchmarks;
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.unitgen.PassThrough;
+import com.jsyn.unitgen.PitchDetector;
 import com.jsyn.unitgen.SawtoothOscillator;
 import com.jsyn.unitgen.SawtoothOscillatorBL;
 import com.jsyn.unitgen.SawtoothOscillatorDPW;
+import com.jsyn.unitgen.SineOscillator;
+import com.jsyn.unitgen.SquareOscillator;
+import com.jsyn.unitgen.SquareOscillatorBL;
 import com.jsyn.unitgen.UnitOscillator;
 import com.softsynth.math.FourierMath;
 
@@ -57,11 +61,18 @@ public class BenchJSyn {
         double realTime = 10.0;
         int count = 40;
 
-        benchFFTDouble();
-        benchFFTFloat();
-        benchmarkOscillator(SawtoothOscillator.class, count, realTime);
-        benchmarkOscillator(SawtoothOscillatorDPW.class, count, realTime);
-        benchmarkOscillator(SawtoothOscillatorBL.class, count, realTime);
+        // benchFFTDouble();
+        // benchFFTFloat();
+        /*
+         * realTime = 20.0; benchmarkOscillator(SawtoothOscillator.class, count, realTime);
+         * benchmarkOscillator(SawtoothOscillatorDPW.class, count, realTime);
+         * benchmarkOscillator(SawtoothOscillatorBL.class, count, realTime);
+         */
+        benchmarkOscillator(SquareOscillator.class, count, realTime);
+        benchmarkOscillator(SquareOscillatorBL.class, count, realTime);
+
+        benchmarkOscillator(SineOscillator.class, count, realTime);
+        benchmarkPitchDetector(count, realTime);
 
     }
 
@@ -161,6 +172,37 @@ public class BenchJSyn {
         startTiming();
         synth.sleepFor(realTime);
         endTiming(clazz, count, realTime);
+        stopSynth();
+    }
+
+    private void benchmarkPitchDetector(int count, double realTime) throws InstantiationException,
+            IllegalAccessException, InterruptedException {
+        startSynth();
+
+        PitchDetector detector = new PitchDetector();
+        synth.add(detector);
+        double frequency = 198.0;
+        double period = synth.getFrameRate() / frequency;
+        // simple harmonic synthesis
+        for (int i = 0; i < count; i++) {
+            SineOscillator osc = new SineOscillator();
+            synth.add(osc);
+            osc.frequency.set(frequency * (i + 1));
+            osc.amplitude.set(0.5 * (1.0 - (i * 0.2)));
+            osc.output.connect(detector.input);
+        }
+        detector.start();
+        startTiming();
+        synth.sleepFor(realTime);
+        endTiming(PitchDetector.class, count, realTime);
+
+        double measuredPeriod = detector.period.getValue();
+        double confidence = detector.confidence.getValue();
+        System.out.println("period = " + period + ", measured = " + measuredPeriod
+                + ", confidence = " + confidence);
+        if (confidence > 0.1) {
+            assert (Math.abs(measuredPeriod - period) < 0.1);
+        }
         stopSynth();
     }
 

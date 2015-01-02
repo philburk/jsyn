@@ -42,7 +42,7 @@ public class PitchDetector extends UnitGenerator {
     protected SignalCorrelator signalCorrelator;
 
     private double lastFrequency = 440.0;
-    private double lastPeriod = 44100.0 / lastFrequency; // result of analysis
+    private double lastPeriod = 44100.0 / lastFrequency; // result of analysis TODO update for 48000
     private double lastConfidence = 0.0; // Measure of confidence in the result.
 
     private static final int LOWEST_FREQUENCY = 40;

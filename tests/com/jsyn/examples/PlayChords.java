@@ -22,6 +22,7 @@ import com.jsyn.instruments.SubtractiveSynthVoice;
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.UnitVoice;
 import com.jsyn.util.VoiceAllocator;
+import com.softsynth.math.AudioMath;
 import com.softsynth.shared.time.TimeStamp;
 
 /**
@@ -167,19 +168,10 @@ public class PlayChords {
     }
 
     private void noteOn(double time, int noteNumber) {
-        double frequency = convertPitchToFrequency(noteNumber);
+        double frequency = AudioMath.pitchToFrequency(noteNumber);
         double amplitude = 0.2;
         TimeStamp timeStamp = new TimeStamp(time);
         allocator.noteOn(noteNumber, frequency, amplitude, timeStamp);
-    }
-
-    /**
-     * Calculate frequency in Hertz based on MIDI pitch. Middle C is 60.0. You can use fractional
-     * pitches so 60.5 would give you a pitch half way between C and C#.
-     */
-    double convertPitchToFrequency(double pitch) {
-        final double concertA = 440.0;
-        return concertA * Math.pow(2.0, ((pitch - 69) * (1.0 / 12.0)));
     }
 
     public static void main(String[] args) {
