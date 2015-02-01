@@ -48,7 +48,7 @@ public class PseudoRandom {
     }
 
     public void setSeed(int seed) {
-        this.seed = ((long) seed) & 0xFFFFFFFF;
+        this.seed = (long) seed;
     }
 
     public int getSeed() {
@@ -76,14 +76,14 @@ public class PseudoRandom {
 
     /** Calculate random 32 bit number using linear-congruential method. */
     public int nextRandomInteger() {
-        long rand = (seed * 196314165) + 907633515;
-        seed = rand & 0x00000000FFFFFFFFL;
-        return (int) rand;
+        // Use values for 64-bit sequence from MMIX by Donald Knuth.
+        seed = (seed * 6364136223846793005L) + 1442695040888963407L;
+        return (int) (seed >> 32); // The higher bits have a longer sequence.
     }
 
     public int choose(int range) {
-        long bigRandom = nextRandomInteger() & 0x7FFFFFFF;
-        long temp = bigRandom * range;
+        long positiveInt = nextRandomInteger() & 0x7FFFFFFF;
+        long temp = positiveInt * range;
         return (int) (temp >> 31);
     }
 }
