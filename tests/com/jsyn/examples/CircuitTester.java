@@ -22,6 +22,7 @@ import javax.swing.JApplet;
 
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
+import com.jsyn.instruments.SubtractiveSynthVoice;
 import com.jsyn.scope.AudioScope;
 import com.jsyn.swing.JAppletFrame;
 import com.jsyn.swing.SoundTweaker;
@@ -75,10 +76,12 @@ public class CircuitTester extends JApplet {
      * @return
      */
     public UnitSource createUnitSource() {
-        // return new SampleHoldNoteBlaster();
-        // return new com.syntona.exported.FMVoice();
-        // return new SubtractiveSynthVoice();
-        return new WindCircuit();
+        //return new SampleHoldNoteBlaster();
+        //return new com.syntona.exported.FMVoice();
+        return new SubtractiveSynthVoice();
+        //return new WindCircuit();
+        //return new WhiteNoise();
+        //return new BrownNoise();
     }
 
     @Override

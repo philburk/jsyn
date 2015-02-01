@@ -102,13 +102,22 @@ public interface Synthesizer {
 
     public void startUnit(UnitGenerator unit, TimeStamp timeStamp);
 
-    /** Start a unit generator now. */
+    /**
+     * The startUnit and stopUnit methods are mainly for internal use.
+     * Please call unit.start() or unit.stop() instead.
+     * @param unit
+     */
     public void startUnit(UnitGenerator unit);
 
     public void stopUnit(UnitGenerator unit, double time);
 
     public void stopUnit(UnitGenerator unit, TimeStamp timeStamp);
 
+    /**
+     * The startUnit and stopUnit methods are mainly for internal use.
+     * Please call unit.start() or unit.stop() instead.
+     * @param unit
+     */
     public void stopUnit(UnitGenerator unit);
 
     /**

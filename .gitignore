@@ -1,0 +1,5 @@
+# ignore Eclipse BUild files
+/build/
+/bin/
+/dist/
+

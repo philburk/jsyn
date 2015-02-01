@@ -40,7 +40,7 @@ public class PortControllerFactory {
                 port.set(value);
             }
         });
-        return new DoubleBoundedRangeSlider(rangeModel, 3);
+        return new DoubleBoundedRangeSlider(rangeModel, 4);
     }
 
     public static DoubleBoundedRangeSlider createExponentialPortSlider(final UnitInputPort port) {
@@ -54,7 +54,7 @@ public class PortControllerFactory {
                 port.set(value);
             }
         });
-        return new DoubleBoundedRangeSlider(rangeModel, 3);
+        return new DoubleBoundedRangeSlider(rangeModel, 4);
     }
 
 }

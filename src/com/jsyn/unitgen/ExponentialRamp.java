@@ -38,6 +38,7 @@ public class ExponentialRamp extends UnitFilter {
 
     public ExponentialRamp() {
         addPort(time = new UnitInputPort("Time"));
+        input.setup(0.0001, 1.0, 1.0);
         addPort(current = new UnitVariablePort("Current", 1.0));
     }
 

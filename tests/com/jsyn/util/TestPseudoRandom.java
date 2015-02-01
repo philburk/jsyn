@@ -47,7 +47,7 @@ public class TestPseudoRandom extends TestCase {
     }
 
     public void testIntegerDistribution() {
-        int scaler = 10;
+        int scaler = 100;
         for (int i = 0; i < (bins.length * scaler); i++) {
             int rand = pseudoRandom.nextRandomInteger();
             int positiveInt = rand & 0x7FFFFFFF;
@@ -59,7 +59,7 @@ public class TestPseudoRandom extends TestCase {
     }
 
     public void test01Distribution() {
-        int scaler = 10;
+        int scaler = 100;
         for (int i = 0; i < (bins.length * scaler); i++) {
             double rand = pseudoRandom.random();
             assertTrue("not too low, #" + i + " = " + rand, (rand >= 0.0));
