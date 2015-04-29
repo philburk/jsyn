@@ -193,42 +193,9 @@ public class AutoCorrelator implements SignalCorrelator {
         return interpolatePeak(d1, d2, d3) + indexMax;
     }
 
-    // return offset between -1.0 and +1.0 from center
+    // Use quadratic fit to return offset between -0.5 and +0.5 from center.
     protected static double interpolatePeak(double d1, double d2, double d3) {
-        // System.out.println( "      d1 = " + d1 + ", d2 = " + d2 + ", d3 = "
-        // + d3 );
-        // Make sure d2 is a maximum or result will blow up.
-        if (d1 > d2)
-            return -1.0;
-        else if (d3 > d2)
-            return 1.0;
-
-        // The interpolated maximum should be the same
-        // point where the line between slopes crosses zero.
-        double y2 = d3 - d2;
-        double y1 = d2 - d1;
-        // System.out.println("      y1 = " + y1 + ", y2 = " + y2 );
-        // Derive equations for interpolated maximum.
-        // y = ax + b
-        // when y is zero, x = -b/a
-        // y2 = a*x2 + b
-        // y1 = a*x1 + b
-        // b = y2-a*x2
-        // y1 = a*x1 + (y2 - a*x2)
-        // y1 - y2 = a*(x1 - x2) ; x1 and x2 are one from each other
-        // y1 - y2 = a*(-1)
-        // a = y2 - y1
-        // for zero crossing:
-        // 0 = ax+b
-        // -ax = b
-        // x = -b / a
-        // = -(y2-a*x2)/a
-        // = (a*x2 -y2)/a
-        // = x2 - y2/a
-        // = x2 - (y2/(y2-y1))
-        double x2 = 0.5;
-        double precise = x2 - (y2 / (y2 - y1));
-        return precise;
+        return 0.5 * (d1 - d3) / (d1 - (2.0 * d2) + d3);
     }
 
     // Calculate a little more for each sample.
@@ -293,7 +260,6 @@ public class AutoCorrelator implements SignalCorrelator {
 
     @Override
     public boolean addSample(double value) {
-        boolean updated = false;
         double average = (value + previousSample) * 0.5;
         previousSample = value;
 
@@ -304,9 +270,7 @@ public class AutoCorrelator implements SignalCorrelator {
         }
         buffer[cursor] = (float) average;
 
-        updated = incrementalAnalysis();
-
-        return updated;
+        return incrementalAnalysis();
     }
 
     @Override

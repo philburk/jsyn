@@ -135,6 +135,7 @@ public class SubtractiveSynthVoice extends Circuit implements UnitVoice {
                 cutoffRange.set(500.0);
                 filter.Q.set(3.0);
                 break;
+            case 2:
             default:
                 ampEnv.attack.set(0.1);
                 ampEnv.decay.set(0.3);
@@ -147,7 +148,7 @@ public class SubtractiveSynthVoice extends Circuit implements UnitVoice {
     }
 
     static String[] presetNames = {
-            "FastSaw", "SlowSaw", "BrightSaw", ""
+            "FastSaw", "SlowSaw", "BrightSaw"
     };
 
     static class MyVoiceDescription extends VoiceDescription {

@@ -33,7 +33,7 @@ public class ListAudioDevices {
             int maxInputs = audioManager.getMaxInputChannels(i);
             int maxOutputs = audioManager.getMaxInputChannels(i);
             boolean isDefaultInput = (i == audioManager.getDefaultInputDeviceID());
-            boolean isDefaultOutput = (i == audioManager.getDefaultInputDeviceID());
+            boolean isDefaultOutput = (i == audioManager.getDefaultOutputDeviceID());
             System.out.println("#" + i + " : " + deviceName);
             System.out.println("  max inputs : " + maxInputs
                     + (isDefaultInput ? "   (default)" : ""));
