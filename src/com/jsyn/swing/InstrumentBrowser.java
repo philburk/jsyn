@@ -39,7 +39,6 @@ import com.jsyn.util.VoiceDescription;
 @SuppressWarnings("serial")
 public class InstrumentBrowser extends JPanel {
     private InstrumentLibrary library;
-    private JList instrumentList;
     private JScrollPane listScroller2;
     private VoiceDescription voiceDescription;
     private ArrayList<PresetSelectionListener> listeners = new ArrayList<PresetSelectionListener>();
@@ -49,7 +48,8 @@ public class InstrumentBrowser extends JPanel {
         JPanel horizontalPanel = new JPanel();
         horizontalPanel.setLayout(new GridLayout(1, 2));
 
-        instrumentList = createList(library.getVoiceDescriptions());
+        final JList<VoiceDescription> instrumentList = new JList<VoiceDescription>(library.getVoiceDescriptions());
+        setupList(instrumentList);
         instrumentList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -66,7 +66,7 @@ public class InstrumentBrowser extends JPanel {
         listScroller1.setPreferredSize(new Dimension(250, 120));
         add(listScroller1);
 
-        showPresetList(0);
+        instrumentList.setSelectedIndex(0);
     }
 
     public void addPresetSelectionListener(PresetSelectionListener listener) {
@@ -88,7 +88,8 @@ public class InstrumentBrowser extends JPanel {
             remove(listScroller2);
         }
         voiceDescription = library.getVoiceDescriptions()[n];
-        final JList presetList = createList(voiceDescription.getPresetNames());
+        final JList<String> presetList = new JList<String>(voiceDescription.getPresetNames());
+        setupList(presetList);
         presetList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -108,11 +109,9 @@ public class InstrumentBrowser extends JPanel {
         validate();
     }
 
-    private JList createList(Object[] data) {
-        JList list = new JList(data);
+    private void setupList(@SuppressWarnings("rawtypes") JList list) {
         list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         list.setLayoutOrientation(JList.VERTICAL);
         list.setVisibleRowCount(-1);
-        return list;
     }
 }
