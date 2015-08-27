@@ -34,7 +34,7 @@ public class FilterFourPoles extends TunableFilter {
     public UnitInputPort Q;
     public UnitInputPort gain;
 
-    private static final double MINIMUM_FREQUENCY = 0.00001;
+    private static final double MINIMUM_FREQUENCY = 1.0; // blows up if near 0.01
     private static final double MINIMUM_Q = 0.00001;
 
     private double x1;
