@@ -17,8 +17,8 @@
 package com.jsyn.unitgen;
 
 /**
- * Sawtooth DPW oscillator (a sawtooth with reduced aliasing). Based on a paper by Antti Huovilainen
- * and Vesa Valimaki:
+ * Sawtooth DPW oscillator (a sawtooth with reduced aliasing).
+ * Based on a paper by Antti Huovilainen and Vesa Valimaki:
  * http://www.scribd.com/doc/33863143/New-Approaches-to-Digital-Subtractive-Synthesis
  * 
  * @author Phil Burk and Lisa Tolentino (C) 2009 Mobileer Inc
