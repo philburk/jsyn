@@ -81,7 +81,6 @@ class JavaSoundSampleLoader implements AudioSampleLoader {
             bytesPerFrame = 1;
         }
         AudioFormat format = audioInputStream.getFormat();
-        System.out.println("Format = " + format);
         if (format.getEncoding() == AudioFormat.Encoding.PCM_SIGNED) {
             floatData = loadSignedPCM(audioInputStream);
         }
