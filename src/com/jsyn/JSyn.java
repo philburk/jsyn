@@ -54,8 +54,8 @@ public class JSyn {
     // Update these for every release.
     private final static int VERSION_MAJOR = 16;
     private final static int VERSION_MINOR = 7;
-    private final static int VERSION_REVISION = 4;
-    public final static int BUILD_NUMBER = 457;
+    private final static int VERSION_REVISION = 5;
+    public final static int BUILD_NUMBER = 458;
     private final static long BUILD_TIME = new GregorianCalendar(2014, GregorianCalendar.DECEMBER,
             25).getTime().getTime();
 

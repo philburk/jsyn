@@ -123,7 +123,7 @@ public class FourierMath {
     }
 
     public static void transform(int sign, int n, double ar[], double ai[]) {
-        double scale = Math.sqrt(1.0 / n);
+        double scale = (sign > 0) ? (2.0 / n) : (0.5);
 
         int numBits = FourierMath.numBits(n);
         int[] reverseTable = getReverseTable(numBits);
@@ -150,7 +150,7 @@ public class FourierMath {
             int phase = 0;
             int phaseIncrement = numerator / (2 * mmax);
             for (int m = 0; m < mmax; ++m) {
-                double wr = sineTable[(phase + cosineOffset) & mask];
+                double wr = sineTable[(phase + cosineOffset) & mask]; // cosine
                 double wi = sineTable[phase];
 
                 for (i = m; i < n; i += stride) {
@@ -170,7 +170,7 @@ public class FourierMath {
     }
 
     public static void transform(int sign, int n, float ar[], float ai[]) {
-        float scale = (float) Math.sqrt(1.0 / n);
+        float scale = (sign > 0) ? (2.0f / n) : (0.5f);
 
         int numBits = FourierMath.numBits(n);
         int[] reverseTable = getReverseTable(numBits);
@@ -197,7 +197,7 @@ public class FourierMath {
             int phase = 0;
             int phaseIncrement = numerator / (2 * mmax);
             for (int m = 0; m < mmax; ++m) {
-                float wr = sineTable[(phase + cosineOffset) & mask];
+                float wr = sineTable[(phase + cosineOffset) & mask]; // cosine
                 float wi = sineTable[phase];
 
                 for (i = m; i < n; i += stride) {
