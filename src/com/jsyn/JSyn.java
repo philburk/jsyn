@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ import com.jsyn.engine.SynthesisEngine;
  * how to start playing a sine wave: <code><pre>
 	// Create a context for the synthesizer.
 	synth = JSyn.createSynthesizer();
-	
+
 	// Start synthesizer using default stereo output at 44100 Hz.
 	synth.start();
 
@@ -47,7 +47,7 @@ import com.jsyn.engine.SynthesisEngine;
 	// We only need to start the LineOut. It will pull data from the oscillator.
 	lineOut.start();
  </pre></code>
- * 
+ *
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class JSyn {
@@ -55,9 +55,9 @@ public class JSyn {
     private final static int VERSION_MAJOR = 16;
     private final static int VERSION_MINOR = 7;
     private final static int VERSION_REVISION = 5;
-    public final static int BUILD_NUMBER = 458;
-    private final static long BUILD_TIME = new GregorianCalendar(2014, GregorianCalendar.DECEMBER,
-            25).getTime().getTime();
+    public final static int BUILD_NUMBER = 459;
+    private final static long BUILD_TIME = new GregorianCalendar(2015, GregorianCalendar.NOVEMBER,
+            2).getTime().getTime();
 
     public final static String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + "."
             + VERSION_REVISION;

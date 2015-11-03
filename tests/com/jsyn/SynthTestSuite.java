@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,11 +31,12 @@ import com.jsyn.unitgen.TestEnvelopeAttackDecay;
 import com.jsyn.unitgen.TestEnvelopeDAHDSR;
 import com.jsyn.unitgen.TestFunction;
 import com.jsyn.unitgen.TestRamps;
+import com.jsyn.util.TestFFT;
 import com.jsyn.util.TestVoiceAllocator;
 
 /**
  * Test new pure Java JSyn API.
- * 
+ *
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class SynthTestSuite {
@@ -56,6 +57,7 @@ public class SynthTestSuite {
         suite.addTestSuite(TestFifo.class);
         suite.addTestSuite(TestEnable.class);
         suite.addTestSuite(TestFunction.class);
+        suite.addTestSuite(TestFFT.class);
         // suite.addTestSuite( TestSampleLoader.class );
         suite.addTestSuite(TestWaveFileReadWrite.class);
         suite.addTestSuite(TestVoiceAllocator.class);
