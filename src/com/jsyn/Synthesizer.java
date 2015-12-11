@@ -185,4 +185,9 @@ public interface Synthesizer {
 
     public void removeAudioTask(Runnable task);
 
+    /**
+     * Clear the current command queue allocated.
+     */
+    void clear();
+
 }
