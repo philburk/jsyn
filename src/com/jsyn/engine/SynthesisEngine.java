@@ -284,6 +284,10 @@ public class SynthesisEngine implements Runnable, Synthesizer {
             runningUnitList.clear();
         }
         started = false;
+        
+        synchronized (this.commandQueue) {//why not clear the commandQueue?
+            this.commandQueue = new ScheduledQueue<ScheduledCommand>();
+        }
     }
 
     @Override
