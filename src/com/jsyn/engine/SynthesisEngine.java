@@ -287,6 +287,13 @@ public class SynthesisEngine implements Runnable, Synthesizer {
     }
 
     @Override
+    public void clear() {
+        synchronized (this.commandQueue) {//why not clear the commandQueue?
+            this.commandQueue = new ScheduledQueue<ScheduledCommand>();
+        }        
+    }
+    
+    @Override
     public void run() {
         logger.fine("JSyn synthesis thread starting.");
         try {
