@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,7 +48,7 @@ import com.softsynth.shared.time.TimeStamp;
 /**
  * Internal implementation of JSyn Synthesizer. The public API is in the Synthesizer interface. This
  * class might be used directly internally.
- * 
+ *
  * @author Phil Burk (C) 2009 Mobileer Inc
  * @see Synthesizer
  */
@@ -57,11 +57,11 @@ public class SynthesisEngine implements Runnable, Synthesizer {
     private final static int FRAMES_PER_BUFFER = Synthesizer.FRAMES_PER_BLOCK * BLOCKS_PER_BUFFER;
     public static final int DEFAULT_FRAME_RATE = 44100;
 
-    private AudioDeviceManager audioDeviceManager;
+    private final AudioDeviceManager audioDeviceManager;
     private AudioDeviceOutputStream audioOutputStream;
     private AudioDeviceInputStream audioInputStream;
     private Thread audioThread;
-    private ScheduledQueue<ScheduledCommand> commandQueue = new ScheduledQueue<ScheduledCommand>();
+    private final ScheduledQueue<ScheduledCommand> commandQueue = new ScheduledQueue<ScheduledCommand>();
     private volatile boolean go;
 
     private InterleavingBuffer inputBuffer;
@@ -75,16 +75,16 @@ public class SynthesisEngine implements Runnable, Synthesizer {
     private double framePeriod = 1.0 / frameRate;
 
     // List of all units added to the synth.
-    private ArrayList<UnitGenerator> allUnitList = new ArrayList<UnitGenerator>();
+    private final ArrayList<UnitGenerator> allUnitList = new ArrayList<UnitGenerator>();
     // List of running units.
-    private ArrayList<UnitGenerator> runningUnitList = new ArrayList<UnitGenerator>();
+    private final ArrayList<UnitGenerator> runningUnitList = new ArrayList<UnitGenerator>();
     // List of units stopping because of autoStop.
-    private ArrayList<UnitGenerator> stoppingUnitList = new ArrayList<UnitGenerator>();
+    private final ArrayList<UnitGenerator> stoppingUnitList = new ArrayList<UnitGenerator>();
 
     private LoadAnalyzer loadAnalyzer;
     // private int numOutputChannels;
     // private int numInputChannels;
-    private CopyOnWriteArrayList<Runnable> audioTasks = new CopyOnWriteArrayList<Runnable>();
+    private final CopyOnWriteArrayList<Runnable> audioTasks = new CopyOnWriteArrayList<Runnable>();
     /** A fraction corresponding to exactly -96 dB. */
     public static final double DB96 = (1.0 / 63095.73444801943);
     /** A fraction that is approximately -90.3 dB. Defined as 1 bit of an S16. */
@@ -122,7 +122,7 @@ public class SynthesisEngine implements Runnable, Synthesizer {
     /**
      * If set true then audio data will be pulled from the output ports of connected unit
      * generators. The final unit in a tree of units needs to be start()ed.
-     * 
+     *
      * @param pullDataEnabled
      */
     public void setPullDataEnabled(boolean pullDataEnabled) {
@@ -140,7 +140,7 @@ public class SynthesisEngine implements Runnable, Synthesizer {
     }
 
     class InterleavingBuffer {
-        private double[] interleavedBuffer;
+        private final double[] interleavedBuffer;
         ChannelBlockBuffer[] blockBuffers;
 
         InterleavingBuffer(int framesPerBuffer, int framesPerBlock, int samplesPerFrame) {
@@ -184,7 +184,7 @@ public class SynthesisEngine implements Runnable, Synthesizer {
     }
 
     class ChannelBlockBuffer {
-        private double[] values;
+        private final double[] values;
 
         ChannelBlockBuffer(int framesPerBlock) {
             values = new double[framesPerBlock];
@@ -413,6 +413,11 @@ public class SynthesisEngine implements Runnable, Synthesizer {
     public void queueCommand(ScheduledCommand command) {
         TimeStamp timeStamp = createTimeStamp();
         scheduleCommand(timeStamp, command);
+    }
+
+    @Override
+    public void clearCommandQueue() {
+        commandQueue.clear();
     }
 
     private void clearBlockBuffers() {

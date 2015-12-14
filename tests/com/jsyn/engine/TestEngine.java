@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,7 @@ package com.jsyn.engine;
 
 import junit.framework.TestCase;
 
+import com.jsyn.unitgen.Add;
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.PitchDetector;
 import com.jsyn.unitgen.SineOscillator;
@@ -177,4 +178,36 @@ public class TestEngine extends TestCase {
 
     }
 
+
+    public void testScheduler() throws InterruptedException {
+        SynthesisEngine synth = new SynthesisEngine();
+        synth.setRealTime(false);
+        Add adder = new Add();
+        synth.add(adder);
+        synth.start();
+        adder.start();
+        adder.inputA.set(4.0);
+        adder.inputB.set(10.0);
+        synth.sleepFor(0.1);
+        assertEquals("simple add", 14.0, adder.output.get(), 0.01);
+
+        // Schedule a set() in the near future.
+        double time = synth.getCurrentTime();
+        adder.inputA.set(7.0, time + 1.0);
+        synth.sleepFor(0.5);
+        assertEquals("before scheduled set", 14.0, adder.output.get(), 0.01);
+        synth.sleepFor(1.0);
+        assertEquals("after scheduled set", 17.0, adder.output.get(), 0.01);
+
+        // Schedule a set() in the near future then cancel it.
+        time = synth.getCurrentTime();
+        adder.inputA.set(5.0, time + 1.0);
+        synth.sleepFor(0.5);
+        assertEquals("before scheduled set", 17.0, adder.output.get(), 0.01);
+        synth.clearCommandQueue();
+        synth.sleepFor(1.0);
+        assertEquals("after canceled set", 17.0, adder.output.get(), 0.01);
+
+        synth.stop();
+    }
 }
