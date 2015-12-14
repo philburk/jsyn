@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@ import com.softsynth.shared.time.TimeStamp;
 /**
  * A synthesizer used by JSyn to generate audio. The synthesizer executes a network of unit
  * generators to create an audio signal.
- * 
+ *
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public interface Synthesizer {
@@ -40,14 +40,14 @@ public interface Synthesizer {
     /**
      * Starts a background thread that generates audio using the specified frame rate and two stereo
      * output channels.
-     * 
+     *
      * @param frameRate in Hertz
      */
     public void start(int frameRate);
 
     /**
      * Starts the synthesizer using specific audio devices.
-     * 
+     *
      * @param frameRate in Hertz
      * @param inputDeviceID obtained from an {@link AudioDeviceManager} or pass
      *            AudioDeviceManager.USE_DEFAULT_DEVICE
@@ -71,7 +71,7 @@ public interface Synthesizer {
     /**
      * An AudioDeviceManager is an interface to audio hardware. It might be implemented using
      * JavaSound or a wrapper around PortAudio.
-     * 
+     *
      * @return audio device manager being used by the synthesizer.
      */
     public AudioDeviceManager getAudioDeviceManager();
@@ -82,7 +82,7 @@ public interface Synthesizer {
     /**
      * Add a unit generator to the synthesizer so it can be played. This is required before starting
      * or connecting a unit generator into a network.
-     * 
+     *
      * @param ugen a unit generator to be executed by the synthesizer
      */
     public void add(UnitGenerator ugen);
@@ -136,7 +136,7 @@ public interface Synthesizer {
      * If set true then the synthesizer will generate audio in real-time. Set it true for live
      * audio. If false then JSyn will run in non-real-time mode. This can be used to generate audio
      * to be written to a file. The default is true.
-     * 
+     *
      * @param realTime
      */
     public void setRealTime(boolean realTime);
@@ -155,7 +155,7 @@ public interface Synthesizer {
 
     /**
      * This count is not reset if you stop and restart.
-     * 
+     *
      * @return number of frames synthesized
      */
     public long getFrameCount();
@@ -170,6 +170,12 @@ public interface Synthesizer {
     public void queueCommand(ScheduledCommand command);
 
     /**
+     * Clear all scheduled commands from the queue.
+     * Commands will be discarded.
+     */
+    public void clearCommandQueue();
+
+    /**
      * @return true if the Synthesizer has been started
      */
     public boolean isRunning();
@@ -178,7 +184,7 @@ public interface Synthesizer {
      * Add a task that will get run on the Audio Thread before it generates a new block of Audio.
      * This task must be very quick and should not perform any blocking operations. If you are not
      * certain that you need an Audio rate task then don't use this.
-     * 
+     *
      * @param blockTask
      */
     public void addAudioTask(Runnable task);
