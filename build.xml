@@ -8,6 +8,7 @@
   <property name="dist"  location="dist"/>
   <property name="main-class"  value="com.jsyn.apps.AboutJSyn"/>
   <property name="jarname"  value="jsyn"/>
+  <property name="java-version" value="1.6"/>
 
   <target name="init">
     <!-- Create the time stamp -->
@@ -19,7 +20,7 @@
   <target name="compile" depends="init"
         description="compile the source " >
     <!-- Compile the java code from ${src} into ${build} -->
-    <javac srcdir="${src}" destdir="${build}">
+    <javac target="${java-version}" source="${java-version}" srcdir="${src}" destdir="${build}">
       <classpath>
         <pathelement path="libs/jportaudio.jar"/>
       </classpath>
