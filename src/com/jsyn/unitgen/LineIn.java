@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,8 +22,8 @@ import com.jsyn.ports.UnitOutputPort;
 /**
  * External audio input is sent to the output of this unit. The LineIn provides a stereo signal
  * containing channels 0 and 1. For LineIn to work you must call the Synthesizer start() method with
- * numInputChannels > 0.
- * 
+ * numInputChannels &gt; 0.
+ *
  * @author Phil Burk (C) 2009 Mobileer Inc
  * @see Synthesizer
  * @see ChannelIn

@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,13 +20,13 @@ import com.jsyn.ports.UnitInputPort;
 
 /**
  * Base class for a set of IIR filters.
- * 
+ *
  * @author Phil Burk (C) 2011 Mobileer Inc
  * @see FilterBandStop
  * @see FilterBandPass
  * @see FilterLowPass
  * @see FilterHighPass
- * @see FilterTwoPoleTwoZero
+ * @see FilterTwoPolesTwoZeros
  */
 public abstract class FilterBiquad extends TunableFilter {
     public UnitInputPort amplitude;
@@ -67,20 +67,29 @@ public abstract class FilterBiquad extends TunableFilter {
     /**
      * Each filter calls performBiquadFilter() through the generate(int, int) method. This method
      * has converted Robert Bristow-Johnson's coefficients for the Direct I form in this way: Here
-     * is the equation that JSyn uses for this filter: y(n) = A0*x(n) + A1*x(n-1) + A2*x(n-2) -
-     * B1*y(n-1) - B2*y(n-2) Here is the equation that Robert Bristow-Johnson uses: y[n] =
-     * (b0/a0)*x[n] + (b1/a0)*x[n-1] + (b2/a0)*x[n-2] - (a1/a0)*y[n-1] - (a2/a0)*y[n-2] So to
-     * translate between JSyn coefficients and RBJ coefficients:
-     * 
+     * is the equation that JSyn uses for this filter:
+     *
      * <pre>
-     * JSyn => RBJ
-     * A0 => b0/a0
-     * A1 => b1/a0
-     * A2 => b2/a0
-     * B1 => a1/a0
-     * B2 => a2/a0
+     * y(n) = A0*x(n) + A1*x(n-1) + A2*x(n-2) -vB1*y(n-1) - B2*y(n-2)
      * </pre>
-     * 
+     *
+     * Here is the equation that Robert Bristow-Johnson uses:
+     *
+     * <pre>
+     * y[n] = (b0/a0)*x[n] + (b1/a0)*x[n-1] + (b2/a0)*x[n-2] - (a1/a0)*y[n-1] - (a2/a0)*y[n-2]
+     * </pre>
+     *
+     * So to translate between JSyn coefficients and RBJ coefficients:
+     *
+     * <pre>
+     * JSyn =&gt; RBJ
+     * A0 =&gt; b0/a0
+     * A1 =&gt; b1/a0
+     * A2 =&gt; b2/a0
+     * B1 =&gt; a1/a0
+     * B2 =&gt; a2/a0
+     * </pre>
+     *
      * @param start
      * @param limit
      */

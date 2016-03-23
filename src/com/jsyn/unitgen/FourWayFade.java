@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,7 @@ import com.jsyn.ports.UnitOutputPort;
  * Mix inputs 0-3 based on the value of two fade ports. You can think of the four inputs arranged
  * clockwise as follows.
  * <P>
- * 
+ *
  * <PRE>
  *      input[0] ---- input[1]
  *        |             |
@@ -33,20 +33,20 @@ import com.jsyn.ports.UnitOutputPort;
  *        |             |
  *      input[3] ---- input[2]
  * </PRE>
- * 
- * The "fade" port has two parts. Fade[0] fades between the pair of inputs (0&3) and the pair of
- * inputs (1&2). Fade[1] fades between the pair of inputs (0&1) and the pair of inputs (3&2).
- * 
+ *
+ * The "fade" port has two parts. Fade[0] fades between the pair of inputs (0,3) and the pair of
+ * inputs (1,2). Fade[1] fades between the pair of inputs (0,1) and the pair of inputs (3,2).
+ *
  * <PRE>
  *    Fade[0]    Fade[1]    Output
  *      -1         -1       Input[3]
  *      -1         +1       Input[0]
  *      +1         -1       Input[2]
  *      +1         +1       Input[1]
- * 
- * 
- *      -----Fade[0]----->
- * 
+ *
+ *
+ *      -----Fade[0]-----&gt;
+ *
  *         A
  *         |
  *         |
@@ -55,7 +55,7 @@ import com.jsyn.ports.UnitOutputPort;
  *         |
  * </PRE>
  * <P>
- * 
+ *
  * @author (C) 1997-2009 Phil Burk, Mobileer Inc
  */
 public class FourWayFade extends UnitGenerator {

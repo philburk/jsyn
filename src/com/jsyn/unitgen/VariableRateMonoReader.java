@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,11 +23,13 @@ import com.jsyn.ports.UnitOutputPort;
 
 /**
  * This reader can play any SequentialData and will interpolate between adjacent values. It can play
- * both {@link SegmentedEnvelope envelopes} and {@link FloatSample samples}. <code><pre>
+ * both {@link SegmentedEnvelope envelopes} and {@link FloatSample samples}.
+ *
+ * <pre><code>
 	// Queue an envelope to the dataQueue port.
-	ampEnv.dataQueue.queue( ampEnvelope );
-</pre></code>
- * 
+	ampEnv.dataQueue.queue(ampEnvelope);
+</code></pre>
+ *
  * @author Phil Burk (C) 2009 Mobileer Inc
  * @see FloatSample
  * @see ShortSample

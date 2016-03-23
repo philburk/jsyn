@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,11 +25,11 @@ import com.softsynth.shared.time.TimeStamp;
 
 /**
  * Queue for SequentialData, samples or envelopes
- * 
+ *
  * @author Phil Burk (C) 2009 Mobileer Inc
  */
 public class UnitDataQueuePort extends UnitPort {
-    private LinkedList<QueuedBlock> blocks = new LinkedList<QueuedBlock>();
+    private final LinkedList<QueuedBlock> blocks = new LinkedList<QueuedBlock>();
     private QueueDataCommand currentBlock;
     private int frameIndex;
     private int numChannels = 1;
@@ -330,7 +330,7 @@ public class UnitDataQueuePort extends UnitPort {
 
     /**
      * Queue entire amount of data with no options.
-     * 
+     *
      * @param queueableData
      */
     public void queue(SequentialData queueableData) {
@@ -391,8 +391,8 @@ public class UnitDataQueuePort extends UnitPort {
     /**
      * Convenience method that will queue the decay portion of a SequentialData object, or the gap
      * and release loop portions if they exist. This could be used to implement a NoteOff method.
-     * 
-     * @ifStop Will setAutostop(true) if release portion queued without a release loop. This will
+     *
+     * @param ifStop Will setAutostop(true) if release portion queued without a release loop. This will
      *         stop execution of the unit.
      */
     public void queueOff(SequentialData queueableData, boolean ifStop, TimeStamp timeStamp) {

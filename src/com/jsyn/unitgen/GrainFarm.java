@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,11 +24,13 @@ import com.jsyn.util.PseudoRandom;
  * A unit generator that generates a cloud of sound using multiple Grains. Special thanks to my
  * friend Ross Bencina for his excellent article on Granular Synthesis. Several of his ideas are
  * reflected in this architecture. "Implementing Real-Time Granular Synthesis" by Ross Bencina,
- * Audio Anecdotes III, 2001. <code><pre>
+ * Audio Anecdotes III, 2001.
+ *
+ * <pre><code>
    synth.add( sampleGrainFarm = new GrainFarm() );
    grainFarm.allocate( NUM_GRAINS );
-</pre><code>
- * 
+</code></pre>
+ *
  * @author Phil Burk (C) 2011 Mobileer Inc
  * @see Grain
  * @see GrainSourceSine
@@ -48,7 +50,7 @@ public class GrainFarm extends UnitGenerator implements UnitSource {
     PseudoRandom randomizer;
     private GrainState[] states;
     private double countScaler = 1.0;
-    private GrainScheduler scheduler = new StochasticGrainScheduler();
+    private final GrainScheduler scheduler = new StochasticGrainScheduler();
 
     public GrainFarm() {
         randomizer = new PseudoRandom();
