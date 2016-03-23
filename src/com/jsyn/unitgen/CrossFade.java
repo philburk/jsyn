@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,7 +26,7 @@ import com.jsyn.ports.UnitOutputPort;
  * When fade is 0, output is half input[0] and half input[1]. When fade is +1, output is all
  * input[1].
  * <P>
- * 
+ *
  * @author Phil Burk (C) 2009 Mobileer Inc
  * @version 016
  * @see Pan
@@ -40,6 +40,7 @@ public class CrossFade extends UnitGenerator {
     public CrossFade() {
         addPort(input = new UnitInputPort(2, "Input"));
         addPort(fade = new UnitInputPort("Fade"));
+        fade.setup(-1.0, 0.0, 1.0);
         addPort(output = new UnitOutputPort());
     }
 
