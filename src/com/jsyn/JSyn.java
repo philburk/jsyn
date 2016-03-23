@@ -24,7 +24,9 @@ import com.jsyn.engine.SynthesisEngine;
 
 /**
  * JSyn Synthesizer for Java. Use this factory class to create a synthesizer. This code demonstrates
- * how to start playing a sine wave: <code><pre>
+ * how to start playing a sine wave:
+ *
+ * <pre><code>
 	// Create a context for the synthesizer.
 	synth = JSyn.createSynthesizer();
 
@@ -46,7 +48,7 @@ import com.jsyn.engine.SynthesisEngine;
 
 	// We only need to start the LineOut. It will pull data from the oscillator.
 	lineOut.start();
- </pre></code>
+</code> </pre>
  *
  * @author Phil Burk (C) 2010 Mobileer Inc
  */

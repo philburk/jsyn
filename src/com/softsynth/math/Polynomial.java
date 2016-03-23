@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,13 +23,13 @@ import java.util.Vector;
  * Implement polynomial using Vector as coefficient holder. Element index is power of X, value at a
  * given index is coefficient.<br>
  * <br>
- * 
+ *
  * @author Nick Didkovsky, (C) 1997 Phil Burk and Nick Didkovsky
  */
 
 public class Polynomial {
 
-    private Vector terms;
+    private final Vector terms;
 
     class DoubleHolder {
         double value;
@@ -118,14 +118,14 @@ public class Polynomial {
             return ((DoubleHolder) terms.elementAt(power)).get();
     }
 
-    /** @ return number of terms in this polynomial */
+    /** @return number of terms in this polynomial */
     public int size() {
         return terms.size();
     }
 
     /**
      * Add two polynomials together
-     * 
+     *
      * @return new Polynomial that is the sum of p1 and p2
      */
     public static Polynomial plus(Polynomial p1, Polynomial p2) {
@@ -138,7 +138,7 @@ public class Polynomial {
 
     /**
      * Subtract polynomial from another. (First arg - Second arg)
-     * 
+     *
      * @return new Polynomial p1 - p2
      */
     public static Polynomial minus(Polynomial p1, Polynomial p2) {
@@ -151,7 +151,7 @@ public class Polynomial {
 
     /**
      * Multiply two Polynomials
-     * 
+     *
      * @return new Polynomial that is the product p1 * p2
      */
 
@@ -167,7 +167,7 @@ public class Polynomial {
 
     /**
      * Multiply a Polynomial by a scaler
-     * 
+     *
      * @return new Polynomial that is the product p1 * p2
      */
 

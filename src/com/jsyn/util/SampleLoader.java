@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,14 +30,14 @@ import com.jsyn.util.soundfile.CustomSampleLoader;
  * such as unsigned 8-bit, uLaw, A-Law and MP3 are not support. If you need to load one of those
  * files try setJavaSoundPreferred(true). Or convert it to a supported format using Audacity or Sox
  * or some other sample file tool. Here is an example of loading a sample from a file.
- * 
+ *
  * <pre>
  * <code>
  *     File sampleFile = new File("guitar.wav");
  *     FloatSample sample = SampleLoader.loadFloatSample( sampleFile );
- *  </code>
+ * </code>
  * </pre>
- * 
+ *
  * @author Phil Burk (C) 2011 Mobileer Inc
  */
 public class SampleLoader {
@@ -46,7 +46,7 @@ public class SampleLoader {
 
     /**
      * Try to create an implementation of AudioSampleLoader.
-     * 
+     *
      * @return A device supported on this platform.
      */
     private static AudioSampleLoader createLoader() {
@@ -97,8 +97,9 @@ public class SampleLoader {
      * If set true then the audio file parser from JavaSound will be used. Note that JavaSound
      * cannot load audio files containing floating point data. But it may be able to load some
      * compressed data formats such as uLaw.
-     * 
-     * @note JavaSound is not supported on Android.
+     *
+     * Note: JavaSound is not supported on Android.
+     *
      * @param javaSoundPreferred
      */
     public static void setJavaSoundPreferred(boolean javaSoundPreferred) {
@@ -108,7 +109,7 @@ public class SampleLoader {
     /**
      * Decode 24 bit samples from a BigEndian byte array into a float array. The samples will be
      * normalized into the range -1.0 to +1.0.
-     * 
+     *
      * @param audioBytes raw data from an audio file
      * @param offset first element of byte array
      * @param numBytes number of bytes to process

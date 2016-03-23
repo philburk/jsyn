@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,11 +23,16 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
+import com.jsyn.data.SegmentedEnvelope;
+import com.jsyn.unitgen.VariableRateDataReader;
+
 /**
  * Edit a list of ordered duration,value pairs suitable for use with a SegmentedEnvelope.
- * 
+ *
  * @author (C) 1997-2013 Phil Burk, SoftSynth.com
- * @see SynthEnvelope
+ * @see EnvelopePoints
+ * @see SegmentedEnvelope
+ * @see VariableRateDataReader
  */
 
 /* ========================================================================== */

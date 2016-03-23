@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@ import javax.swing.JPanel;
 /**
  * Root class for 2 dimensional X,Y controller for wave editors, Theremins, etc. Maps pixel
  * coordinates into "world" coordinates.
- * 
+ *
  * @author (C) 1997 Phil Burk, SoftSynth.com
  */
 
@@ -111,7 +111,7 @@ public class XYController extends JPanel {
         return height - (int) (((wy - minWorldY) * height) / (maxWorldY - minWorldY));
     }
 
-    /** Clip wx to the min & max World X values. */
+    /** Clip wx to the min and max World X values. */
     public double clipWorldX(double wx) {
         if (wx < minWorldX)
             wx = minWorldX;
@@ -120,7 +120,7 @@ public class XYController extends JPanel {
         return wx;
     }
 
-    /** Clip wy to the min & max World Y values. */
+    /** Clip wy to the min and max World Y values. */
     public double clipWorldY(double wy) {
         if (wy < minWorldY)
             wy = minWorldY;

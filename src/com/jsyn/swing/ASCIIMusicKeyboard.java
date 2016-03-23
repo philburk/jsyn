@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,25 +30,25 @@ import javax.swing.JPanel;
 /**
  * Support for playing musical scales on the ASCII keyboard of a computer. Has a Sustain checkbox
  * that simulates a sustain pedal. Auto-repeat keys are detected and suppressed.
- * 
+ *
  * @author Phil Burk (C) 2012 Mobileer Inc
  */
 @SuppressWarnings("serial")
 public abstract class ASCIIMusicKeyboard extends JPanel {
-    private JCheckBox sustainBox;
-    private JButton focusButton;
+    private final JCheckBox sustainBox;
+    private final JButton focusButton;
     public static final String PENTATONIC_KEYS = "zxcvbasdfgqwert12345";
     public static final String SEPTATONIC_KEYS = "zxcvbnmasdfghjqwertyu1234567890";
     private String keyboardLayout = SEPTATONIC_KEYS; /* default music keyboard layout */
     private int basePitch = 48;
-    private KeyListener keyListener;
-    private JLabel countLabel;
+    private final KeyListener keyListener;
+    private final JLabel countLabel;
     private int onCount;
     private int offCount;
     private int pressedCount;
     private int releasedCount;
-    private HashSet<Integer> pressedKeys = new HashSet<Integer>();
-    private HashSet<Integer> onKeys = new HashSet<Integer>();
+    private final HashSet<Integer> pressedKeys = new HashSet<Integer>();
+    private final HashSet<Integer> onKeys = new HashSet<Integer>();
 
     public ASCIIMusicKeyboard() {
         focusButton = new JButton("Click here to play ASCII keys.");
@@ -143,15 +143,15 @@ public abstract class ASCIIMusicKeyboard extends JPanel {
     /**
      * This will be called when a key is released. It may also be called for sustaining notes when
      * the Sustain check box is turned off.
-     * 
-     * @param pitch
+     *
+     * @param keyIndex
      */
     public abstract void keyOff(int keyIndex);
 
     /**
      * This will be called when a key is pressed.
-     * 
-     * @param pitch
+     *
+     * @param keyIndex
      */
     public abstract void keyOn(int keyIndex);
 
@@ -160,9 +160,11 @@ public abstract class ASCIIMusicKeyboard extends JPanel {
     }
 
     /**
-     * Specify the keys that will be active for music. If the first character in the layout is
+     * Specify the keys that will be active for music.
+     * For example "qwertyui".
+     * If the first character in the layout is
      * pressed then keyOn() will be called with 0. Default is SEPTATONIC_KEYS.
-     * 
+     *
      * @param keyboardLayout defines order of playable keys
      */
     public void setKeyboardLayout(String keyboardLayout) {
@@ -175,7 +177,7 @@ public abstract class ASCIIMusicKeyboard extends JPanel {
 
     /**
      * Define offset used by convertIndexToPitch().
-     * 
+     *
      * @param basePitch
      */
     public void setBasePitch(int basePitch) {

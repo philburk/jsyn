@@ -3,8 +3,9 @@
         Build JSyn Java Synthesizer
     </description>
   <!-- set global properties for this build -->
-  <property name="src"   location="src"/>
-  <property name="build" location="build"/>
+  <property name="src.dir"   location="src"/>
+  <property name="doc.dir"   location="doc"/>
+  <property name="build.dir" location="build"/>
   <property name="dist"  location="dist"/>
   <property name="main-class"  value="com.jsyn.apps.AboutJSyn"/>
   <property name="jarname"  value="jsyn"/>
@@ -13,14 +14,16 @@
   <target name="init">
     <!-- Create the time stamp -->
     <tstamp/>
-    <!-- Create the build directory structure used by compile -->
-    <mkdir dir="${build}"/>
+    <!-- Create the necessary directories. -->
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${doc.dir}"/>
   </target>
 
   <target name="compile" depends="init"
         description="compile the source " >
     <!-- Compile the java code from ${src} into ${build} -->
-    <javac target="${java-version}" source="${java-version}" srcdir="${src}" destdir="${build}">
+    <javac target="${java-version}" source="${java-version}"
+        srcdir="${src.dir}" destdir="${build.dir}">
       <classpath>
         <pathelement path="libs/jportaudio.jar"/>
       </classpath>
@@ -33,17 +36,26 @@
     <mkdir dir="${dist}/lib"/>
 
     <!-- Put everything in ${build} into the jsyn-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/lib/${jarname}-${DSTAMP}.jar" basedir="${build}">
+    <jar jarfile="${dist}/lib/${jarname}-${DSTAMP}.jar" basedir="${build.dir}">
         <manifest>
             <attribute name="Main-Class" value="${main-class}"/>
         </manifest>
     </jar>
   </target>
 
+  <!-- Generate javadocs for current project into ${doc.dir} -->
+  <target name="doc" depends="init" description="generate documentation">
+    <javadoc sourcepath="${src.dir}" destdir="${doc.dir}"/>
+    <echo message = "=================================================================" />
+    <echo message = "Javadocs have been generated and placed in the ${doc.dir} folder!" />
+    <echo message = "=================================================================" />
+  </target>
+
   <target name="clean"
         description="clean up" >
-    <!-- Delete the ${build} and ${dist} directory trees -->
-    <delete dir="${build}"/>
+    <!-- Delete the directories created by ant. -->
+    <delete dir="${build.dir}"/>
+    <delete dir="${doc.dir}"/>
     <delete dir="${dist}"/>
   </target>
 </project>

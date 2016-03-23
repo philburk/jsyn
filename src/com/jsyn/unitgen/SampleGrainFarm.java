@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,16 +21,18 @@ import com.jsyn.ports.UnitInputPort;
 
 /**
  * A GrainFarm that uses a FloatSample as source material. In this example we load a FloatSample for
- * use as a source material. <code><pre>
-	synth.add( sampleGrainFarm = new SampleGrainFarm() );
+ * use as a source material.
+ *
+ * <pre><code>
+	synth.add(sampleGrainFarm = new SampleGrainFarm());
 	// Load a sample that we want to "granulate" from a file.
-	sample = SampleLoader.loadFloatSample( sampleFile );
-	sampleGrainFarm.setSample( sample );
+	sample = SampleLoader.loadFloatSample(sampleFile);
+	sampleGrainFarm.setSample(sample);
 	// Use a ramp to move smoothly within the file.
-	synth.add( ramp = new ContinuousRamp() );
-	ramp.output.connect( sampleGrainFarm.position );
-</pre><code>
- * 
+	synth.add(ramp = new ContinuousRamp());
+	ramp.output.connect(sampleGrainFarm.position);
+</code></pre>
+ *
  * @author Phil Burk (C) 2011 Mobileer Inc
  */
 public class SampleGrainFarm extends GrainFarm {

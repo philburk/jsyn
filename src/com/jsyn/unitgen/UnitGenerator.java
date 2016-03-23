@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,7 +31,7 @@ import com.softsynth.shared.time.TimeStamp;
 
 /**
  * Base class for all unit generators.
- * 
+ *
  * @author Phil Burk (C) 2009 Mobileer Inc
  */
 public abstract class UnitGenerator {
@@ -39,12 +39,12 @@ public abstract class UnitGenerator {
     public static final double FALSE = 0.0;
     public static final double TRUE = 1.0;
     protected SynthesisEngine synthesisEngine;
-    private LinkedHashMap<String, UnitPort> ports = new LinkedHashMap<String, UnitPort>();
+    private final LinkedHashMap<String, UnitPort> ports = new LinkedHashMap<String, UnitPort>();
     private Circuit circuit;
     private long lastFrameCount;
     private boolean enabled = true;
     private static int nextId;
-    private int id = nextId++;
+    private final int id = nextId++;
     private int frameRate;
     private double framePeriod;
 
@@ -85,7 +85,7 @@ public abstract class UnitGenerator {
 
     /**
      * Perform essential synthesis function.
-     * 
+     *
      * @param start offset into port buffers
      * @param limit limit offset into port buffers for loop
      */
@@ -213,9 +213,9 @@ public abstract class UnitGenerator {
      * executed. If not enabled then it will not execute and will not pull data from units that are
      * connected to its inputs. Disabling a unit at the output of a tree of units can be used to
      * turn off the entire tree, thus saving CPU cycles.
-     * 
+     *
      * @param enabled
-     * @see UnitGate.setupAutoDisabled
+     * @see UnitGate#setupAutoDisable(UnitGenerator)
      * @see start
      */
     public void setEnabled(boolean enabled) {
@@ -232,7 +232,7 @@ public abstract class UnitGenerator {
      * inputs. Those units will then pull data their inputs until the entire chain is executed. If
      * units are connected in a circle then this will be detected and the infinite recursion will be
      * blocked.
-     * 
+     *
      * @see setEnabled
      */
     public void start() {
@@ -245,7 +245,7 @@ public abstract class UnitGenerator {
 
     /**
      * Start a unit at the specified time.
-     * 
+     *
      * @param time
      * @see start
      */
@@ -255,7 +255,7 @@ public abstract class UnitGenerator {
 
     /**
      * Start a unit at the specified time.
-     * 
+     *
      * @param timeStamp
      * @see start
      */
@@ -269,7 +269,7 @@ public abstract class UnitGenerator {
 
     /**
      * Stop a unit at the specified time.
-     * 
+     *
      * @param time
      * @see start
      */

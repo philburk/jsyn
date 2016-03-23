@@ -185,7 +185,7 @@ public interface Synthesizer {
      * This task must be very quick and should not perform any blocking operations. If you are not
      * certain that you need an Audio rate task then don't use this.
      *
-     * @param blockTask
+     * @param task
      */
     public void addAudioTask(Runnable task);
 

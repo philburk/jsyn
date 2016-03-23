@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,22 +32,22 @@ import javax.swing.event.ChangeListener;
 
 /**
  * Rotary controller looks like a knob on a synthesizer. You control this knob by clicking on it and
- * dragging <b>up</b> or down</b>. If you move the mouse to the <b>left</b> of the knob then you
+ * dragging <b>up</b> or <b>down</b>. If you move the mouse to the <b>left</b> of the knob then you
  * will have <b>coarse</b> control. If you move the mouse to the <b>right</b> of the knob then you
  * will have <b>fine</b> control.
  * <P>
- * 
+ *
  * @author (C) 2010 Phil Burk, Mobileer Inc
  * @version 16.1
  */
 public class RotaryController extends JPanel {
     private static final long serialVersionUID = 6681532871556659546L;
     private static final double SENSITIVITY = 0.01;
-    private BoundedRangeModel model;
+    private final BoundedRangeModel model;
 
-    private double minAngle = 1.4 * Math.PI;
-    private double maxAngle = -0.4 * Math.PI;
-    private double unitIncrement = 0.01;
+    private final double minAngle = 1.4 * Math.PI;
+    private final double maxAngle = -0.4 * Math.PI;
+    private final double unitIncrement = 0.01;
     private int lastY;
     private int startX;
     private Color knobColor = Color.LIGHT_GRAY;
@@ -109,7 +109,7 @@ public class RotaryController extends JPanel {
 
     /**
      * A fractional value is useful for drawing.
-     * 
+     *
      * @return model value as a normalized fraction between 0.0 and 1.0
      */
     public double getFractionFromModel() {
@@ -235,7 +235,7 @@ public class RotaryController extends JPanel {
 
     /**
      * Override this method if you want to draw your own knob.
-     * 
+     *
      * @param g graphics context
      * @param x position of center of knob
      * @param y position of center of knob
