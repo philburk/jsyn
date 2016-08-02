@@ -36,6 +36,20 @@ import com.softsynth.shared.time.TimeStamp;
  */
 public abstract class UnitGenerator {
     protected static final double VERY_SMALL_FLOAT = 1.0e-26;
+
+    // Some common port names.
+    public static final String PORT_NAME_INPUT = "Input";
+    public static final String PORT_NAME_OUTPUT = "Output";
+    public static final String PORT_NAME_PHASE = "Phase";
+    public static final String PORT_NAME_FREQUENCY = "Frequency";
+    public static final String PORT_NAME_FREQUENCY_SCALER = "FreqScaler";
+    public static final String PORT_NAME_AMPLITUDE = "Amplitude";
+    public static final String PORT_NAME_PAN = "Pan";
+    public static final String PORT_NAME_TIME = "Time";
+    public static final String PORT_NAME_CUTOFF = "Cutoff";
+    public static final String PORT_NAME_PRESSURE = "Pressure";
+    public static final String PORT_NAME_TIMBRE = "Timbre";
+
     public static final double FALSE = 0.0;
     public static final double TRUE = 1.0;
     protected SynthesisEngine synthesisEngine;
@@ -75,6 +89,11 @@ public abstract class UnitGenerator {
         addPort(port);
     }
 
+    /**
+     * Case-insensitive search for a port by name.
+     * @param portName
+     * @return matching port or null
+     */
     public UnitPort getPortByName(String portName) {
         return ports.get(portName.toLowerCase());
     }
@@ -141,8 +160,7 @@ public abstract class UnitGenerator {
         if (halfLife < (2.0 * getFramePeriod())) {
             return 1.0;
         } else {
-            // Strangely enough, this code is valid for both PeakFollower
-            // and AsymptoticRamp.
+            // Oddly enough, this code is valid for both PeakFollower and AsymptoticRamp.
             return 1.0 - Math.pow(0.5, 1.0 / (halfLife * getSynthesisEngine().getFrameRate()));
         }
     }
@@ -150,10 +168,11 @@ public abstract class UnitGenerator {
     protected double incrementWrapPhase(double currentPhase, double phaseIncrement) {
         currentPhase += phaseIncrement;
 
-        if (currentPhase >= 1.0)
+        if (currentPhase >= 1.0) {
             currentPhase -= 2.0;
-        else if (currentPhase < -1.0)
+        } else if (currentPhase < -1.0) {
             currentPhase += 2.0;
+        }
         return currentPhase;
     }
 
@@ -285,6 +304,11 @@ public abstract class UnitGenerator {
         getSynthesisEngine().stopUnit(this, timeStamp);
     }
 
+    /**
+     * @deprecated ignored, frameRate comes from the SynthesisEngine
+     * @param rate
+     */
+    @Deprecated
     public void setFrameRate(int rate) {
         this.frameRate = rate;
         this.framePeriod = 1.0 / rate;

@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,13 +20,13 @@ import com.jsyn.ports.UnitInputPort;
 
 /**
  * Resonant filter in the style of the Moog ladder filter. This implementation is loosely based on:
- * http://www.musicdsp.org/archive.php?classid=3#26 
+ * http://www.musicdsp.org/archive.php?classid=3#26
  * More interesting reading:
  * http://dafx04.na.infn.it/WebProc/Proc/P_061.pdf
  * http://www.acoustics.ed.ac.uk/wp-content/uploads/AMT_MSc_FinalProjects
  * /2012__Daly__AMT_MSc_FinalProject_MoogVCF.pdf
  * http://www.music.mcgill.ca/~ich/research/misc/papers/cr1071.pdf
- * 
+ *
  * @author Phil Burk (C) 2014 Mobileer Inc
  * @see FilterLowPass
  */
@@ -36,6 +36,14 @@ public class FilterFourPoles extends TunableFilter {
 
     private static final double MINIMUM_FREQUENCY = 1.0; // blows up if near 0.01
     private static final double MINIMUM_Q = 0.00001;
+
+    //private static final double SATURATION_COEFFICIENT = 0.1666667;
+    private static final double SATURATION_COEFFICIENT = 0.2;
+    // Inflection point where slope is zero.
+    private static final double SATURATION_UPPER_INPUT = 1.0 / Math.sqrt(3.0 * SATURATION_COEFFICIENT);
+    private static final double SATURATION_LOWER_INPUT = 0.0 - SATURATION_UPPER_INPUT;
+    private static final double SATURATION_UPPER_OUTPUT = cubicPolynomial(SATURATION_UPPER_INPUT);
+    private static final double SATURATION_LOWER_OUTPUT = cubicPolynomial(SATURATION_LOWER_INPUT);
 
     private double x1;
     private double x2;
@@ -57,6 +65,7 @@ public class FilterFourPoles extends TunableFilter {
 
     public FilterFourPoles() {
         addPort(Q = new UnitInputPort("Q"));
+        frequency.setup(40.0, DEFAULT_FREQUENCY, 4000.0);
         Q.setup(0.1, 2.0, 10.0);
     }
 
@@ -111,7 +120,6 @@ public class FilterFourPoles extends TunableFilter {
                 oneSample(0.0);
             }
             oneSample(x0);
-
             outputs[i] = y4;
         }
 
@@ -143,8 +151,35 @@ public class FilterFourPoles extends TunableFilter {
         this.oversampled = oversampled;
     }
 
-    private double clip(double x) {
-        return x - (x * x * x * 0.1666667);
+    // Soft saturation. This used to blow up the filter!
+    private static double cubicPolynomial(double x) {
+        return x - (x * x * x * SATURATION_COEFFICIENT);
     }
 
+    private static double clip(double x) {
+        if (x > SATURATION_UPPER_INPUT) {
+            return SATURATION_UPPER_OUTPUT;
+        } else if (x < SATURATION_LOWER_INPUT) {
+            return SATURATION_LOWER_OUTPUT;
+        } else {
+            return cubicPolynomial(x);
+        }
+    }
+
+    public void reset() {
+        x1 = 0.0;
+        x2 = 0.0;
+        x3 = 0.0;
+        x4 = 0.0;
+        y1 = 0.0;
+        y2 = 0.0;
+        y3 = 0.0;
+        y4 = 0.0;
+
+        previousFrequency = 0.0;
+        previousQ = 0.0;
+        f = 0.0;
+        fTo4th = 0.0;
+        feedback = 0.0;
+    }
 }

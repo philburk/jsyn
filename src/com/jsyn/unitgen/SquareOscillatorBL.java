@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@ import com.jsyn.engine.MultiTable;
 /**
  * Band-limited square wave oscillator. This requires more CPU than a SquareOscillator but is less
  * noisy at high frequencies.
- * 
+ *
  * @author Phil Burk (C) 2009 Mobileer Inc
  */
 public class SquareOscillatorBL extends SawtoothOscillatorBL {
@@ -32,8 +32,9 @@ public class SquareOscillatorBL extends SawtoothOscillatorBL {
 
         /* Generate second sawtooth so we can add them together. */
         double phase2 = currentPhase + 1.0; /* 180 degrees out of phase. */
-        if (phase2 >= 1.0)
+        if (phase2 >= 1.0) {
             phase2 -= 2.0;
+        }
         double val2 = multiTable.calculateSawtooth(phase2, positivePhaseIncrement, flevel);
 
         /*

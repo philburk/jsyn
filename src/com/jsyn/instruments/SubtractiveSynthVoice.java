@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,13 +30,12 @@ import com.jsyn.util.VoiceDescription;
 import com.softsynth.shared.time.TimeStamp;
 
 /**
- * Typical synthesizer voice with an oscillator and resonant filter. Modulate the amplitude and
+ * Typical synthesizer voice with one oscillator and a biquad resonant filter. Modulate the amplitude and
  * filter using DAHDSR envelopes.
- * 
+ *
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class SubtractiveSynthVoice extends Circuit implements UnitVoice {
-    private static final long serialVersionUID = -2704222221111608377L;
     private UnitOscillator osc;
     private FilterLowPass filter;
     private EnvelopeDAHDSR ampEnv;

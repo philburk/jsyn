@@ -282,7 +282,7 @@ public class EnvelopeEditorBox extends XYController implements MouseListener, Mo
             {
                 dragIndex = pnt;
                 if (dragIndex <= 0)
-                    dragLowLimit = 0.0; // FIXME
+                    dragLowLimit = 0.0; // FIXME envelope drag limit
                 else
                     dragLowLimit = xPicked - points.getPoint(dragIndex)[0];
                 dragHighLimit = xPicked + (maximumXRange - points.getTotalDuration());

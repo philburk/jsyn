@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,7 @@ import com.softsynth.shared.time.TimeStamp;
  * Allocate voices based on an integer tag. The tag could, for example, be a MIDI note number. Or a
  * tag could be an int that always increments. Use the same tag to refer to a voice for noteOn() and
  * noteOff(). If no new voices are available then a voice in use will be stolen.
- * 
+ *
  * @author Phil Burk (C) 2011 Mobileer Inc
  */
 public class VoiceAllocator implements Instrument {
@@ -38,7 +38,7 @@ public class VoiceAllocator implements Instrument {
     /**
      * Create an allocator for the array of UnitVoices. The array must be full of instantiated
      * UnitVoices that are connected to some kind of mixer.
-     * 
+     *
      * @param voices
      */
     public VoiceAllocator(UnitVoice[] voices) {
@@ -121,7 +121,7 @@ public class VoiceAllocator implements Instrument {
      * that tag. Next it will pick the oldest voice that is off. Next it will pick the oldest voice
      * that is on. If you are using timestamps to play the voice in the future then you should use
      * the noteOn() noteOff() and setPort() methods.
-     * 
+     *
      * @param tag
      * @return Voice that is most available.
      */
@@ -158,7 +158,7 @@ public class VoiceAllocator implements Instrument {
         return null;
     }
 
-    /** Turn off all the note currently on. */
+    /** Turn off all the notes currently on. */
     @Override
     public void allNotesOff(TimeStamp timeStamp) {
         getSynthesizer().scheduleCommand(timeStamp, new ScheduledCommand() {
@@ -233,6 +233,14 @@ public class VoiceAllocator implements Instrument {
                 }
             }
         });
+    }
+
+    public int getPresetIndex() {
+        return presetIndex;
+    }
+
+    public void setPresetIndex(int presetIndex) {
+        this.presetIndex = presetIndex;
     }
 
 }
