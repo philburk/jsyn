@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,7 +34,7 @@ import com.jsyn.devices.AudioDeviceOutputStream;
 
 /**
  * Use JavaSound to access the audio hardware.
- * 
+ *
  * @author Phil Burk (C) 2009 Mobileer Inc
  */
 public class JavaSoundAudioDevice implements AudioDeviceManager {
@@ -228,9 +228,6 @@ public class JavaSoundAudioDevice implements AudioDeviceManager {
                 bytes[byteIndex++] = (byte) sample; // little end
                 bytes[byteIndex++] = (byte) (sample >> 8); // big end
             }
-
-            // sleepUntilNonBlocking( byteIndex ); // This was just an attempt to get rid of clicks
-            // on Apple.
 
             line.write(bytes, 0, byteIndex);
         }
