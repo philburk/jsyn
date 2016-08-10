@@ -52,17 +52,17 @@ import com.softsynth.shared.time.TimeStamp;
  * @author Phil Burk (C) 2009 Mobileer Inc
  * @see Synthesizer
  */
-public class SynthesisEngine implements Runnable, Synthesizer {
+public class SynthesisEngine implements Synthesizer {
     private final static int BLOCKS_PER_BUFFER = 8;
     private final static int FRAMES_PER_BUFFER = Synthesizer.FRAMES_PER_BLOCK * BLOCKS_PER_BUFFER;
+    // I have measured JavaSound taking 1200 msec to close devices.
+    private static final int MAX_THREAD_STOP_TIME = 2000;
+
     public static final int DEFAULT_FRAME_RATE = 44100;
 
     private final AudioDeviceManager audioDeviceManager;
-    private AudioDeviceOutputStream audioOutputStream;
-    private AudioDeviceInputStream audioInputStream;
-    private Thread audioThread;
+    private EngineThread engineThread;
     private final ScheduledQueue<ScheduledCommand> commandQueue = new ScheduledQueue<ScheduledCommand>();
-    private volatile boolean go;
 
     private InterleavingBuffer inputBuffer;
     private InterleavingBuffer outputBuffer;
@@ -85,6 +85,8 @@ public class SynthesisEngine implements Runnable, Synthesizer {
     // private int numOutputChannels;
     // private int numInputChannels;
     private final CopyOnWriteArrayList<Runnable> audioTasks = new CopyOnWriteArrayList<Runnable>();
+    private double mOutputLatency;
+    private double mInputLatency;
     /** A fraction corresponding to exactly -96 dB. */
     public static final double DB96 = (1.0 / 63095.73444801943);
     /** A fraction that is approximately -90.3 dB. Defined as 1 bit of an S16. */
@@ -235,20 +237,12 @@ public class SynthesisEngine implements Runnable, Synthesizer {
         inverseNyquist = 2.0 / frameRate;
 
         if (useRealTime) {
-            if (numInputChannels > 0) {
-                audioInputStream = audioDeviceManager.createInputStream(inputDeviceID, frameRate,
-                        numInputChannels);
-            }
-            if (numOutputChannels > 0) {
-                audioOutputStream = audioDeviceManager.createOutputStream(outputDeviceID,
-                        frameRate, numOutputChannels);
-            }
-            audioThread = new Thread(this);
-            logger.fine("Synth thread old priority = " + audioThread.getPriority());
-            audioThread.setPriority(audioThread.getPriority() + 2);
-            logger.fine("Synth thread new priority = " + audioThread.getPriority());
-            go = true;
-            audioThread.start();
+            engineThread = new EngineThread(inputDeviceID, numInputChannels,
+                    outputDeviceID, numOutputChannels);
+            logger.fine("Synth thread old priority = " + engineThread.getPriority());
+            engineThread.setPriority(engineThread.getPriority() + 2);
+            logger.fine("Synth thread new priority = " + engineThread.getPriority());
+            engineThread.start();
         }
 
         started = true;
@@ -256,7 +250,8 @@ public class SynthesisEngine implements Runnable, Synthesizer {
 
     @Override
     public boolean isRunning() {
-        return go;
+        Thread thread = engineThread;
+        return (thread != null) && thread.isAlive();
     }
 
     @Override
@@ -268,13 +263,11 @@ public class SynthesisEngine implements Runnable, Synthesizer {
 
         if (useRealTime) {
             // Stop audio synthesis and all units.
-            go = false;
-            if (audioThread != null) {
+            if (engineThread != null) {
                 try {
                     // Interrupt now, otherwise audio thread will wait for audio I/O.
-                    audioThread.interrupt();
-
-                    audioThread.join(1000);
+                    engineThread.requestStop();
+                    engineThread.join(MAX_THREAD_STOP_TIME);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -286,58 +279,84 @@ public class SynthesisEngine implements Runnable, Synthesizer {
         started = false;
     }
 
-    @Override
-    public void run() {
-        logger.fine("JSyn synthesis thread starting.");
-        try {
-            if (audioInputStream != null) {
-                logger.finer("JSyn synthesis thread trying to start audio INPUT!");
-                audioInputStream.start();
-                String msg = String.format("Input Latency in = %5.1f msec",
-                        1000 * audioInputStream.getLatency());
-                logger.fine(msg);
-            }
-            if (audioOutputStream != null) {
-                logger.finer("JSyn synthesis thread trying to start audio OUTPUT!");
-                audioOutputStream.start();
-                String msg = String.format("Output Latency = %5.1f msec",
-                        1000 * audioOutputStream.getLatency());
-                logger.fine(msg);
-                // Buy some time while we fill the buffer.
-                audioOutputStream.write(outputBuffer.interleavedBuffer);
-            }
-            loadAnalyzer = new LoadAnalyzer();
-            while (go) {
-                if (audioInputStream != null) {
-                    audioInputStream.read(inputBuffer.interleavedBuffer);
-                }
+    private class EngineThread extends Thread
+    {
+        private AudioDeviceOutputStream audioOutputStream;
+        private AudioDeviceInputStream audioInputStream;
+        private volatile boolean go = true;
 
-                loadAnalyzer.start();
-                runAudioTasks();
-                generateNextBuffer();
-                loadAnalyzer.stop();
-
-                if (audioOutputStream != null) {
-                    // This call will block when the output is full.
-                    audioOutputStream.write(outputBuffer.interleavedBuffer);
-                }
+        EngineThread(int inputDeviceID, int numInputChannels,
+            int outputDeviceID, int numOutputChannels) {
+            if (numInputChannels > 0) {
+                audioInputStream = audioDeviceManager.createInputStream(inputDeviceID, frameRate,
+                        numInputChannels);
             }
-
-        } catch (Throwable e) {
-            e.printStackTrace();
-            go = false;
-
-        } finally {
-            logger.info("JSyn synthesis thread in finally code.");
-            // Stop audio system.
-            if (audioInputStream != null) {
-                audioInputStream.stop();
-            }
-            if (audioOutputStream != null) {
-                audioOutputStream.stop();
+            if (numOutputChannels > 0) {
+                audioOutputStream = audioDeviceManager.createOutputStream(outputDeviceID,
+                        frameRate, numOutputChannels);
             }
         }
-        logger.fine("JSyn synthesis thread exiting.");
+
+        public void requestStop() {
+            go = false;
+            interrupt();
+        }
+
+        @Override
+        public void run() {
+            logger.fine("JSyn synthesis thread starting.");
+            try {
+                if (audioInputStream != null) {
+                    logger.finer("JSyn synthesis thread trying to start audio INPUT!");
+                    audioInputStream.start();
+                    mInputLatency = audioInputStream.getLatency();
+                    String msg = String.format("Input Latency in = %5.1f msec",
+                            1000 * mInputLatency);
+                    logger.fine(msg);
+                }
+                if (audioOutputStream != null) {
+                    logger.finer("JSyn synthesis thread trying to start audio OUTPUT!");
+                    audioOutputStream.start();
+                    mOutputLatency = audioOutputStream.getLatency();
+                    String msg = String.format("Output Latency = %5.1f msec",
+                            1000 * mOutputLatency);
+                    logger.fine(msg);
+                    // Buy some time while we fill the buffer.
+                    audioOutputStream.write(outputBuffer.interleavedBuffer);
+                }
+                loadAnalyzer = new LoadAnalyzer();
+                while (go) {
+                    if (audioInputStream != null) {
+                        audioInputStream.read(inputBuffer.interleavedBuffer);
+                    }
+
+                    loadAnalyzer.start();
+                    runAudioTasks();
+                    generateNextBuffer();
+                    loadAnalyzer.stop();
+
+                    if (audioOutputStream != null) {
+                        // This call will block when the output is full.
+                        audioOutputStream.write(outputBuffer.interleavedBuffer);
+                    }
+                }
+
+            } catch (Throwable e) {
+                e.printStackTrace();
+                go = false;
+
+            } finally {
+                logger.info("JSyn synthesis thread in finally code.");
+                // Stop audio system.
+                if (audioInputStream != null) {
+                    audioInputStream.stop();
+                }
+                if (audioOutputStream != null) {
+                    audioOutputStream.stop();
+                }
+            }
+            logger.fine("JSyn synthesis thread exiting.");
+        }
     }
 
     private void runAudioTasks() {
@@ -395,7 +414,7 @@ public class SynthesisEngine implements Runnable, Synthesizer {
 
     @Override
     public void scheduleCommand(TimeStamp timeStamp, ScheduledCommand command) {
-        if ((Thread.currentThread() == audioThread) && (timeStamp.getTime() <= getCurrentTime())) {
+        if ((Thread.currentThread() == engineThread) && (timeStamp.getTime() <= getCurrentTime())) {
             command.run();
         } else {
             logger.fine("scheduling " + command + ", at time " + timeStamp.getTime());
@@ -622,19 +641,11 @@ public class SynthesisEngine implements Runnable, Synthesizer {
     }
 
     public double getOutputLatency() {
-        if (audioOutputStream != null) {
-            return audioOutputStream.getLatency();
-        } else {
-            return 0;
-        }
+        return mOutputLatency;
     }
 
     public double getInputLatency() {
-        if (audioInputStream != null) {
-            return audioInputStream.getLatency();
-        } else {
-            return 0;
-        }
+        return mInputLatency;
     }
 
     @Override

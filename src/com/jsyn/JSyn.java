@@ -56,10 +56,10 @@ public class JSyn {
     // Update these for every release.
     private final static int VERSION_MAJOR = 16;
     private final static int VERSION_MINOR = 7;
-    private final static int VERSION_REVISION = 5;
-    public final static int BUILD_NUMBER = 459;
-    private final static long BUILD_TIME = new GregorianCalendar(2015, GregorianCalendar.NOVEMBER,
-            2).getTime().getTime();
+    private final static int VERSION_REVISION = 6;
+    public final static int BUILD_NUMBER = 460;
+    private final static long BUILD_TIME = new GregorianCalendar(2016,
+            GregorianCalendar.AUGUST, 9).getTime().getTime();
 
     public final static String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + "."
             + VERSION_REVISION;
