@@ -33,7 +33,8 @@ public class VoiceAllocator implements Instrument {
     private VoiceTracker[] trackers;
     private long tick;
     private Synthesizer synthesizer;
-    private int presetIndex = -1;
+    private static final int UNASSIGNED_PRESET = -1;
+    private int mPresetIndex = UNASSIGNED_PRESET;
 
     /**
      * Create an allocator for the array of UnitVoices. The array must be full of instantiated
@@ -60,7 +61,7 @@ public class VoiceAllocator implements Instrument {
     private class VoiceTracker {
         UnitVoice voice;
         int tag = -1;
-        int presetIndex = -1;
+        int presetIndex = UNASSIGNED_PRESET;
         long when;
         boolean on;
 
@@ -158,7 +159,7 @@ public class VoiceAllocator implements Instrument {
         return null;
     }
 
-    /** Turn off all the notes currently on. */
+    /** Turn off all the note currently on. */
     @Override
     public void allNotesOff(TimeStamp timeStamp) {
         getSynthesizer().scheduleCommand(timeStamp, new ScheduledCommand() {
@@ -185,9 +186,30 @@ public class VoiceAllocator implements Instrument {
             @Override
             public void run() {
                 VoiceTracker voiceTracker = allocateTracker(tag);
-                if (presetIndex != voiceTracker.presetIndex) {
-                    voiceTracker.voice.usePreset(presetIndex);
+                if (voiceTracker.presetIndex != mPresetIndex) {
+                    voiceTracker.voice.usePreset(mPresetIndex);
+                    voiceTracker.presetIndex = mPresetIndex;
                 }
+                voiceTracker.voice.noteOn(frequency, amplitude, getSynthesizer().createTimeStamp());
+            }
+        });
+    }
+
+    /**
+     * Play a note on the voice and associate it with the given tag. if needed a new voice will be
+     * allocated and an old voice may be turned off.
+     * Apply an operation to the voice.
+     */
+    public void noteOn(final int tag,
+            final double frequency,
+            final double amplitude,
+            final VoiceOperation operation,
+            TimeStamp timeStamp) {
+        getSynthesizer().scheduleCommand(timeStamp, new ScheduledCommand() {
+            @Override
+            public void run() {
+                VoiceTracker voiceTracker = allocateTracker(tag);
+                operation.operate(voiceTracker.voice);
                 voiceTracker.voice.noteOn(frequency, amplitude, getSynthesizer().createTimeStamp());
             }
         });
@@ -228,19 +250,9 @@ public class VoiceAllocator implements Instrument {
         getSynthesizer().scheduleCommand(timeStamp, new ScheduledCommand() {
             @Override
             public void run() {
-                for (VoiceTracker tracker : trackers) {
-                    tracker.voice.usePreset(presetIndex);
-                }
+                mPresetIndex = presetIndex;
             }
         });
-    }
-
-    public int getPresetIndex() {
-        return presetIndex;
-    }
-
-    public void setPresetIndex(int presetIndex) {
-        this.presetIndex = presetIndex;
     }
 
 }
