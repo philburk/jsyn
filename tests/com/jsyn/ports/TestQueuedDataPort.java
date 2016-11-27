@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ import com.jsyn.unitgen.FixedRateMonoReader;
 
 /**
  * Test sample and envelope queuing and looping.
- * 
+ *
  * @author Phil Burk, (C) 2009 Mobileer Inc
  */
 public class TestQueuedDataPort extends TestCase {
@@ -94,6 +94,39 @@ public class TestQueuedDataPort extends TestCase {
         checkQueuedData(data, dataQueue, 0, data.length);
 
         assertEquals("end empty", false, dataQueue.hasMore());
+    }
+
+    public void testQueueOutOfBounds() {
+        float[] data = {
+                0.4f, 1.9f, 22.7f
+        };
+        FloatSample sample = new FloatSample(data.length, 1);
+        sample.write(data);
+
+        UnitDataQueuePort dataQueue = new UnitDataQueuePort("test");
+        boolean caught = false;
+        try {
+            queueDirect(dataQueue, sample, 0, sample.getNumFrames() + 1); // should cause an error!
+        } catch(IllegalArgumentException e) {
+            caught = true;
+        }
+        assertTrue("expect exception when we go past end of the array", caught);
+
+        caught = false;
+        try {
+            queueDirect(dataQueue, sample, 1, sample.getNumFrames()); // should cause an error!
+        } catch(IllegalArgumentException e) {
+            caught = true;
+        }
+        assertTrue("expect exception when we go past end of the array", caught);
+
+        caught = false;
+        try {
+            queueDirect(dataQueue, sample, -1, sample.getNumFrames()); // should cause an error!
+        } catch(IllegalArgumentException e) {
+            caught = true;
+        }
+        assertTrue("expect exception when we start before beginning of the array", caught);
     }
 
     public void testQueueMultiple() {
