@@ -59,8 +59,6 @@ public abstract class UnitGenerator {
     private boolean enabled = true;
     private static int nextId;
     private final int id = nextId++;
-    private int frameRate;
-    private double framePeriod;
 
     static Logger logger = Logger.getLogger(UnitGenerator.class.getName());
 
@@ -245,6 +243,16 @@ public abstract class UnitGenerator {
     }
 
     /**
+     * Some units, for example LineOut and FixedRateMonoWriter, will only work if
+     * started explicitly. Other units will run when downstream units are started.
+     *
+     * @return true if you should call start() for this unit
+     */
+    public boolean isStartRequired() {
+        return false;
+    }
+
+    /**
      * Start executing this unit directly by adding it to a "run list" of units in the synthesis
      * engine. This method is normally only called for the final unit in a chain, for example a
      * LineOut. When that final unit executes it will "pull" data from any units connected to its
@@ -310,8 +318,6 @@ public abstract class UnitGenerator {
      */
     @Deprecated
     public void setFrameRate(int rate) {
-        this.frameRate = rate;
-        this.framePeriod = 1.0 / rate;
     }
 
     /** Needed by UnitSink */

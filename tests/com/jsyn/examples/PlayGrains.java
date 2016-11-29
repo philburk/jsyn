@@ -57,14 +57,12 @@ public class PlayGrains extends JApplet {
     private static final int NUM_GRAINS = 32;
     private FloatSample sample;
     private WaveRecorder recorder;
-
-    private static final boolean useSample = false;
     private final static boolean useRecorder = false;
 
-    // File sampleFile = new File( "samples/instructions.wav" );
-    File sampleFile = new File(
-    // "/Users/phil/Work/jsyn/guitar100/Guitar100_Ocean_1#02.aif" );
-            "/Users/phil/Music/samples/ChewyMonkeysWhistle.aiff");
+    private static final boolean useSample = false;
+    // If you enable useSample then you will need to replace the file name below with a valid
+    // file name on your computer.
+    private File sampleFile = new File("/Users/phil/Music/samples/ChewyMonkeysWhistle.aiff");
 
     /* Can be run as either an application or as an applet. */
     public static void main(String args[]) {
@@ -173,8 +171,6 @@ public class PlayGrains extends JApplet {
 
             // Start synthesizer using default stereo output at 44100 Hz.
             synth.start();
-            // Start lineOut so it can pull data from other units.
-            lineOut.start();
 
             if (useRecorder) {
                 grainFarm.output.connect(0, recorder.getInput(), 0);

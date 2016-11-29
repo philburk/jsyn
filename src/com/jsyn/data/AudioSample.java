@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,13 +20,13 @@ import java.util.ArrayList;
 
 /**
  * Base class for FloatSample and ShortSample.
- * 
+ *
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public abstract class AudioSample extends SequentialDataCommon {
     protected int numFrames;
-    protected int channelsPerFrame;
-    private double frameRate;
+    protected int channelsPerFrame = 1;
+    private double frameRate = 44100.0;
     private double pitch;
     private ArrayList<SampleMarker> markers;
 
@@ -61,7 +61,7 @@ public abstract class AudioSample extends SequentialDataCommon {
 
     /**
      * Set the recorded pitch as a fractional MIDI semitone value where 60 is Middle C.
-     * 
+     *
      * @param pitch
      */
     public void setPitch(double pitch) {
@@ -89,7 +89,7 @@ public abstract class AudioSample extends SequentialDataCommon {
     /**
      * Add a marker that will be stored sorted by position. This is normally used internally by the
      * SampleLoader.
-     * 
+     *
      * @param marker
      */
     public void addMarker(SampleMarker marker) {
