@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,12 +31,15 @@ import javax.swing.JRadioButton;
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.scope.AudioScope;
+import com.jsyn.scope.AudioScopeProbe;
+import com.jsyn.swing.DoubleBoundedRangeSlider;
 import com.jsyn.swing.JAppletFrame;
 import com.jsyn.swing.PortControllerFactory;
 import com.jsyn.unitgen.ImpulseOscillator;
 import com.jsyn.unitgen.ImpulseOscillatorBL;
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.LinearRamp;
+import com.jsyn.unitgen.MorphingOscillatorBL;
 import com.jsyn.unitgen.Multiply;
 import com.jsyn.unitgen.PulseOscillator;
 import com.jsyn.unitgen.PulseOscillatorBL;
@@ -51,9 +54,9 @@ import com.jsyn.unitgen.TriangleOscillator;
 import com.jsyn.unitgen.UnitOscillator;
 
 /**
- * Display each oscillators waveform using the AudioScope. This is a reimplementation of the
+ * Display each oscillator's waveform using the AudioScope. This is a re-implementation of the
  * TJ_SeeOsc Applet from the old API.
- * 
+ *
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class SeeOscillators extends JApplet {
@@ -66,6 +69,10 @@ public class SeeOscillators extends JApplet {
     private Multiply oscGain;
     private ButtonGroup buttonGroup;
     private LinearRamp freqRamp;
+    private LinearRamp widthRamp;
+    private LinearRamp shapeRamp;
+    private DoubleBoundedRangeSlider widthSlider;
+    private DoubleBoundedRangeSlider shapeSlider;
 
     /* Can be run as either an application or as an applet. */
     public static void main(String args[]) {
@@ -83,11 +90,13 @@ public class SeeOscillators extends JApplet {
         add(BorderLayout.NORTH, new JLabel("Show Oscillators in an AudioScope"));
 
         scope = new AudioScope(synth);
-        scope.addProbe(oscGain.output);
+        AudioScopeProbe probe = scope.addProbe(oscGain.output);
+        probe.setAutoScaleEnabled(false);
+        probe.setVerticalScale(1.1);
         scope.setTriggerMode(AudioScope.TriggerMode.NORMAL);
         // scope.getModel().getTriggerModel().getLevelModel().setDoubleValue( 0.0001 );
         // Turn off the gain and trigger control GUI.
-        scope.getView().setShowControls(false);
+        scope.getView().setControlsVisible(false);
         scope.start();
         add(BorderLayout.CENTER, scope.getView());
 
@@ -101,6 +110,10 @@ public class SeeOscillators extends JApplet {
 
         southPanel.add(PortControllerFactory.createExponentialPortSlider(freqRamp.input));
         southPanel.add(PortControllerFactory.createExponentialPortSlider(oscGain.inputB));
+        southPanel.add(widthSlider = PortControllerFactory.createPortSlider(widthRamp.input));
+        widthSlider.setEnabled(false);
+        southPanel.add(shapeSlider = PortControllerFactory.createPortSlider(shapeRamp.input));
+        shapeSlider.setEnabled(false);
 
         oscPanel.validate();
         validate();
@@ -121,10 +134,21 @@ public class SeeOscillators extends JApplet {
         freqRamp.input.setName("Frequency");
         freqRamp.time.set(0.1);
 
+        synth.add(widthRamp = new LinearRamp());
+        widthRamp.input.setup(-1.0, 0.0, 1.0);
+        widthRamp.input.setName("Width");
+        widthRamp.time.set(0.1);
+
+        synth.add(shapeRamp = new LinearRamp());
+        shapeRamp.input.setup(-1.0, 0.0, 1.0);
+        shapeRamp.input.setName("Shape");
+        shapeRamp.time.set(0.1);
+
         // Add an output so we can hear the oscillators.
         synth.add(lineOut = new LineOut());
 
-        oscGain.output.connect(lineOut.input);
+        oscGain.output.connect(0, lineOut.input, 0);
+        oscGain.output.connect(0, lineOut.input, 1);
 
         setupGUI();
 
@@ -141,6 +165,7 @@ public class SeeOscillators extends JApplet {
         addOscillator(new SquareOscillatorBL(), "SquareBL");
         addOscillator(new PulseOscillator(), "Pulse");
         addOscillator(new PulseOscillatorBL(), "PulseBL");
+        addOscillator(new MorphingOscillatorBL(), "MorphBL");
         addOscillator(new ImpulseOscillator(), "Impulse");
         addOscillator(new ImpulseOscillatorBL(), "ImpulseBL");
 
@@ -159,6 +184,15 @@ public class SeeOscillators extends JApplet {
         oscillators.add(osc);
         synth.add(osc);
         freqRamp.output.connect(osc.frequency);
+        if (osc instanceof PulseOscillatorBL) {
+            widthRamp.output.connect(((PulseOscillatorBL)osc).width);
+        }
+        if (osc instanceof PulseOscillator) {
+            widthRamp.output.connect(((PulseOscillator)osc).width);
+        }
+        if (osc instanceof MorphingOscillatorBL) {
+            shapeRamp.output.connect(((MorphingOscillatorBL)osc).shape);
+        }
         osc.amplitude.set(1.0);
         JRadioButton checkBox = new JRadioButton(label);
         buttonGroup.add(checkBox);
@@ -169,6 +203,9 @@ public class SeeOscillators extends JApplet {
                 oscGain.inputA.disconnectAll(0);
                 // Connect this one.
                 osc.output.connect(oscGain.inputA);
+                widthSlider.setEnabled(osc instanceof PulseOscillator
+                        || osc instanceof PulseOscillatorBL);
+                shapeSlider.setEnabled(osc instanceof MorphingOscillatorBL);
             }
         });
         oscPanel.add(checkBox);

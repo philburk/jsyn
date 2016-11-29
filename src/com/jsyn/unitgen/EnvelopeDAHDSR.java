@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +30,7 @@ import com.jsyn.ports.UnitOutputPort;
  * exponential Release will never reach 0.0. But when it reaches -96 dB the DAHDSR just sets its
  * output to 0.0 and stops. There is an example program in the ZIP archive called HearDAHDSR. It
  * drives a DAHDSR with a square wave.
- * 
+ *
  * @author Phil Burk (C) 2010 Mobileer Inc
  * @see SegmentedEnvelope
  */

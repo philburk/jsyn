@@ -222,13 +222,6 @@ public class SynthesisEngine implements Synthesizer {
         this.frameRate = frameRate;
         this.framePeriod = 1.0 / frameRate;
 
-        // Set rate for any units that have already been added.
-        for (UnitGenerator ugen : allUnitList) {
-            ugen.setFrameRate(frameRate);
-        }
-
-        // this.numInputChannels = numInputChannels;
-        // this.numOutputChannels = numOutputChannels;
         setupAudioBuffers(numInputChannels, numOutputChannels);
 
         logger.info("Pure Java JSyn from www.softsynth.com, rate = " + frameRate + ", "
@@ -652,9 +645,6 @@ public class SynthesisEngine implements Synthesizer {
     public void add(UnitGenerator ugen) {
         ugen.setSynthesisEngine(this);
         allUnitList.add(ugen);
-        if (frameRate > 0) {
-            ugen.setFrameRate(frameRate);
-        }
     }
 
     @Override

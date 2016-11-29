@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,15 +23,15 @@ import com.softsynth.shared.time.TimeStamp;
 
 /**
  * A port that is used to pass values into a UnitGenerator.
- * 
+ *
  * @author Phil Burk 2009 Mobileer Inc
  */
 public class UnitInputPort extends UnitBlockPort implements ConnectableInput, SettablePort {
     private double minimum = 0.0;
     private double maximum = 1.0;
     private double defaultValue = 0.0;
-
     private double[] setValues;
+    private boolean valueAdded = false;
 
     /**
      * @param numParts typically 1, use 2 for stereo ports
@@ -69,7 +69,7 @@ public class UnitInputPort extends UnitBlockPort implements ConnectableInput, Se
 
     /**
      * This is used internally by the SynthesisEngine to execute units based on their connections.
-     * 
+     *
      * @param frameCount
      * @param start
      * @param limit
@@ -128,7 +128,7 @@ public class UnitInputPort extends UnitBlockPort implements ConnectableInput, Se
 
     /**
      * Value of a port based on the set() calls. Not affected by connected ports.
-     * 
+     *
      * @param partNum
      * @return value as set
      */
@@ -144,7 +144,7 @@ public class UnitInputPort extends UnitBlockPort implements ConnectableInput, Se
     /**
      * The minimum and maximum are only used when setting up knobs or other control systems. The
      * internal values are not clipped to this range.
-     * 
+     *
      * @param maximum
      */
     public void setMaximum(double maximum) {
@@ -170,7 +170,7 @@ public class UnitInputPort extends UnitBlockPort implements ConnectableInput, Se
     /**
      * Convenience function for setting limits on a port. These limits are recommended values when
      * setting up a GUI. It is possible to set a port to a value outside these limits.
-     * 
+     *
      * @param minimum
      * @param value default value, will be clipped to min/max
      * @param maximum
@@ -185,6 +185,25 @@ public class UnitInputPort extends UnitBlockPort implements ConnectableInput, Se
     // Grab min, max, default from another port.
     public void setup(UnitInputPort other) {
         setup(other.getMinimum(), other.getDefault(), other.getMaximum());
+    }
+
+    public boolean isValueAdded() {
+        return valueAdded;
+    }
+
+    /**
+     * If set false then the set() value will be ignored when other ports are connected to this port.
+     * The sum of the connected port values will be used instead.
+     *
+     * If set true then the set() value will be added to the sum of the connected port values.
+     * This is useful when you want to modulate the set value.
+     *
+     * The default is false.
+     *
+     * @param valueAdded
+     */
+    public void setValueAdded(boolean valueAdded) {
+        this.valueAdded = valueAdded;
     }
 
     public void connect(int thisPartNum, UnitOutputPort otherPort, int otherPartNum,

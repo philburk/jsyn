@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,7 +48,7 @@ import com.jsyn.unitgen.UnitOscillator;
 
 /**
  * Play a sawtooth through a 4-pole filter.
- * 
+ *
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class HearMoogFilter extends JApplet {
@@ -58,11 +58,12 @@ public class HearMoogFilter extends JApplet {
     private FilterLowPass filterBiquad;
     private LinearRamp rampCutoff;
     private PassThrough tieQ;
+    private PassThrough tieCutoff;
     private PassThrough mixer;
     private LineOut lineOut;
 
     private AudioScope scope;
-    private AudioScopeProbe moogProbe;
+    private boolean useCutoffRamp = false;
 
     @Override
     public void init() {
@@ -70,6 +71,7 @@ public class HearMoogFilter extends JApplet {
         synth.add(oscillator = new SawtoothOscillatorBL());
         synth.add(rampCutoff = new LinearRamp());
         synth.add(tieQ = new PassThrough());
+        synth.add(tieCutoff = new PassThrough());
         synth.add(filterMoog = new FilterFourPoles());
         synth.add(filterBiquad = new FilterLowPass());
         synth.add(mixer = new PassThrough());
@@ -77,9 +79,14 @@ public class HearMoogFilter extends JApplet {
 
         oscillator.output.connect(filterMoog.input);
         oscillator.output.connect(filterBiquad.input);
-        rampCutoff.output.connect(filterMoog.frequency);
-        rampCutoff.output.connect(filterBiquad.frequency);
-        rampCutoff.time.set(0.050);
+        if (useCutoffRamp) {
+            rampCutoff.output.connect(filterMoog.frequency);
+            rampCutoff.output.connect(filterBiquad.frequency);
+            rampCutoff.time.set(0.000);
+        } else {
+            tieCutoff.output.connect(filterMoog.frequency);
+            tieCutoff.output.connect(filterBiquad.frequency);
+        }
         tieQ.output.connect(filterMoog.Q);
         tieQ.output.connect(filterBiquad.Q);
         filterMoog.output.connect(mixer.input);
@@ -89,7 +96,8 @@ public class HearMoogFilter extends JApplet {
         filterBiquad.amplitude.set(0.1);
         oscillator.frequency.setup(50.0, 130.0, 3000.0);
         oscillator.amplitude.setup(0.0, 0.336, 1.0);
-        rampCutoff.input.setup(50.0, 400.0, 4000.0);
+        rampCutoff.input.setup(filterMoog.frequency);
+        tieCutoff.input.setup(filterMoog.frequency);
         tieQ.input.setup(0.1, 0.7, 10.0);
         setupGUI();
     }
@@ -144,14 +152,18 @@ public class HearMoogFilter extends JApplet {
         knobPanel.add(setupPortKnob(oscillator.frequency, "OscFreq"));
         knobPanel.add(setupPortKnob(oscillator.amplitude, "OscAmp"));
 
-        knobPanel.add(setupPortKnob(rampCutoff.input, "Cutoff"));
+        if (useCutoffRamp) {
+            knobPanel.add(setupPortKnob(rampCutoff.input, "Cutoff"));
+        } else {
+            knobPanel.add(setupPortKnob(tieCutoff.input, "Cutoff"));
+        }
         knobPanel.add(setupPortKnob(tieQ.input, "Q"));
         rackPanel.add(knobPanel);
         add(rackPanel, BorderLayout.SOUTH);
 
         scope = new AudioScope(synth);
         scope.addProbe(oscillator.output);
-        moogProbe = scope.addProbe(filterMoog.output);
+        scope.addProbe(filterMoog.output);
         scope.addProbe(filterBiquad.output);
         scope.setTriggerMode(AudioScope.TriggerMode.NORMAL);
         scope.getView().setControlsVisible(false);

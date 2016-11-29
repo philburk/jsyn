@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,33 +26,26 @@ import javax.sound.midi.Receiver;
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.devices.javasound.MidiDeviceTools;
-import com.jsyn.instruments.SubtractiveSynthVoice;
-import com.jsyn.midi.MessageParser;
-import com.jsyn.midi.MidiConstants;
+import com.jsyn.instruments.DualOscillatorSynthVoice;
+import com.jsyn.midi.MidiSynthesizer;
 import com.jsyn.unitgen.LineOut;
-import com.jsyn.unitgen.PowerOfTwo;
-import com.jsyn.unitgen.SineOscillator;
-import com.jsyn.unitgen.UnitOscillator;
-import com.jsyn.util.VoiceAllocator;
-import com.softsynth.shared.time.TimeStamp;
+import com.jsyn.util.MultiChannelSynthesizer;
+import com.jsyn.util.VoiceDescription;
 
 /**
  * Connect a USB MIDI Keyboard to the internal MIDI Synthesizer using JavaSound.
- * 
+ *
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class UseMidiKeyboard {
-    private static final int MAX_VOICES = 8;
-    private Synthesizer synth;
-    private VoiceAllocator allocator;
-    private LineOut lineOut;
-    private double vibratoRate = 5.0;
-    private double vibratoDepth = 0.0;
+    private static final int NUM_CHANNELS = 16;
+    private static final int VOICES_PER_CHANNEL = 3;
 
-    private UnitOscillator lfo;
-    private PowerOfTwo powerOfTwo;
-    private MessageParser messageParser;
-    private SubtractiveSynthVoice[] voices;
+    private Synthesizer synth;
+    private LineOut lineOut;
+    private MidiSynthesizer midiSynthesizer;
+    private VoiceDescription voiceDescription;
+    private MultiChannelSynthesizer multiSynth;
 
     public static void main(String[] args) {
         UseMidiKeyboard app = new UseMidiKeyboard();
@@ -77,14 +70,12 @@ public class UseMidiKeyboard {
         @Override
         public void send(MidiMessage message, long timeStamp) {
             byte[] bytes = message.getMessage();
-            messageParser.parse(bytes);
+            midiSynthesizer.onReceive(bytes, 0, bytes.length);
         }
     }
 
     public int test() throws MidiUnavailableException, IOException, InterruptedException {
         setupSynth();
-
-        messageParser = new MyParser();
 
         int result = 2;
         MidiDevice keyboard = MidiDeviceTools.findKeyboard();
@@ -104,94 +95,26 @@ public class UseMidiKeyboard {
         return result;
     }
 
-    class MyParser extends MessageParser {
-        @Override
-        public void controlChange(int channel, int index, int value) {
-            // Mod Wheel
-            if (index == 1) {
-                vibratoDepth = 0.1 * value / 128.0;
-                // System.out.println( "vibratoDepth = " + vibratoDepth );
-                lfo.amplitude.set(vibratoDepth);
-            }
-            // 102 is the index of the first knob on my Axiom 25
-            else if (index == 102) {
-                final double bump = 0.95;
-                if (value < 64) {
-                    vibratoRate *= bump;
-                } else {
-                    vibratoRate *= 1.0 / bump;
-                }
-                System.out.println("vibratoRate = " + vibratoRate);
-                lfo.frequency.set(vibratoRate);
-            }
-
-        }
-
-        @Override
-        public void noteOff(int channel, int noteNumber, int velocity) {
-            allocator.noteOff(noteNumber, synth.createTimeStamp());
-        }
-
-        @Override
-        public void noteOn(int channel, int noteNumber, int velocity) {
-            double frequency = convertPitchToFrequency(noteNumber);
-            double amplitude = velocity / (4 * 128.0);
-            TimeStamp timeStamp = synth.createTimeStamp();
-            allocator.noteOn(noteNumber, frequency, amplitude, timeStamp);
-        }
-
-        @Override
-        public void pitchBend(int channel, int bend) {
-            double fraction = (bend - MidiConstants.PITCH_BEND_CENTER)
-                    / ((double) MidiConstants.PITCH_BEND_CENTER);
-            System.out.println("bend = " + bend + ", fraction = " + fraction);
-        }
-    }
-
-    /**
-     * Calculate frequency in Hertz based on MIDI pitch. Middle C is 60.0. You can use fractional
-     * pitches so 60.5 would give you a pitch half way between C and C#.
-     */
-    double convertPitchToFrequency(double pitch) {
-        final double concertA = 440.0;
-        return concertA * Math.pow(2.0, ((pitch - 69) * (1.0 / 12.0)));
-    }
 
     private void setupSynth() {
         synth = JSyn.createSynthesizer();
 
-        // Add an output.
+        voiceDescription = DualOscillatorSynthVoice.getVoiceDescription();
+//        voiceDescription = SubtractiveSynthVoice.getVoiceDescription();
+
+        multiSynth = new MultiChannelSynthesizer();
+        final int startChannel = 0;
+        multiSynth.setup(synth, startChannel, NUM_CHANNELS, VOICES_PER_CHANNEL, voiceDescription);
+        midiSynthesizer = new MidiSynthesizer(multiSynth);
+
+        // Create a LineOut for the entire synthesizer.
         synth.add(lineOut = new LineOut());
-
-        synth.add(powerOfTwo = new PowerOfTwo());
-        synth.add(lfo = new SineOscillator());
-        // Sums pitch modulation.
-        lfo.output.connect(powerOfTwo.input);
-        lfo.amplitude.set(vibratoDepth);
-        lfo.frequency.set(vibratoRate);
-
-        voices = new SubtractiveSynthVoice[MAX_VOICES];
-        for (int i = 0; i < MAX_VOICES; i++) {
-            SubtractiveSynthVoice voice = new SubtractiveSynthVoice();
-            synth.add(voice);
-            powerOfTwo.output.connect(voice.pitchModulation);
-            voice.getOutput().connect(0, lineOut.input, 0);
-            voice.getOutput().connect(0, lineOut.input, 1);
-            voices[i] = voice;
-        }
-        allocator = new VoiceAllocator(voices);
+        multiSynth.getOutput().connect(0,lineOut.input, 0);
+        multiSynth.getOutput().connect(1,lineOut.input, 1);
 
         // Start synthesizer using default stereo output at 44100 Hz.
         synth.start();
-        // We only need to start the LineOut. It will pull data from the
-        // oscillator.
         lineOut.start();
-
-        // Get synthesizer time in seconds.
-        double timeNow = synth.getCurrentTime();
-
-        // Advance to a near future time so we have a clean start.
-        double time = timeNow + 0.5;
 
     }
 

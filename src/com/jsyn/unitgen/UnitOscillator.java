@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,7 @@ import com.softsynth.shared.time.TimeStamp;
 
 /**
  * Base class for all oscillators.
- * 
+ *
  * @author Phil Burk (C) 2009 Mobileer Inc
  */
 public abstract class UnitOscillator extends UnitGenerator implements UnitVoice {
@@ -34,15 +34,15 @@ public abstract class UnitOscillator extends UnitGenerator implements UnitVoice 
     public UnitOutputPort output;
 
     public static final double DEFAULT_FREQUENCY = 440.0;
-    public static final double DEFAULT_AMPLITUDE = 0x7FFF / (double) 0x8000;
+    public static final double DEFAULT_AMPLITUDE = 1.0;
 
     /* Define Unit Ports used by connect() and set(). */
     public UnitOscillator() {
-        addPort(frequency = new UnitInputPort("Frequency"));
+        addPort(frequency = new UnitInputPort(PORT_NAME_FREQUENCY));
         frequency.setup(40.0, DEFAULT_FREQUENCY, 8000.0);
-        addPort(amplitude = new UnitInputPort("Amplitude", DEFAULT_AMPLITUDE));
-        addPort(phase = new UnitVariablePort("Phase"));
-        addPort(output = new UnitOutputPort("Output"));
+        addPort(amplitude = new UnitInputPort(PORT_NAME_AMPLITUDE, DEFAULT_AMPLITUDE));
+        addPort(phase = new UnitVariablePort(PORT_NAME_PHASE));
+        addPort(output = new UnitOutputPort(PORT_NAME_OUTPUT));
     }
 
     /**

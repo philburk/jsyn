@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +22,7 @@ import javax.swing.JApplet;
 
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
+import com.jsyn.instruments.DualOscillatorSynthVoice;
 import com.jsyn.instruments.SubtractiveSynthVoice;
 import com.jsyn.scope.AudioScope;
 import com.jsyn.swing.JAppletFrame;
@@ -31,7 +32,7 @@ import com.jsyn.unitgen.UnitSource;
 
 /**
  * Listen to a circuit while tweaking it knobs. Show output in a scope.
- * 
+ *
  * @author Phil Burk (C) 2012 Mobileer Inc
  */
 public class CircuitTester extends JApplet {
@@ -63,7 +64,7 @@ public class CircuitTester extends JApplet {
         // Use a scope to see the output.
         scope = new AudioScope(synth);
         scope.addProbe(unitSource.getOutput());
-        scope.setTriggerMode(AudioScope.TriggerMode.NORMAL);
+        scope.setTriggerMode(AudioScope.TriggerMode.AUTO);
         scope.getView().setControlsVisible(false);
         add(BorderLayout.SOUTH, scope.getView());
 
@@ -72,13 +73,13 @@ public class CircuitTester extends JApplet {
 
     /**
      * Override this to test your own circuits.
-     * 
+     *
      * @return
      */
     public UnitSource createUnitSource() {
         //return new SampleHoldNoteBlaster();
         //return new com.syntona.exported.FMVoice();
-        return new SubtractiveSynthVoice();
+        return new DualOscillatorSynthVoice();
         //return new WindCircuit();
         //return new WhiteNoise();
         //return new BrownNoise();

@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@ package com.jsyn.unitgen;
 import junit.framework.TestCase;
 
 import com.jsyn.engine.SynthesisEngine;
+import com.softsynth.math.AudioMath;
 
 /**
  * @author Phil Burk, (C) 2009 Mobileer Inc
@@ -386,6 +387,26 @@ public class TestMath extends TestCase {
             powerOfTwo.input.setValueInternal(in);
             powerOfTwo.generate();
             assertEquals("PowerOfTwo", Math.pow(2.0, in), powerOfTwo.output.getValue(), 0.001);
+        }
+    }
+    public void testPitchToFrequency() {
+        PitchToFrequency ugen = new PitchToFrequency();
+        ugen.setSynthesisEngine(synthesisEngine);
+        final double smallValue = -1.5308084989341915E-17;
+        double values[] = {
+                49.0, 49.5, 50.0 + smallValue,
+                60.0 -smallValue,
+                79.2, 12.9, 118.973
+        };
+        // Sanity check AudioMath
+        assertEquals("PitchToFrequency", 440.0,  AudioMath.pitchToFrequency(69), 0.001);
+        assertEquals("PitchToFrequency", 660.0,  AudioMath.pitchToFrequency(69+7.02), 0.1);
+
+        for (double pitch : values) {
+            ugen.input.setValueInternal(pitch);
+            ugen.generate();
+            assertEquals("PitchToFrequency", AudioMath.pitchToFrequency(pitch),
+                    ugen.output.getValue(), 0.001);
         }
     }
 

@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,7 +29,7 @@ import com.softsynth.shared.time.TimeStamp;
 
 /**
  * The API for this class is likely to change. Please comment on its usefulness.
- * 
+ *
  * @author Phil Burk (C) 2011 Mobileer Inc
  */
 
@@ -56,6 +56,7 @@ public class PolyphonicInstrument extends Circuit implements UnitSource, Instrum
 
         addPort(amplitude = mixer.inputB, "Amplitude");
         amplitude.setup(0.0001, 0.4, 2.0);
+        exportAllInputPorts();
     }
 
     /**
@@ -81,11 +82,11 @@ public class PolyphonicInstrument extends Circuit implements UnitSource, Instrum
     /**
      * Create a UnitInputPort for the circuit that is connected to the named port on each voice
      * through a PassThrough unit. This allows you to control all of the voices at once.
-     * 
+     *
      * @param portName
      * @see exportAllInputPorts
      */
-    public void exportNamedInputPort(String portName) {
+    void exportNamedInputPort(String portName) {
         UnitInputPort voicePort = null;
         PassThrough fanout = new PassThrough();
         for (UnitVoice voice : voices) {
@@ -103,7 +104,6 @@ public class PolyphonicInstrument extends Circuit implements UnitSource, Instrum
         return mixer.output;
     }
 
-    // FIXME - no timestamp on UnitVoice
     @Override
     public void usePreset(int presetIndex) {
         usePreset(presetIndex, getSynthesisEngine().createTimeStamp());
