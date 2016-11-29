@@ -42,6 +42,14 @@ public class LineOut extends UnitGenerator implements UnitSink {
         }
     }
 
+    /**
+     * This unit won't do anything unless you start() it.
+     */
+    @Override
+    public boolean isStartRequired() {
+        return true;
+    }
+
     @Override
     public UnitInputPort getInput() {
         return input;

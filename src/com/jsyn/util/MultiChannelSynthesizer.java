@@ -22,9 +22,9 @@ import com.jsyn.midi.MidiConstants;
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.ports.UnitOutputPort;
 import com.jsyn.unitgen.ExponentialRamp;
+import com.jsyn.unitgen.LinearRamp;
 import com.jsyn.unitgen.Multiply;
 import com.jsyn.unitgen.Pan;
-import com.jsyn.unitgen.LinearRamp;
 import com.jsyn.unitgen.PowerOfTwo;
 import com.jsyn.unitgen.SineOscillator;
 import com.jsyn.unitgen.TwoInDualOut;
@@ -53,10 +53,27 @@ public class MultiChannelSynthesizer {
     private TwoInDualOut outputUnit;
     private ChannelContext[] channels;
 
-    private class ChannelContext {
+    private class ChannelGroupContext {
         private VoiceDescription voiceDescription;
         private UnitVoice[] voices;
         private VoiceAllocator allocator;
+
+        ChannelGroupContext(int numVoices, VoiceDescription voiceDescription) {
+            this.voiceDescription = voiceDescription;
+
+            voices = new UnitVoice[numVoices];
+            for (int i = 0; i < numVoices; i++) {
+                UnitVoice voice = voiceDescription.createUnitVoice();
+                UnitGenerator ugen = voice.getUnitGenerator();
+                synth.add(ugen);
+                voices[i] = voice;
+
+            }
+            allocator = new VoiceAllocator(voices);
+        }
+    }
+
+    private class ChannelContext {
         private UnitOscillator lfo;
         private PowerOfTwo pitchToLinear;
         private LinearRamp timbreRamp;
@@ -65,12 +82,20 @@ public class MultiChannelSynthesizer {
         private Multiply volumeMultiplier;
         private Pan panner;
         private double vibratoRate = 5.0;
-        private double bendRangeOctaves = 24.0 / 12.0;
+        private double bendRangeOctaves = 2.0 / 12.0;
 //        private double bendRangeOctaves = 0.0 / 12.0;
         private int presetIndex;
+        private ChannelGroupContext groupContext;
+        VoiceOperation voiceOperation = new VoiceOperation() {
+            @Override
+            public void operate (UnitVoice voice) {
+                voice.usePreset(presetIndex);
+                connectVoice(voice);
+            }
+        };
 
-        void setup(int numVoices, VoiceDescription voiceDescription) {
-            this.voiceDescription = voiceDescription;
+        void setup(ChannelGroupContext groupContext) {
+            this.groupContext = groupContext;
             synth.add(pitchToLinear = new PowerOfTwo());
             synth.add(lfo = new SineOscillator()); // TODO use a MorphingOscillator or switch
                                                    // between S&H etc.
@@ -91,60 +116,57 @@ public class MultiChannelSynthesizer {
             lfo.amplitude.set(0.0);
             lfo.frequency.set(vibratoRate);
 
-            voices = new UnitVoice[numVoices];
-            for (int i = 0; i < numVoices; i++) {
-                UnitVoice voice = voiceDescription.createUnitVoice();
-                UnitGenerator ugen = voice.getUnitGenerator();
-                synth.add(ugen);
-
-                // Hook up some channel controllers to standard ports on the voice.
-                UnitInputPort freqMod = (UnitInputPort) ugen
-                        .getPortByName(UnitGenerator.PORT_NAME_FREQUENCY_SCALER);
-                if (freqMod != null) {
-                    pitchToLinear.output.connect(freqMod);
-                }
-                UnitInputPort timbrePort = (UnitInputPort) ugen
-                        .getPortByName(UnitGenerator.PORT_NAME_TIMBRE);
-                if (timbrePort != null) {
-                    timbreRamp.output.connect(timbrePort);
-                    timbreRamp.input.setup(timbrePort);
-                }
-                UnitInputPort pressurePort = (UnitInputPort) ugen
-                        .getPortByName(UnitGenerator.PORT_NAME_PRESSURE);
-                if (pressurePort != null) {
-                    pressureRamp.output.connect(pressurePort);
-                    pressureRamp.input.setup(pressurePort);
-                }
-                voice.getOutput().connect(volumeMultiplier.inputA); // mono mix all the voices
-                voices[i] = voice;
-            }
-
             volumeRamp.output.connect(volumeMultiplier.inputB);
             volumeMultiplier.output.connect(panner.input);
             panner.output.connect(0, outputUnit.inputA, 0); // Use MultiPassthrough
             panner.output.connect(1, outputUnit.inputB, 0);
 
-            allocator = new VoiceAllocator(voices);
+        }
+
+        private void connectVoice(UnitVoice voice) {
+            UnitGenerator ugen = voice.getUnitGenerator();
+            // Hook up some channel controllers to standard ports on the voice.
+            UnitInputPort freqMod = (UnitInputPort) ugen
+                    .getPortByName(UnitGenerator.PORT_NAME_FREQUENCY_SCALER);
+            if (freqMod != null) {
+                freqMod.disconnectAll();
+                pitchToLinear.output.connect(freqMod);
+            }
+            UnitInputPort timbrePort = (UnitInputPort) ugen
+                    .getPortByName(UnitGenerator.PORT_NAME_TIMBRE);
+            if (timbrePort != null) {
+                timbrePort.disconnectAll();
+                timbreRamp.output.connect(timbrePort);
+                timbreRamp.input.setup(timbrePort);
+            }
+            UnitInputPort pressurePort = (UnitInputPort) ugen
+                    .getPortByName(UnitGenerator.PORT_NAME_PRESSURE);
+            if (pressurePort != null) {
+                pressurePort.disconnectAll();
+                pressureRamp.output.connect(pressurePort);
+                pressureRamp.input.setup(pressurePort);
+            }
+            voice.getOutput().disconnectAll();
+            voice.getOutput().connect(volumeMultiplier.inputA); // mono mix all the voices
         }
 
         void programChange(int program) {
-            int programWrapped = program % voiceDescription.getPresetCount();
-            String name = voiceDescription.getPresetNames()[programWrapped];
-            System.out.println("Preset[" + program + "] = " + name);
+            int programWrapped = program % groupContext.voiceDescription.getPresetCount();
+            String name = groupContext.voiceDescription.getPresetNames()[programWrapped];
+            //System.out.println("Preset[" + program + "] = " + name);
             presetIndex = programWrapped;
         }
 
         void noteOff(int noteNumber, int velocity) {
-            allocator.noteOff(noteNumber, synth.createTimeStamp());
+            groupContext.allocator.noteOff(noteNumber, synth.createTimeStamp());
         }
 
         void noteOn(int noteNumber, int velocity) {
             double frequency = AudioMath.pitchToFrequency(noteNumber);
             double amplitude = velocity / (4 * 128.0);
             TimeStamp timeStamp = synth.createTimeStamp();
-            allocator.usePreset(presetIndex, timeStamp);
-            // System.out.println("noteOn(noteNumber) -> " + frequency + " Hz");
-            allocator.noteOn(noteNumber, frequency, amplitude, timeStamp);
+            //System.out.println("noteOn(noteNumber) -> " + frequency + " Hz");
+            groupContext.allocator.noteOn(noteNumber, frequency, amplitude, voiceOperation, timeStamp);
         }
 
         public void setPitchBend(double offset) {
@@ -223,8 +245,10 @@ public class MultiChannelSynthesizer {
         if (outputUnit == null) {
             synth.add(outputUnit = new TwoInDualOut());
         }
+        ChannelGroupContext groupContext = new ChannelGroupContext(voicesPerChannel,
+                voiceDescription);
         for (int i = 0; i < numChannels; i++) {
-            channels[startChannel + i].setup(voicesPerChannel, voiceDescription);
+            channels[startChannel + i].setup(groupContext);
         }
     }
 
@@ -250,6 +274,7 @@ public class MultiChannelSynthesizer {
      * @param offset ranges from -1.0 to +1.0
      */
     public void setPitchBend(int channel, double offset) {
+        //System.out.println("setPitchBend[" + channel + "] = " + offset);
         ChannelContext channelContext = channels[channel];
         channelContext.setPitchBend(offset);
     }
@@ -289,7 +314,7 @@ public class MultiChannelSynthesizer {
      * Pan from left to right.
      *
      * @param channel
-     * @param offset ranges from -1.0 to +1.0
+     * @param pan ranges from -1.0 to +1.0
      */
     public void setPan(int channel, double pan) {
         ChannelContext channelContext = channels[channel];
