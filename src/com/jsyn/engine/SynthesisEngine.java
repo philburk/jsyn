@@ -319,8 +319,11 @@ public class SynthesisEngine implements Synthesizer {
                 }
                 loadAnalyzer = new LoadAnalyzer();
                 while (go) {
+                    boolean throttled = false;
                     if (audioInputStream != null) {
+                        // This call will block when the input is empty.
                         audioInputStream.read(inputBuffer.interleavedBuffer);
+                        throttled = true;
                     }
 
                     loadAnalyzer.start();
@@ -331,6 +334,10 @@ public class SynthesisEngine implements Synthesizer {
                     if (audioOutputStream != null) {
                         // This call will block when the output is full.
                         audioOutputStream.write(outputBuffer.interleavedBuffer);
+                        throttled = true;
+                    }
+                    if (!throttled && isRealTime()) {
+                        Thread.sleep(2); // avoid spinning and eating up CPU
                     }
                 }
 
