@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@ import com.jsyn.exceptions.ChannelMismatchException;
 /**
  * Evaluate a Function by interpolating between the values in a table. This can be used for
  * wavetable lookup or waveshaping.
- * 
+ *
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class DoubleTable implements Function {
@@ -60,6 +60,10 @@ public class DoubleTable implements Function {
         table = new double[numFrames];
     }
 
+    public int length() {
+        return table.length;
+    }
+
     public void write(double[] data) {
         write(0, data, 0, data.length);
     }
@@ -79,7 +83,7 @@ public class DoubleTable implements Function {
     /**
      * Treat the double array as a lookup table with a domain of -1.0 to 1.0. If the input is out of
      * range then the output will clip to the end values.
-     * 
+     *
      * @param input
      * @return interpolated value from table
      */
