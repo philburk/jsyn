@@ -38,26 +38,6 @@ public class PlaySampleWaveShaper {
     private Synthesizer synth;
     private LineOut lineOut;
 
-    static class FloatSampleTable implements Function {
-        private FloatSample mSample;
-
-        FloatSampleTable(FloatSample sample) {
-            mSample = sample;
-        }
-
-        @Override
-        public double evaluate(double input) {
-            // Input ranges from -1 to +1
-            // Map it to range of sample with guard point.
-            double normalizedInput = (input + 1.0) * 0.5;
-            // Clip so it does not go out of range of the sample.
-            if (normalizedInput < 0.0) normalizedInput = 0.0;
-            else if (normalizedInput > 1.0) normalizedInput = 1.0;
-            double fractionalIndex = (mSample.getNumFrames() - 1.01) * normalizedInput;
-            return mSample.interpolate(fractionalIndex);
-        }
-    }
-
     private void test() {
 
         URL sampleFile;
@@ -89,16 +69,14 @@ public class PlaySampleWaveShaper {
                 throw new RuntimeException("Can only use mono samples.");
             }
 
-            FloatSampleTable sampleTable = new FloatSampleTable(sample);
-
-            System.out.println("eval -1.1 = " + sampleTable.evaluate(-1.1));
-            System.out.println("eval -1.0 = " + sampleTable.evaluate(-1.0));
-            System.out.println("eval 0.3 = " + sampleTable.evaluate(0.3));
-            System.out.println("eval 1.0 = " + sampleTable.evaluate(1.0));
-            System.out.println("eval 1.1 = " + sampleTable.evaluate(1.1));
+            System.out.println("eval -1.1 = " + sample.evaluate(-1.1));
+            System.out.println("eval -1.0 = " + sample.evaluate(-1.0));
+            System.out.println("eval 0.3 = " + sample.evaluate(0.3));
+            System.out.println("eval 1.0 = " + sample.evaluate(1.0));
+            System.out.println("eval 1.1 = " + sample.evaluate(1.1));
 
             FunctionEvaluator shaper = new FunctionEvaluator();
-            shaper.function.set(sampleTable);
+            shaper.function.set(sample);
             synth.add(shaper);
 
             shaper.output.connect(0, lineOut.input, 0);
