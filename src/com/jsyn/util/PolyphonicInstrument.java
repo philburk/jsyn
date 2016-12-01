@@ -86,7 +86,7 @@ public class PolyphonicInstrument extends Circuit implements UnitSource, Instrum
      * @param portName
      * @see exportAllInputPorts
      */
-    void exportNamedInputPort(String portName) {
+    public void exportNamedInputPort(String portName) {
         UnitInputPort voicePort = null;
         PassThrough fanout = new PassThrough();
         for (UnitVoice voice : voices) {

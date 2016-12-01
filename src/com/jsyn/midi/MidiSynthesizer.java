@@ -16,8 +16,28 @@
 
 package com.jsyn.midi;
 
+import com.jsyn.instruments.DualOscillatorSynthVoice;
 import com.jsyn.util.MultiChannelSynthesizer;
 
+/**
+ * Map MIDI messages into calls to a MultiChannelSynthesizer.
+ * Handles CONTROLLER_MOD_WHEEL, TIMBRE, VOLUME and PAN.
+ * Handles Bend Range RPN.
+ *
+ * <pre><code>
+    voiceDescription = DualOscillatorSynthVoice.getVoiceDescription();
+    multiSynth = new MultiChannelSynthesizer();
+    final int startChannel = 0;
+    multiSynth.setup(synth, startChannel, NUM_CHANNELS, VOICES_PER_CHANNEL, voiceDescription);
+    midiSynthesizer = new MidiSynthesizer(multiSynth);
+    // pass MIDI bytes
+    midiSynthesizer.onReceive(bytes, 0, bytes.length);
+    </code></pre>
+ *
+ * See the example UseMidiKeyboard.java
+ *
+ * @author Phil Burk (C) 2016 Mobileer Inc
+ */
 public class MidiSynthesizer extends MessageParser {
 
     private MultiChannelSynthesizer multiSynth;

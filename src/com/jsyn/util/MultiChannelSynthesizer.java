@@ -52,6 +52,8 @@ public class MultiChannelSynthesizer {
     private Synthesizer synth;
     private TwoInDualOut outputUnit;
     private ChannelContext[] channels;
+    private final static int MAX_VELOCITY = 127;
+    private double mMasterAmplitude = 0.25;
 
     private class ChannelGroupContext {
         private VoiceDescription voiceDescription;
@@ -83,7 +85,6 @@ public class MultiChannelSynthesizer {
         private Pan panner;
         private double vibratoRate = 5.0;
         private double bendRangeOctaves = 2.0 / 12.0;
-//        private double bendRangeOctaves = 0.0 / 12.0;
         private int presetIndex;
         private ChannelGroupContext groupContext;
         VoiceOperation voiceOperation = new VoiceOperation() {
@@ -120,7 +121,6 @@ public class MultiChannelSynthesizer {
             volumeMultiplier.output.connect(panner.input);
             panner.output.connect(0, outputUnit.inputA, 0); // Use MultiPassthrough
             panner.output.connect(1, outputUnit.inputB, 0);
-
         }
 
         private void connectVoice(UnitVoice voice) {
@@ -157,13 +157,12 @@ public class MultiChannelSynthesizer {
             presetIndex = programWrapped;
         }
 
-        void noteOff(int noteNumber, int velocity) {
+        void noteOff(int noteNumber, double amplitude) {
             groupContext.allocator.noteOff(noteNumber, synth.createTimeStamp());
         }
 
-        void noteOn(int noteNumber, int velocity) {
+        void noteOn(int noteNumber, double amplitude) {
             double frequency = AudioMath.pitchToFrequency(noteNumber);
-            double amplitude = velocity / (4 * 128.0);
             TimeStamp timeStamp = synth.createTimeStamp();
             //System.out.println("noteOn(noteNumber) -> " + frequency + " Hz");
             groupContext.allocator.noteOn(noteNumber, frequency, amplitude, voiceOperation, timeStamp);
@@ -257,14 +256,48 @@ public class MultiChannelSynthesizer {
         channelContext.programChange(program);
     }
 
+
+    /**
+     * Turn off a note.
+     * @param channel
+     * @param noteNumber
+     * @param velocity between 0 and 127, will be scaled by masterAmplitude
+     */
     public void noteOff(int channel, int noteNumber, int velocity) {
-        ChannelContext channelContext = channels[channel];
-        channelContext.noteOff(noteNumber, velocity);
+        double amplitude = velocity * (1.0 / MAX_VELOCITY);
+        noteOff(channel, noteNumber, amplitude);
     }
 
-    public void noteOn(int channel, int noteNumber, int velocity) {
+    /**
+     * Turn off a note.
+     * @param channel
+     * @param noteNumber
+     * @param amplitude between 0 and 1.0, will be scaled by masterAmplitude
+     */
+    public void noteOff(int channel, int noteNumber, double amplitude) {
         ChannelContext channelContext = channels[channel];
-        channelContext.noteOn(noteNumber, velocity);
+        channelContext.noteOff(noteNumber, amplitude * mMasterAmplitude);
+    }
+
+    /**
+     * Turn on a note.
+     * @param channel
+     * @param noteNumber
+     * @param velocity between 0 and 127, will be scaled by masterAmplitude
+     */
+    public void noteOn(int channel, int noteNumber, int velocity) {
+        double amplitude = velocity * (1.0 / MAX_VELOCITY);
+        noteOn(channel, noteNumber, amplitude);
+    }
+    /**
+     * Turn on a note.
+     * @param channel
+     * @param noteNumber
+     * @param amplitude between 0 and 1.0, will be scaled by masterAmplitude
+     */
+    public void noteOn(int channel, int noteNumber, double amplitude) {
+        ChannelContext channelContext = channels[channel];
+        channelContext.noteOn(noteNumber, amplitude * mMasterAmplitude);
     }
 
     /**
@@ -321,8 +354,21 @@ public class MultiChannelSynthesizer {
         channelContext.setPan(pan);
     }
 
+    /**
+     * @return stereo output port
+     */
     public UnitOutputPort getOutput() {
         return outputUnit.output;
     }
 
+    /**
+     * Set amplitude for a single voice when the velocity is 127.
+     * @param masterAmplitude
+     */
+    public void setMasterAmplitude(double masterAmplitude) {
+        mMasterAmplitude = masterAmplitude;
+    }
+    public double getMasterAmplitude() {
+        return mMasterAmplitude;
+    }
 }
