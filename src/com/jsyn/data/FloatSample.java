@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,7 @@ import com.jsyn.util.SampleLoader;
 /**
  * Store multi-channel floating point audio data in an interleaved buffer. The values are stored as
  * 32-bit floats. You can play samples using one of the readers, for example VariableRateMonoReader.
- * 
+ *
  * @author Phil Burk (C) 2010 Mobileer Inc
  * @see SampleLoader
  * @see FixedRateMonoReader
@@ -33,7 +33,7 @@ import com.jsyn.util.SampleLoader;
  * @see VariableRateMonoReader
  * @see VariableRateStereoReader
  */
-public class FloatSample extends AudioSample {
+public class FloatSample extends AudioSample implements Function {
     private float[] buffer;
 
     public FloatSample() {
@@ -59,7 +59,7 @@ public class FloatSample extends AudioSample {
     /**
      * Create an silent sample with enough memory to hold the audio data. The number of sample
      * numbers in the array will be numFrames*channelsPerFrame.
-     * 
+     *
      * @param numFrames number of sample groups. A stereo frame contains 2 samples.
      * @param channelsPerFrame 1 for mono, 2 for stereo
      */
@@ -70,7 +70,7 @@ public class FloatSample extends AudioSample {
     /**
      * Allocate memory to hold the audio data. The number of sample numbers in the array will be
      * numFrames*channelsPerFrame.
-     * 
+     *
      * @param numFrames number of sample groups. A stereo frame contains 2 samples.
      * @param channelsPerFrame 1 for mono, 2 for stereo
      */
@@ -83,7 +83,7 @@ public class FloatSample extends AudioSample {
 
     /**
      * Note that in a stereo sample, a frame has two values.
-     * 
+     *
      * @param startFrame index of frame in the sample
      * @param data data to be written
      * @param startIndex index of first value in array
@@ -97,7 +97,7 @@ public class FloatSample extends AudioSample {
 
     /**
      * Note that in a stereo sample, a frame has two values.
-     * 
+     *
      * @param startFrame index of frame in the sample
      * @param data array to receive the data from the sample
      * @param startIndex index of first location in array to start filling
@@ -112,7 +112,7 @@ public class FloatSample extends AudioSample {
     /**
      * Write the entire array to the sample. The sample data must have already been allocated with
      * enough room to contain the data.
-     * 
+     *
      * @param data
      */
     public void write(float[] data) {
@@ -142,5 +142,17 @@ public class FloatSample extends AudioSample {
         float source = buffer[index];
         float target = buffer[index + 1];
         return ((target - source) * phase) + source;
+    }
+
+    @Override
+    public double evaluate(double input) {
+        // Input ranges from -1 to +1
+        // Map it to range of sample with guard point.
+        double normalizedInput = (input + 1.0) * 0.5;
+        // Clip so it does not go out of range of the sample.
+        if (normalizedInput < 0.0) normalizedInput = 0.0;
+        else if (normalizedInput > 1.0) normalizedInput = 1.0;
+        double fractionalIndex = (getNumFrames() - 1.01) * normalizedInput;
+        return interpolate(fractionalIndex);
     }
 }
