@@ -40,7 +40,7 @@ import com.softsynth.shared.time.TimeStamp;
  *
  * Each channel has:
  * <pre><code>
- * lfo -> pitchToLinear -> [VOICES] -> volume* -> panner
+ * lfo -&gt; pitchToLinear -&gt; [VOICES] -&gt; volume* -&gt; panner
  * bend --/
  * </code></pre>
  *
