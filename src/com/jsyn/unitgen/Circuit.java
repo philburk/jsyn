@@ -63,7 +63,7 @@ public class Circuit extends UnitGenerator {
 
     /**
      * @deprecated ignored, frameRate comes from the SynthesisEngine
-     * @param rate
+     * @param frameRate
      */
     @Deprecated
     @Override

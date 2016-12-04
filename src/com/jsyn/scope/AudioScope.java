@@ -92,11 +92,10 @@ public class AudioScope {
 
     /**
      * Not yet implemented.
-     * @param waveform
+     * @param viewMode
      */
     public void setViewMode(ViewMode viewMode) {
         // TODO Auto-generated method stub
-
     }
 
 }
