@@ -216,4 +216,35 @@ public class TestFifo extends TestCase {
         watchdog.interrupt();
 
     }
+    
+    public void testBlockReadAndWriteWaitStress() {
+        final int chunk = 10000000; // 10 Megabytes
+        final AudioFifo fifo = new AudioFifo();
+        fifo.allocate(8);
+
+        fifo.setWriteWaitEnabled(true);
+        fifo.setReadWaitEnabled(true);
+        final double value = 50.0;
+
+        // Schedule a delayed write in another thread.
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    sleep(200);
+                    for (int i = 0; i < chunk; i++) {
+                        fifo.write(value + i);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+        Thread watchdog = startWatchdog(10000);
+        for (int i = 0; i < chunk; i++) {
+            assertEquals("reading back data", value + i, fifo.read());
+        }
+        watchdog.interrupt();
+    }
 }

@@ -16,6 +16,10 @@
 
 package com.jsyn.io;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * FIFO that implements AudioInputStream, AudioOutputStream interfaces. This can be used to send
  * audio data between different threads. The reads or writes may or may not wait based on flags.
@@ -33,8 +37,9 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
     private int sizeMask;
     private boolean writeWaitEnabled = true;
     private boolean readWaitEnabled = true;
-    private Object writeSemaphore = new Object();
-    private Object readSemaphore = new Object();
+    final Lock lock = new ReentrantLock();
+    final Condition notFull  = lock.newCondition(); 
+    final Condition notEmpty = lock.newCondition(); 
 
     /**
      * @param size Number of doubles in the FIFO. Must be a power of 2. Eg. 1024.
@@ -70,62 +75,76 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
     @Override
     public double read() {
         double value = Double.NaN;
-        if (readWaitEnabled) {
+        if (readWaitEnabled) {         
+            lock.lock();
             try {
-                while (available() < 1) {
-                    synchronized (writeSemaphore) {
-                        writeSemaphore.wait();
-                    }
+              while (available() < 1) {
+                try {
+                    notEmpty.await();
+                } catch (InterruptedException e) {
+                    return Double.NaN;
                 }
-                value = readOneInternal();
-            } catch (InterruptedException e) {
+              }
+              value = readOneInternal();
+            } finally {
+              lock.unlock();
             }
+            
         } else {
             if (readIndex != writeIndex) {
                 value = readOneInternal();
             }
         }
+        
+        if (writeWaitEnabled) {
+            lock.lock();
+            notFull.signal();
+            lock.unlock();
+        }
+        
         return value;
     }
 
     private double readOneInternal() {
         double value = buffer[readIndex & accessMask];
         readIndex = (readIndex + 1) & sizeMask;
-        if (writeWaitEnabled) {
-            synchronized (readSemaphore) {
-                readSemaphore.notify();
-            }
-        }
         return value;
     }
 
     @Override
     public void write(double value) {
         if (writeWaitEnabled) {
+            lock.lock();
             try {
-                while (available() == buffer.length) {
-                    synchronized (readSemaphore) {
-                        readSemaphore.wait();
+                while (available() == buffer.length)
+                {
+                    try {
+                        notFull.await();
+                    } catch (InterruptedException e) {
+                        return; // Silently fail
                     }
                 }
                 writeOneInternal(value);
-            } catch (InterruptedException e) {
+            } finally {
+                lock.unlock();
             }
+            
         } else {
             if (available() != buffer.length) {
                 writeOneInternal(value);
             }
+        }
+        
+        if (readWaitEnabled) {
+            lock.lock();
+            notEmpty.signal();
+            lock.unlock();
         }
     }
 
     private void writeOneInternal(double value) {
         buffer[writeIndex & accessMask] = value;
         writeIndex = (writeIndex + 1) & sizeMask;
-        if (readWaitEnabled) {
-            synchronized (writeSemaphore) {
-                writeSemaphore.notify();
-            }
-        }
     }
 
     @Override
