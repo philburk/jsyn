@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,7 @@
  */
 /**
  * Aug 21, 2009
- * com.jsyn.engine.units.Filter_HighPass.java 
+ * com.jsyn.engine.units.Filter_HighPass.java
  */
 
 package com.jsyn.unitgen;
@@ -23,14 +23,16 @@ package com.jsyn.unitgen;
 /**
  * Filter that allows frequencies below the center frequency to pass. This filter is based on the
  * BiQuad filter. Coefficients are updated whenever the frequency or Q changes.
- * 
+ *
  * @author Phil Burk (C) 2009 Mobileer Inc Translated from 'C' to Java by Lisa
  *         Tolenti.
+ *
+ * @see FilterFourPoles
  */
 public class FilterLowPass extends FilterBiquadCommon {
 
     /**
-     * This method is by Filter_Biquad to update coefficients for the Filter_LowPass filter.
+     * This method is by FilterBiquad to update coefficients for the lowpass filter.
      */
     @Override
     public void updateCoefficients() {

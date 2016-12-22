@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * FIFO that implements AudioInputStream, AudioOutputStream interfaces. This can be used to send
  * audio data between different threads. The reads or writes may or may not wait based on flags.
- * 
+ *
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class AudioFifo implements AudioInputStream, AudioOutputStream {
@@ -38,8 +38,8 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
     private boolean writeWaitEnabled = true;
     private boolean readWaitEnabled = true;
     final Lock lock = new ReentrantLock();
-    final Condition notFull  = lock.newCondition(); 
-    final Condition notEmpty = lock.newCondition(); 
+    final Condition notFull  = lock.newCondition();
+    final Condition notEmpty = lock.newCondition();
 
     /**
      * @param size Number of doubles in the FIFO. Must be a power of 2. Eg. 1024.
@@ -75,7 +75,7 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
     @Override
     public double read() {
         double value = Double.NaN;
-        if (readWaitEnabled) {         
+        if (readWaitEnabled) {
             lock.lock();
             try {
               while (available() < 1) {
@@ -89,19 +89,19 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
             } finally {
               lock.unlock();
             }
-            
+
         } else {
             if (readIndex != writeIndex) {
                 value = readOneInternal();
             }
         }
-        
+
         if (writeWaitEnabled) {
             lock.lock();
             notFull.signal();
             lock.unlock();
         }
-        
+
         return value;
     }
 
@@ -128,13 +128,13 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
             } finally {
                 lock.unlock();
             }
-            
+
         } else {
             if (available() != buffer.length) {
                 writeOneInternal(value);
             }
         }
-        
+
         if (readWaitEnabled) {
             lock.lock();
             notEmpty.signal();
@@ -201,5 +201,4 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
     public boolean isReadWaitEnabled() {
         return readWaitEnabled;
     }
-
 }
