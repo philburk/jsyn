@@ -233,7 +233,9 @@ public class SynthesisEngine implements Synthesizer {
             engineThread = new EngineThread(inputDeviceID, numInputChannels,
                     outputDeviceID, numOutputChannels);
             logger.fine("Synth thread old priority = " + engineThread.getPriority());
-            engineThread.setPriority(engineThread.getPriority() + 2);
+            int engineThreadPriority = engineThread.getPriority() + 2 > Thread.MAX_PRIORITY ?
+                Thread.MAX_PRIORITY : engineThread.getPriority() + 2;
+            engineThread.setPriority(engineThreadPriority);
             logger.fine("Synth thread new priority = " + engineThread.getPriority());
             engineThread.start();
         }
