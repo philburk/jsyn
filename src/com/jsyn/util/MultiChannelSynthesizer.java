@@ -161,9 +161,16 @@ public class MultiChannelSynthesizer {
             groupContext.allocator.noteOff(noteNumber, synth.createTimeStamp());
         }
 
+        void noteOff(int noteNumber, double amplitude, TimeStamp timeStamp) {
+            groupContext.allocator.noteOff(noteNumber, timeStamp);
+        }
+
         void noteOn(int noteNumber, double amplitude) {
+            noteOn(noteNumber, amplitude, synth.createTimeStamp());
+        }
+
+        void noteOn(int noteNumber, double amplitude, TimeStamp timeStamp) {
             double frequency = AudioMath.pitchToFrequency(noteNumber);
-            TimeStamp timeStamp = synth.createTimeStamp();
             //System.out.println("noteOn(noteNumber) -> " + frequency + " Hz");
             groupContext.allocator.noteOn(noteNumber, frequency, amplitude, voiceOperation, timeStamp);
         }
@@ -280,6 +287,17 @@ public class MultiChannelSynthesizer {
     }
 
     /**
+     * Turn off a note.
+     * @param channel
+     * @param noteNumber
+     * @param amplitude between 0 and 1.0, will be scaled by masterAmplitude
+     */
+    public void noteOff(int channel, int noteNumber, double amplitude, TimeStamp timeStamp) {
+        ChannelContext channelContext = channels[channel];
+        channelContext.noteOff(noteNumber, amplitude * mMasterAmplitude, timeStamp);
+    }
+
+    /**
      * Turn on a note.
      * @param channel
      * @param noteNumber
@@ -289,6 +307,18 @@ public class MultiChannelSynthesizer {
         double amplitude = velocity * (1.0 / MAX_VELOCITY);
         noteOn(channel, noteNumber, amplitude);
     }
+
+    /**
+     * Turn on a note.
+     * @param channel
+     * @param noteNumber
+     * @param amplitude between 0 and 1.0, will be scaled by masterAmplitude
+     */
+    public void noteOn(int channel, int noteNumber, double amplitude, TimeStamp timeStamp) {
+        ChannelContext channelContext = channels[channel];
+        channelContext.noteOn(noteNumber, amplitude * mMasterAmplitude, timeStamp);
+    }
+
     /**
      * Turn on a note.
      * @param channel
