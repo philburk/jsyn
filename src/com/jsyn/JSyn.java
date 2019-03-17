@@ -55,11 +55,11 @@ import com.jsyn.engine.SynthesisEngine;
 public class JSyn {
     // Update these for every release.
     private final static int VERSION_MAJOR = 16;
-    private final static int VERSION_MINOR = 7;
-    private final static int VERSION_REVISION = 8;
-    public final static int BUILD_NUMBER = 462;
-    private final static long BUILD_TIME = new GregorianCalendar(2016,
-            GregorianCalendar.NOVEMBER, 30).getTime().getTime();
+    private final static int VERSION_MINOR = 8;
+    private final static int VERSION_REVISION = 0;
+    public final static int BUILD_NUMBER = 463;
+    private final static long BUILD_TIME = new GregorianCalendar(2017,
+            GregorianCalendar.OCTOBER, 16).getTime().getTime();
 
     public final static String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + "."
             + VERSION_REVISION;
