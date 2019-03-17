@@ -33,7 +33,7 @@ import com.jsyn.ports.UnitOutputPort;
 public class MultiPassThrough extends UnitGenerator  implements UnitSink, UnitSource {
     public UnitInputPort input;
     public UnitOutputPort output;
-    private int mNumParts;
+    private final int mNumParts;
 
     /* Define Unit Ports used by connect() and set(). */
     public MultiPassThrough(int numParts) {
