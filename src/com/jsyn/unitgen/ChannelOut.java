@@ -20,6 +20,8 @@ import com.jsyn.ports.UnitInputPort;
 
 /**
  * Provides access to one channel of the audio output.
+ * For more than two channels you must call
+ * the {@link com.jsyn.Synthesizer} start() method with numOutputChannels &gt; 2.
  *
  * @author Phil Burk (C) 2009 Mobileer Inc
  * @see ChannelIn

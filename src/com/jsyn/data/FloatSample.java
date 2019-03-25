@@ -57,7 +57,7 @@ public class FloatSample extends AudioSample implements Function {
     }
 
     /**
-     * Create an silent sample with enough memory to hold the audio data. The number of sample
+     * Create a silent sample with enough memory to hold the audio data. The number of sample
      * numbers in the array will be numFrames*channelsPerFrame.
      *
      * @param numFrames number of sample groups. A stereo frame contains 2 samples.
@@ -133,7 +133,10 @@ public class FloatSample extends AudioSample implements Function {
         buffer[index] = (float) value;
     }
 
-    /*
+    /**
+     * Interpolate between two adjacent samples.
+     * Note that this will only work for mono, single channel samples.
+     *
      * @param fractionalIndex must be >=0 and < (size-1)
      */
     public double interpolate(double fractionalIndex) {
@@ -144,6 +147,9 @@ public class FloatSample extends AudioSample implements Function {
         return ((target - source) * phase) + source;
     }
 
+    /**
+     * Note that this will only work for mono, single channel samples.
+     */
     @Override
     public double evaluate(double input) {
         // Input ranges from -1 to +1

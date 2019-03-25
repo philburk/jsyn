@@ -20,7 +20,7 @@ import com.jsyn.ports.UnitOutputPort;
 
 /**
  * Provides access to one specific channel of the audio input. For ChannelIn to work you must call
- * the Synthesizer start() method with numInputChannels &gt; 0.
+ * the {@link com.jsyn.Synthesizer} start() method with numInputChannels &gt; 0.
  *
  * @author Phil Burk (C) 2009 Mobileer Inc
  * @see ChannelOut

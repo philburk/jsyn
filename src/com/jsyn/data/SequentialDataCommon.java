@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,7 @@ package com.jsyn.data;
 
 /**
  * Abstract base class for envelopes and samples that adds sustain and release loops.
- * 
+ *
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public abstract class SequentialDataCommon implements SequentialData {
@@ -85,28 +85,47 @@ public abstract class SequentialDataCommon implements SequentialData {
         return this.releaseEnd;
     }
 
+    /**
+     * Set beginning of a sustain loop. When UnitDataQueuePort.queueOn() is called,
+     * if the loop is set then the attack portion will be queued followed by this sustain
+     * region using queueLoop().
+     * The number of frames in the loop will be (SustainEnd - SustainBegin).
+     * <p>
+     * For a steady sustain level, like in an ADSR envelope, set SustainBegin and
+     * SustainEnd to the same frame.
+     * <p>
+     * For a sustain that is modulated, include two or more frames in the loop.
+     *
+     * @param sustainBegin
+    */
     public void setSustainBegin(int sustainBegin) {
         this.sustainBegin = sustainBegin;
     }
 
     /**
-     * SustainEnd value is the frame index of the frame just past the end of the loop. The number of
-     * frames included in the loop is (SustainEnd - SustainBegin).
-     * 
+     * SustainEnd value is the frame index of the frame just past the end of the loop.
+     * The number of frames included in the loop is (SustainEnd - SustainBegin).
+     *
      * @param sustainEnd
      */
     public void setSustainEnd(int sustainEnd) {
         this.sustainEnd = sustainEnd;
     }
 
+    /**
+     * The release loop behaves like the sustain loop but it is triggered
+     * by UnitDataQueuePort.queueOff().
+     *
+     * @param releaseBegin
+     */
     public void setReleaseBegin(int releaseBegin) {
         this.releaseBegin = releaseBegin;
     }
 
     /**
-     * ReleaseEnd value is the frame index of the frame just past the end of the loop. The number of
-     * frames included in the loop is (ReleaseEnd - ReleaseBegin).
-     * 
+     * ReleaseEnd value is the frame index of the frame just past the end of the loop.
+     * The number of frames included in the loop is (ReleaseEnd - ReleaseBegin).
+     *
      * @param releaseEnd
      */
 
