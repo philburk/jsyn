@@ -69,9 +69,15 @@ public class RotaryController extends JPanel {
         model.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                repaint();
+                safeRepaint();
             }
+
         });
+    }
+
+    // This can be overridden in subclasses to workaround OpenJDK bugs.
+    public void safeRepaint() {
+        repaint();
     }
 
     public BoundedRangeModel getModel() {
