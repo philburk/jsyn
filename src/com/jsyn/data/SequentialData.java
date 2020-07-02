@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,7 +26,7 @@ import com.jsyn.unitgen.VariableRateStereoReader;
 /**
  * Interface for objects that can be read and/or written by index. The index is not stored
  * internally so they can be shared by multiple readers.
- * 
+ *
  * @author Phil Burk (C) 2010 Mobileer Inc
  * @see FixedRateMonoReader
  * @see FixedRateStereoReader
@@ -38,7 +38,7 @@ import com.jsyn.unitgen.VariableRateStereoReader;
 public interface SequentialData {
     /**
      * Write a value at the given index.
-     * 
+     *
      * @param index sample index is ((frameIndex * channelsPerFrame) + channelIndex)
      * @param value the value to be written
      */
@@ -46,7 +46,7 @@ public interface SequentialData {
 
     /**
      * Read a value from the sample independently from the internal storage format.
-     * 
+     *
      * @param index sample index is ((frameIndex * channelsPerFrame) + channelIndex)
      */
 
@@ -60,7 +60,7 @@ public interface SequentialData {
     /**
      * SustainEnd value is the frame index of the frame just past the end of the loop. The number of
      * frames included in the loop is (SustainEnd - SustainBegin).
-     * 
+     *
      * @return End of sustain loop or -1 if no loop.
      */
     public int getSustainEnd();
@@ -78,7 +78,7 @@ public interface SequentialData {
     /**
      * Get rate to play the data. In an envelope this correspond to the inverse of the frame
      * duration and would vary frame to frame. For an audio sample it is 1.0.
-     * 
+     *
      * @param index
      * @param synthesisRate
      * @return rate to scale the playback speed.

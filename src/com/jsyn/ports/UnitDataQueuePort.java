@@ -361,10 +361,8 @@ public class UnitDataQueuePort extends UnitPort {
         if (queueableData.getSustainBegin() < 0) {
             // no sustain loop, handle release
             if (queueableData.getReleaseBegin() < 0) {
-                queueImmediate(queueableData, 0, queueableData.getNumFrames(), timeStamp); /*
-                                                                                            * No
-                                                                                            * loops.
-                                                                                            */
+                // No loops
+                queueImmediate(queueableData, 0, queueableData.getNumFrames(), timeStamp);
             } else {
                 queueImmediate(queueableData, 0, queueableData.getReleaseEnd(), timeStamp);
                 int size = queueableData.getReleaseEnd() - queueableData.getReleaseBegin();

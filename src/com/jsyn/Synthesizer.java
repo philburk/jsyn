@@ -47,14 +47,22 @@ public interface Synthesizer {
 
     /**
      * Starts the synthesizer using specific audio devices.
+     * <p>
+     * Note that using more than 2 channels will probably require the use of JPortAudio because
+     * JavaSound currently does not support more than two channels.
+     * JPortAudio is available at
+     * <a href="http://www.softsynth.com/jsyn/developers/download.php">http://www.softsynth.com/jsyn/developers/download.php</a>.
+     * <p>
+     * If you use more than 2 inputs or outputs then you will probably want to use {@link com.jsyn.unitgen.ChannelIn}
+     * or {@link com.jsyn.unitgen.ChannelOut}, which can be associated with any indexed channel.
      *
      * @param frameRate in Hertz
      * @param inputDeviceID obtained from an {@link AudioDeviceManager} or pass
      *            AudioDeviceManager.USE_DEFAULT_DEVICE
-     * @param numInputChannels 1 for mono, 2 for stereo, etcetera
+     * @param numInputChannels 0 for no input, 1 for mono, 2 for stereo, etcetera
      * @param ouputDeviceID obtained from an AudioDeviceManager or pass
      *            AudioDeviceManager.USE_DEFAULT_DEVICE
-     * @param numOutputChannels 1 for mono, 2 for stereo, etcetera
+     * @param numOutputChannels 0 for no output, 1 for mono, 2 for stereo, etcetera
      */
     public void start(int frameRate, int inputDeviceID, int numInputChannels, int ouputDeviceID,
             int numOutputChannels);
@@ -96,7 +104,7 @@ public interface Synthesizer {
     /**
      * Start a unit generator at the specified time. This is not needed if a unit generator's output
      * is connected to other units. Typically you only need to start units that have no outputs, for
-     * example LineOut.
+     * example LineOut or ChannelOut.
      */
     public void startUnit(UnitGenerator unit, double time);
 
@@ -181,7 +189,7 @@ public interface Synthesizer {
     public boolean isRunning();
 
     /**
-     * Add a task that will get run on the Audio Thread before it generates a new block of Audio.
+     * Add a task that will be run repeatedly on the Audio Thread before it generates every new block of Audio.
      * This task must be very quick and should not perform any blocking operations. If you are not
      * certain that you need an Audio rate task then don't use this.
      *

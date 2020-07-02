@@ -45,7 +45,12 @@
 
   <!-- Generate javadocs for current project into ${doc.dir} -->
   <target name="doc" depends="init" description="generate documentation">
-    <javadoc sourcepath="${src.dir}" destdir="${doc.dir}"/>
+    <javadoc
+        sourcepath="${src.dir}"
+        destdir="${doc.dir}"
+        packagenames="com.jsyn.*"
+        excludepackagenames="com.portaudio,com.jsyn.devices.jportaudio"
+    />
     <echo message = "=================================================================" />
     <echo message = "Javadocs have been generated and placed in the ${doc.dir} folder!" />
     <echo message = "=================================================================" />
