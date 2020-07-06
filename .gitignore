@@ -1,6 +1,10 @@
-# ignore Eclipse and Ant generated directories
-/build/
-/bin/
-/dist/
-/doc/
+build/
+.gradle/
 
+# Ignore IDE data to push towards a universally Gradle controlled environment
+.idea/
+.classpath
+.project
+
+# A temporary file sometimes generated
+temp_recording.wav

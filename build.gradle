@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+}
+
+group = 'com.jsyn'
+version = '17.0.0-SNAPSHOT'
+sourceCompatibility = '11'
+mainClassName = 'com.jsyn.apps.AboutJSyn'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'org.slf4j:slf4j-log4j12:1.7.25'
+
+    implementation fileTree(dir: 'libs', include: '*.jar')
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}
+
+jar {
+    manifest {
+        attributes('Main-Class': mainClassName)
+    }
+}
+shadowJar {
+    archiveFileName = "jysn-${version}.jar";
+}
+
+javadoc {
+    exclude 'com/portaudio/**'
+    exclude 'com/jsyn/devices/jportaudio/**'
+    source = sourceSets.main.allJava
+
+    options {
+        addStringOption('Xdoclint:none', '-quiet')
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
