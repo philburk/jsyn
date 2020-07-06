@@ -84,9 +84,9 @@ public class AndroidAudioForJSyn implements AudioDeviceManager {
             minBufferSize = AudioTrack.getMinBufferSize(frameRate,
                     AudioFormat.CHANNEL_OUT_STEREO,
                     AudioFormat.ENCODING_PCM_FLOAT);
-            System.out.println("Audio minBufferSize = " + minBufferSize);
+            LOGGER.debug("Audio minBufferSize = " + minBufferSize);
             bufferSize = (3 * (minBufferSize / 2)) & ~3;
-            System.out.println("Audio bufferSize = " + bufferSize);
+            LOGGER.debug("Audio bufferSize = " + bufferSize);
             audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, frameRate,
                     AudioFormat.CHANNEL_OUT_STEREO,
                     AudioFormat.ENCODING_PCM_FLOAT, bufferSize,
