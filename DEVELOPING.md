@@ -17,7 +17,7 @@ With the new inclusion of Gradle replacing ant (bye bye 2014) this brings some m
 ### Building Jar
 
 ```
-./gradlew shadowJar
+./gradlew jar
 ```
 
 ### Publish To Maven Local
