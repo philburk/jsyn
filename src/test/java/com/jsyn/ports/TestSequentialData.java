@@ -37,8 +37,8 @@ public class TestSequentialData {
 
     @Test
     public void testCrossfade() {
-        var sample1 = new FloatSample(data1);
-        var sample2 = new FloatSample(data2);
+        FloatSample sample1 = new FloatSample(data1);
+        FloatSample sample2 = new FloatSample(data2);
         SequentialDataCrossfade xfade = new SequentialDataCrossfade();
         xfade.setup(sample1, 4, 3, sample2, 1, 6);
 

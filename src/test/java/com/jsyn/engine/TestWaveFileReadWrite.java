@@ -43,7 +43,7 @@ public class TestWaveFileReadWrite {
         writer.setSamplesPerFrame(numChannels);
         writer.setBitsPerSample(16);
 
-        for (var datum : data) {
+        for (float datum : data) {
             writer.write(datum);
         }
         writer.close();

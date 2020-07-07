@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration debug="false">
     <appender name="default.console" class="org.apache.log4j.ConsoleAppender">
         <param name="target" value="System.out"/>
@@ -9,7 +9,7 @@
     </appender>
 
     <root>
-        <priority value="INFO" />
+        <priority value="DEBUG" />
         <appender-ref ref="default.console"/>
     </root>
 </log4j:configuration>

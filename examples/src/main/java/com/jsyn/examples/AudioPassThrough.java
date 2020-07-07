@@ -17,6 +17,7 @@
 package com.jsyn.examples;
 
 import com.jsyn.JSyn;
+import com.jsyn.Synthesizer;
 import com.jsyn.devices.AudioDeviceManager;
 import com.jsyn.unitgen.LineIn;
 import com.jsyn.unitgen.LineOut;
@@ -37,7 +38,7 @@ public class AudioPassThrough {
         LineOut lineOut;
 
         // Create a context for the synthesizer.
-        var synth = JSyn.createSynthesizer();
+        Synthesizer synth = JSyn.createSynthesizer();
         // Add an audio input.
         synth.add(lineIn = new LineIn());
         // Add an audio output.

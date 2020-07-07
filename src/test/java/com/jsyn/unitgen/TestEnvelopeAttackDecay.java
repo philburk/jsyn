@@ -43,7 +43,7 @@ public class TestEnvelopeAttackDecay extends TestUnitGate {
 
     @Test
     public void testOnOff() throws InterruptedException {
-        var envelope = new EnvelopeAttackDecay();
+        EnvelopeAttackDecay envelope = new EnvelopeAttackDecay();
         synthesisEngine.add(envelope);
 
         envelope.attack.set(0.1);
@@ -81,7 +81,7 @@ public class TestEnvelopeAttackDecay extends TestUnitGate {
 
     @Test
     public void testRetrigger() throws InterruptedException {
-        var envelope = new EnvelopeAttackDecay();
+        EnvelopeAttackDecay envelope = new EnvelopeAttackDecay();
         synthesisEngine.add(envelope);
 
         envelope.attack.set(0.1);
@@ -117,9 +117,9 @@ public class TestEnvelopeAttackDecay extends TestUnitGate {
 
     @Test
     public void testAutoDisable() throws InterruptedException {
-        var ramp = new LinearRamp();
+        LinearRamp ramp = new LinearRamp();
         synthesisEngine.add(ramp);
-        var envelope = new EnvelopeAttackDecay();
+        EnvelopeAttackDecay envelope = new EnvelopeAttackDecay();
         envelope.attack.set(0.1);
         envelope.decay.set(0.1);
         synthesisEngine.add(envelope);
