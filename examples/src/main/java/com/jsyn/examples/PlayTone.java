@@ -17,6 +17,7 @@
 package com.jsyn.examples;
 
 import com.jsyn.JSyn;
+import com.jsyn.Synthesizer;
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.SineOscillator;
 import org.slf4j.Logger;
@@ -34,16 +35,16 @@ public class PlayTone {
     private void test() {
 
         // Create a context for the synthesizer.
-        var synth = JSyn.createSynthesizer();
+        Synthesizer synth = JSyn.createSynthesizer();
 
         // Start synthesizer using default stereo output at 44100 Hz.
         synth.start();
 
         // Add a tone generator.
-        var oscillator = new SineOscillator();
+        SineOscillator oscillator = new SineOscillator();
         synth.add(oscillator);
         // Add a stereo audio output unit.
-        var lineOut = new LineOut();
+        LineOut lineOut = new LineOut();
         synth.add(lineOut);
 
         // Connect the oscillator to both channels of the output.

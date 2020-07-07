@@ -7,7 +7,7 @@ plugins {
 
 group = 'com.jsyn'
 version = '17.0.0-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '1.8'
 mainClassName = 'com.jsyn.apps.AboutJSyn'
 
 repositories {
@@ -17,9 +17,9 @@ repositories {
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+    testImplementation 'org.slf4j:slf4j-log4j12:1.7.25'
 
     implementation 'org.slf4j:slf4j-api:1.7.25'
-    implementation 'org.slf4j:slf4j-log4j12:1.7.25'
 
     implementation fileTree(dir: 'libs', include: '*.jar')
 }

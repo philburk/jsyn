@@ -17,6 +17,7 @@
 package com.jsyn.examples;
 
 import com.jsyn.JSyn;
+import com.jsyn.Synthesizer;
 import com.jsyn.data.Function;
 import com.jsyn.unitgen.FunctionOscillator;
 import com.jsyn.unitgen.LineOut;
@@ -34,13 +35,13 @@ public class PlayFunction {
 
     private void test() {
         // Create a context for the synthesizer.
-        var synth = JSyn.createSynthesizer();
+        Synthesizer synth = JSyn.createSynthesizer();
 
         // Start synthesizer using default stereo output at 44100 Hz.
         synth.start();
 
         // Add a FunctionOscillator
-        var oscillator = new FunctionOscillator();
+        FunctionOscillator oscillator = new FunctionOscillator();
         synth.add(oscillator);
 
         // Define a function that gives the shape of the waveform.
@@ -53,7 +54,7 @@ public class PlayFunction {
         oscillator.function.set(func);
 
         // Add a stereo audio output unit.
-        var lineOut = new LineOut();
+        LineOut lineOut = new LineOut();
         synth.add(lineOut);
 
         // Connect the oscillator to both channels of the output.

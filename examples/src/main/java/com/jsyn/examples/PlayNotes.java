@@ -17,6 +17,7 @@
 package com.jsyn.examples;
 
 import com.jsyn.JSyn;
+import com.jsyn.Synthesizer;
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.SawtoothOscillator;
 import com.softsynth.shared.time.TimeStamp;
@@ -35,17 +36,17 @@ public class PlayNotes {
     private void test() {
 
         // Create a context for the synthesizer.
-        var synth = JSyn.createSynthesizer();
+        Synthesizer synth = JSyn.createSynthesizer();
         // Set output latency to 123 msec because this is not an interactive app.
         synth.getAudioDeviceManager().setSuggestedOutputLatency(0.123);
 
         // Add a tone generator.
-        var voice = new SawtoothOscillator();
+        SawtoothOscillator voice = new SawtoothOscillator();
         synth.add(voice);
         // synth.add( ugen = new SineOscillator() );
         // synth.add( ugen = new SubtractiveSynthVoice() );
         // Add an output mixer.
-        var lineOut = new LineOut();
+        LineOut lineOut = new LineOut();
         synth.add(lineOut);
 
         // Connect the oscillator to the left and right audio output.
