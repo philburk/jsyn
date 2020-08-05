@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-    id 'maven-publish'
+    id 'maven'
 }
 
 group = 'com.jsyn'
@@ -21,21 +21,9 @@ dependencies {
 
     // I'm unsure weather or not to keep the logging implementation here and not as a 'testImplementation', as libraries
     // aren't usually meant to be ran.
-    implementation 'org.slf4j:slf4j-log4j12:1.7.25'
+//    implementation 'org.slf4j:slf4j-log4j12:1.7.25'
 
     implementation fileTree(dir: 'libs', include: '*.jar')
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-
-    repositories {
-        mavenLocal()
-    }
 }
 
 jar {
@@ -44,7 +32,7 @@ jar {
     }
 
     from {
-        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
@@ -58,7 +46,15 @@ javadoc {
     }
 }
 
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+artifacts {
+    archives javadocJar
+}
+
 test {
     useJUnitPlatform()
 }
-

@@ -25,7 +25,7 @@ With the new inclusion of Gradle replacing ant (bye bye 2014) this brings some m
 This allows you to use JSyn as a maven/gradle repository on your machine.
 
 ```
-./gradlew publishToMavenLocal
+./gradlew install
 ```
 
 It can be used via
