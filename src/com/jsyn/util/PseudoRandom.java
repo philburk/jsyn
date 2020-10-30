@@ -26,7 +26,7 @@ import java.util.Random;
  * Pseudo-random numbers using predictable and fast linear-congruential method.
  * 
  * @author Phil Burk (C) 2009 Mobileer Inc Translated from 'C' to Java by Lisa
- *         Tolenti.
+ *         Tolentino.
  */
 public class PseudoRandom {
     // We must shift 1L or else we get a negative number!
