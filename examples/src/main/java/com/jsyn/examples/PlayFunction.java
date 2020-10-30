@@ -21,8 +21,6 @@ import com.jsyn.Synthesizer;
 import com.jsyn.data.Function;
 import com.jsyn.unitgen.FunctionOscillator;
 import com.jsyn.unitgen.LineOut;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Play a tone using a FunctionOscillator.
@@ -30,8 +28,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class PlayFunction {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlayFunction.class);
 
     private void test() {
         // Create a context for the synthesizer.
@@ -69,7 +65,7 @@ public class PlayFunction {
         // oscillator.
         lineOut.start();
 
-        LOGGER.debug("You should now be hearing a sine wave. ---------");
+        System.out.println("You should now hear a sine wave for a few seconds.");
 
         // Sleep while the sound is generated in the background.
         try {
@@ -80,7 +76,7 @@ public class PlayFunction {
             e.printStackTrace();
         }
 
-        LOGGER.debug("Stop playing. -------------------");
+        System.out.println("Stop playing.");
         // Stop everything.
         synth.stop();
     }

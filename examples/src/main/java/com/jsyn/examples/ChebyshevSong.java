@@ -31,8 +31,6 @@ import com.jsyn.util.PseudoRandom;
 import com.jsyn.util.VoiceAllocator;
 import com.softsynth.math.AudioMath;
 import com.softsynth.shared.time.TimeStamp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /***************************************************************
  * Play notes using a WaveShapingVoice. Allocate the notes using a VoiceAllocator.
@@ -40,8 +38,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class ChebyshevSong extends JApplet implements Runnable {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChebyshevSong.class);
 
     private Synthesizer synth;
     private Add mixer;
@@ -179,7 +175,7 @@ public class ChebyshevSong extends JApplet implements Runnable {
                 synth.sleepUntil(nextTime - advanceTime);
             } while (go);
         } catch (InterruptedException e) {
-            LOGGER.error("Song exiting", e);
+            e.printStackTrace();
         }
     }
 }

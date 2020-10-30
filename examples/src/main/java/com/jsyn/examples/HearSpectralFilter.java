@@ -31,8 +31,6 @@ import com.jsyn.unitgen.SpectralProcessor;
 import com.jsyn.unitgen.UnitOscillator;
 import com.jsyn.unitgen.WhiteNoise;
 import com.jsyn.util.WaveRecorder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Play a sine sweep through an FFT/IFFT pair.
@@ -40,8 +38,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class HearSpectralFilter {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(HearSpectralFilter.class);
 
     private Synthesizer synth;
     private PassThrough center;
@@ -115,7 +111,7 @@ public class HearSpectralFilter {
             File waveFile = new File("temp_recording.wav");
             // Default is stereo, 16 bits.
             recorder = new WaveRecorder(synth, waveFile);
-            LOGGER.debug("Writing to WAV file " + waveFile.getAbsolutePath());
+            System.out.println("Writing to WAV file " + waveFile.getAbsolutePath());
         }
 
         if (useProcessor) {
@@ -178,8 +174,8 @@ public class HearSpectralFilter {
 
         lineOut.start();
 
-        LOGGER.debug("You should now be hearing a clean oscillator on the left channel,");
-        LOGGER.debug("and the FFT->IFFT processed signal on the right channel.");
+        System.out.println("You should now be hearing a noise+sawtooth on the left channel,");
+        System.out.println("and the FFT->IFFT processed signal on the right channel.");
 
         // Sleep while the sound is generated in the background.
         try {
@@ -195,7 +191,7 @@ public class HearSpectralFilter {
             recorder.close();
         }
 
-        LOGGER.debug("Stop playing. -------------------");
+        System.out.println("Stop playing. -------------------");
         // Stop everything.
         synth.stop();
     }

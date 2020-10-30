@@ -24,8 +24,6 @@ import com.jsyn.unitgen.SineOscillator;
 import com.jsyn.unitgen.SpectralFFT;
 import com.jsyn.unitgen.SpectralIFFT;
 import com.jsyn.unitgen.UnitOscillator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Play a sine sweep through an FFT/IFFT pair.
@@ -33,8 +31,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class FFTPassthrough {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(FFTPassthrough.class);
 
     private Synthesizer synth;
     private PassThrough center;
@@ -63,10 +59,12 @@ public class FFTPassthrough {
         // Add a stereo audio output unit.
         synth.add(lineOut = new LineOut());
 
-        // Connect the oscillator to both channels of the output.
+        // Oscillator => FFT
         center.output.connect(osc.frequency);
         lfo.output.connect(osc.frequency);
         osc.output.connect(fft.input);
+
+        // FFT => IFFT => LineOut
         fft.output.connect(ifft1.input);
         fft.output.connect(ifft2.input);
         ifft1.output.connect(0, lineOut.input, 0);
@@ -82,8 +80,8 @@ public class FFTPassthrough {
         // chain.
         lineOut.start();
 
-        LOGGER.debug("You should now be hearing a clean oscillator on the left channel,");
-        LOGGER.debug("and the FFT->IFFT processed signal on the right channel.");
+        System.out.println("You should now be hearing a clean oscillator on the left channel,");
+        System.out.println("and the FFT->IFFT processed signal on the right channel.");
 
         // Sleep while the sound is generated in the background.
         try {
@@ -94,7 +92,7 @@ public class FFTPassthrough {
             e.printStackTrace();
         }
 
-        LOGGER.debug("Stop playing. -------------------");
+        System.out.println("Stop playing. -------------------");
         // Stop everything.
         synth.stop();
     }

@@ -27,8 +27,6 @@ import com.jsyn.unitgen.SawtoothOscillatorBL;
 import com.jsyn.unitgen.UnitOscillator;
 import com.jsyn.unitgen.VariableRateDataReader;
 import com.jsyn.unitgen.VariableRateMonoReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Use a UnitDataQueueCallback to notify us of the envelope's progress. Modulate the amplitude of an
@@ -37,8 +35,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class PlaySegmentedEnvelopeCallback {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlaySegmentedEnvelopeCallback.class);
 
     private Synthesizer synth;
     private UnitOscillator osc;
@@ -75,8 +71,9 @@ public class PlaySegmentedEnvelopeCallback {
 
         try {
             // Queue an envelope with callbacks.
-            QueueDataCommand command = envelopePlayer.dataQueue.createQueueDataCommand(envelope, 0,
-                    envelope.getNumFrames());
+            QueueDataCommand command =
+                    envelopePlayer.dataQueue.createQueueDataCommand(
+                            envelope, 0, envelope.getNumFrames());
             // Create an object to be called when the queued data is done.
             TestQueueCallback callback = new TestQueueCallback();
             command.setCallback(callback);
@@ -95,17 +92,17 @@ public class PlaySegmentedEnvelopeCallback {
     class TestQueueCallback implements UnitDataQueueCallback {
         @Override
         public void started(QueueDataEvent event) {
-            LOGGER.debug("CALLBACK: Envelope started.");
+            System.out.println("CALLBACK: Envelope started.");
         }
 
         @Override
         public void looped(QueueDataEvent event) {
-            LOGGER.debug("CALLBACK: Envelope looped.");
+            System.out.println("CALLBACK: Envelope looped.");
         }
 
         @Override
         public void finished(QueueDataEvent event) {
-            LOGGER.debug("CALLBACK: Envelope finished.");
+            System.out.println("CALLBACK: Envelope finished.");
             // Queue the envelope again at a faster rate.
             // (If this hangs we may have hit a deadlock.)
             envelopePlayer.rate.set(2.0);

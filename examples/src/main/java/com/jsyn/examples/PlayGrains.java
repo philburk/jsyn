@@ -41,8 +41,6 @@ import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.SampleGrainFarm;
 import com.jsyn.util.SampleLoader;
 import com.jsyn.util.WaveRecorder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Play with Granular Synthesis tools.
@@ -50,8 +48,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2011 Mobileer Inc
  */
 public class PlayGrains extends JApplet {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlayGrains.class);
 
     private Synthesizer synth;
     private LineOut lineOut;
@@ -148,7 +144,7 @@ public class PlayGrains extends JApplet {
                 File waveFile = new File("temp_recording.wav");
                 // Record mono 16 bits.
                 recorder = new WaveRecorder(synth, waveFile, 1);
-                LOGGER.debug("Writing to WAV file " + waveFile.getAbsolutePath());
+                System.out.println("Writing to WAV file " + waveFile.getAbsolutePath());
             }
 
             if (useSample) {
