@@ -34,12 +34,8 @@ import com.jsyn.unitgen.SawtoothOscillatorBL;
 import com.jsyn.unitgen.SineOscillator;
 import com.jsyn.unitgen.UnitOscillator;
 import com.jsyn.util.WaveRecorder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RecordSineSweep {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(RecordSineSweep.class);
 
     final static double SONG_DURATION = 4.0;
     private Synthesizer synth;
@@ -59,8 +55,9 @@ public class RecordSineSweep {
             File waveFile = new File("temp_recording.wav");
             // Default is stereo, 16 bits.
             recorder = new WaveRecorder(synth, waveFile);
-            LOGGER.debug("Writing to WAV file " + waveFile.getAbsolutePath());
+            System.out.println("Writing to WAV file " + waveFile.getAbsolutePath());
         }
+
         // Add some tone generators.
         synth.add(leftOsc = new SineOscillator());
         synth.add(rightOsc = new SawtoothOscillatorBL());
@@ -106,7 +103,7 @@ public class RecordSineSweep {
 
         // Test stopping and restarting a recorder. This will cause a pop.
         if (recorder != null) {
-            LOGGER.debug("Stop and restart recorder.");
+            System.out.println("Stop and restart recorder.");
             recorder.stop();
         }
         sweeper.input.set(100.0);

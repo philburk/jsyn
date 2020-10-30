@@ -18,12 +18,8 @@ package com.jsyn.examples;
 
 import com.jsyn.devices.AudioDeviceFactory;
 import com.jsyn.devices.AudioDeviceManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ListAudioDevices {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ListAudioDevices.class);
 
     /**
      * @param args
@@ -38,10 +34,10 @@ public class ListAudioDevices {
             int maxOutputs = audioManager.getMaxInputChannels(i);
             boolean isDefaultInput = (i == audioManager.getDefaultInputDeviceID());
             boolean isDefaultOutput = (i == audioManager.getDefaultOutputDeviceID());
-            LOGGER.debug("#" + i + " : " + deviceName);
-            LOGGER.debug("  max inputs : " + maxInputs
+            System.out.println("#" + i + " : " + deviceName);
+            System.out.println("  max inputs : " + maxInputs
                     + (isDefaultInput ? "   (default)" : ""));
-            LOGGER.debug("  max outputs: " + maxOutputs
+            System.out.println("  max outputs: " + maxOutputs
                     + (isDefaultOutput ? "   (default)" : ""));
         }
 

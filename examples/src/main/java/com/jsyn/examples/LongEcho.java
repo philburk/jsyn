@@ -30,8 +30,6 @@ import com.jsyn.unitgen.FixedRateMonoWriter;
 import com.jsyn.unitgen.Maximum;
 import com.jsyn.unitgen.Minimum;
 import com.jsyn.util.WaveFileWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Echo the input using a circular buffer in a sample.
@@ -39,8 +37,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class LongEcho {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(LongEcho.class);
 
     final static int DELAY_SECONDS = 4;
     Synthesizer synth;
@@ -89,7 +85,7 @@ public class LongEcho {
         // Loop both forever.
         reader.dataQueue.queueLoop(sample, 0, sample.getNumFrames());
         writer.dataQueue.queueLoop(sample, 0, sample.getNumFrames());
-        LOGGER.debug("Start talking. You should hear an echo after " + DELAY_SECONDS
+        System.out.println("Start talking. You should hear an echo after " + DELAY_SECONDS
                 + " seconds.");
         // Sleep a while.
         try {

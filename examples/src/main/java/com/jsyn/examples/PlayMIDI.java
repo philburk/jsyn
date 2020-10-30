@@ -26,8 +26,6 @@ import com.jsyn.midi.MidiSynthesizer;
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.util.MultiChannelSynthesizer;
 import com.jsyn.util.VoiceDescription;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Send MIDI messages to JSyn based MIDI synthesizer.
@@ -35,8 +33,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class PlayMIDI {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlayMIDI.class);
 
     private static final int NUM_CHANNELS = 16;
     private static final int VOICES_PER_CHANNEL = 6;
@@ -52,7 +48,6 @@ public class PlayMIDI {
         try {
             VoiceDescription description = DualOscillatorSynthVoice.getVoiceDescription();
             app.test(description);
-            LOGGER.debug("Test complete");
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -144,7 +139,7 @@ public class PlayMIDI {
         float range0 = 12.0f;
         sendPitchBendRange(0, range0);
         for(int i = 0; i < 13; i++) {
-            LOGGER.debug("Bend to pitch " + i);
+            System.out.println("Bend to pitch " + i);
             sendPitchBend(0, i / range0);
             sendNoteOn(0, 60, 100);
             synth.sleepFor(0.5);
@@ -163,7 +158,7 @@ public class PlayMIDI {
         sendPitchBend(0, 0.0f / range0); // bend by 0 semitones
         sendPitchBend(1, 1.0f / range1); // bend by 1 semitones
 
-        LOGGER.debug("These two notes should play at the same pitch.");
+        System.out.println("These two notes should play at the same pitch.");
         sendNoteOn(0, 61, 100);
         synth.sleepFor(0.5);
         sendNoteOff(0, 61, 100);
@@ -173,7 +168,7 @@ public class PlayMIDI {
         sendNoteOff(1, 60, 100);
 
         synth.sleepFor(2.0);
-        LOGGER.debug("------ done ---------------");
+        System.out.println("------ done ---------------");
     }
 
     /**

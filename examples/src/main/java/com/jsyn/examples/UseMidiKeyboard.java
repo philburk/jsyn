@@ -31,8 +31,6 @@ import com.jsyn.midi.MidiSynthesizer;
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.util.MultiChannelSynthesizer;
 import com.jsyn.util.VoiceDescription;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Connect a USB MIDI Keyboard to the internal MIDI Synthesizer using JavaSound.
@@ -41,7 +39,6 @@ import org.slf4j.LoggerFactory;
  */
 public class UseMidiKeyboard {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UseMidiKeyboard.class);
     private static final int NUM_CHANNELS = 16;
     private static final int VOICES_PER_CHANNEL = 3;
 
@@ -91,10 +88,10 @@ public class UseMidiKeyboard {
             // Put the receiver in the transmitter.
             // This gives fairly low latency playing.
             keyboard.getTransmitter().setReceiver(receiver);
-            LOGGER.debug("Play MIDI keyboard: " + keyboard.getDeviceInfo().getDescription());
+            System.out.println("Play MIDI keyboard: " + keyboard.getDeviceInfo().getDescription());
             result = 0;
         } else {
-            LOGGER.debug("Could not find a keyboard.");
+            System.out.println("Could not find a keyboard.");
         }
         return result;
     }

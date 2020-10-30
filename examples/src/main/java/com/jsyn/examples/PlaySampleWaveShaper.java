@@ -27,17 +27,14 @@ import com.jsyn.unitgen.FunctionEvaluator;
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.SineOscillator;
 import com.jsyn.util.SampleLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * Play a sample from a WAV file using JSyn.
+ * Play parts of a sample from a WAV file using
+ * a FunctionEvaluator. This technique can be used to create a "scratcher" app.
  *
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class PlaySampleWaveShaper {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlaySampleWaveShaper.class);
 
     private Synthesizer synth;
     private LineOut lineOut;
@@ -60,25 +57,14 @@ public class PlaySampleWaveShaper {
             // Add an output mixer.
             synth.add(lineOut = new LineOut());
 
-            // Load the sample and display its properties.
+            // Load the sample.
             SampleLoader.setJavaSoundPreferred(false);
             sample = SampleLoader.loadFloatSample(sampleFile);
-            LOGGER.debug("Sample has: channels  = " + sample.getChannelsPerFrame());
-            LOGGER.debug("            frames    = " + sample.getNumFrames());
-            LOGGER.debug("            rate      = " + sample.getFrameRate());
-            LOGGER.debug("            loopStart = " + sample.getSustainBegin());
-            LOGGER.debug("            loopEnd   = " + sample.getSustainEnd());
-
             if (sample.getChannelsPerFrame() != 1) {
                 throw new RuntimeException("Can only use mono samples.");
             }
 
-            LOGGER.debug("eval -1.1 = " + sample.evaluate(-1.1));
-            LOGGER.debug("eval -1.0 = " + sample.evaluate(-1.0));
-            LOGGER.debug("eval 0.3 = " + sample.evaluate(0.3));
-            LOGGER.debug("eval 1.0 = " + sample.evaluate(1.0));
-            LOGGER.debug("eval 1.1 = " + sample.evaluate(1.1));
-
+            // Use the sample as a lookup table for the function.
             FunctionEvaluator shaper = new FunctionEvaluator();
             shaper.function.set(sample);
             synth.add(shaper);
@@ -86,6 +72,7 @@ public class PlaySampleWaveShaper {
             shaper.output.connect(0, lineOut.input, 0);
             shaper.output.connect(0, lineOut.input, 1);
 
+            // Use a sine wave as the input to the function.
             SineOscillator osc = new SineOscillator();
             osc.frequency.set(0.2);
             osc.output.connect(shaper.input);

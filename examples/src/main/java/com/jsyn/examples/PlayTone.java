@@ -20,8 +20,6 @@ import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.SineOscillator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Play a tone using a JSyn oscillator.
@@ -29,8 +27,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class PlayTone {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlayTone.class);
 
     private void test() {
 
@@ -59,19 +55,15 @@ public class PlayTone {
         // oscillator.
         lineOut.start();
 
-        LOGGER.debug("You should now be hearing a sine wave. ---------");
-
         // Sleep while the sound is generated in the background.
         try {
             double time = synth.getCurrentTime();
-            LOGGER.debug("time = " + time);
             // Sleep for a few seconds.
             synth.sleepUntil(time + 4.0);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        LOGGER.debug("Stop playing. -------------------");
         // Stop everything.
         synth.stop();
     }

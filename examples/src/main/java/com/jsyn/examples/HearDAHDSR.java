@@ -33,17 +33,15 @@ import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.SineOscillator;
 import com.jsyn.unitgen.SquareOscillator;
 import com.jsyn.unitgen.UnitOscillator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * Play a tone using a JSyn oscillator. Modulate the amplitude using a DAHDSR envelope.
+ * Play a tone using a JSyn oscillator.
+ * Modulate the amplitude using a DAHDSR envelope.
  *
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class HearDAHDSR extends JApplet {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HearDAHDSR.class);
 
     private Synthesizer synth;
     private UnitOscillator osc;
@@ -92,11 +90,7 @@ public class HearDAHDSR extends JApplet {
     }
 
     private void setupPortKnob(UnitInputPort port) {
-
         DoubleBoundedRangeModel model = PortModelFactory.createExponentialModel(port);
-        LOGGER.debug("Make knob for " + port.getName() + ", model.getDV = "
-                + model.getDoubleValue() + ", model.getV = " + model.getValue() + ", port.getV = "
-                + port.get());
         RotaryTextController knob = new RotaryTextController(model, 10);
         knob.setBorder(BorderFactory.createTitledBorder(port.getName()));
         knob.setTitle(port.getName());

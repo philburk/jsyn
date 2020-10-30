@@ -21,8 +21,6 @@ import com.jsyn.Synthesizer;
 import com.jsyn.devices.AudioDeviceManager;
 import com.jsyn.unitgen.LineIn;
 import com.jsyn.unitgen.LineOut;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Pass audio input to audio output.
@@ -30,8 +28,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class AudioPassThrough {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AudioPassThrough.class);
 
     private void test() {
         LineIn lineIn;
@@ -55,7 +51,6 @@ public class AudioPassThrough {
 
         // We only need to start the LineOut. It will pull data from the LineIn.
         lineOut.start();
-        LOGGER.debug("Audio passthrough started.");
         // Sleep a while.
         try {
             double time = synth.getCurrentTime();
@@ -66,7 +61,6 @@ public class AudioPassThrough {
         }
         // Stop everything.
         synth.stop();
-        LOGGER.debug("All done.");
     }
 
     public static void main(String[] args) {

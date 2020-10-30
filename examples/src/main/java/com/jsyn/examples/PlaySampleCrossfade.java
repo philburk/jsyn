@@ -39,8 +39,6 @@ import com.jsyn.unitgen.VariableRateDataReader;
 import com.jsyn.unitgen.VariableRateMonoReader;
 import com.jsyn.unitgen.VariableRateStereoReader;
 import com.jsyn.util.SampleLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Play a sample from a WAV file using JSyn. Use a crossfade to play a loop at an arbitrary
@@ -49,8 +47,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class PlaySampleCrossfade extends JApplet {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlaySampleCrossfade.class);
 
     private static final double LOOP_START_FRACTION = 0.2;
     private Synthesizer synth;
@@ -81,11 +77,6 @@ public class PlaySampleCrossfade extends JApplet {
             // Load the sample and display its properties.
             SampleLoader.setJavaSoundPreferred(false);
             sample = SampleLoader.loadFloatSample(sampleFile);
-            LOGGER.debug("Sample has: channels  = " + sample.getChannelsPerFrame());
-            LOGGER.debug("            frames    = " + sample.getNumFrames());
-            LOGGER.debug("            rate      = " + sample.getFrameRate());
-            LOGGER.debug("            loopStart = " + sample.getSustainBegin());
-            LOGGER.debug("            loopEnd   = " + sample.getSustainEnd());
 
             if (sample.getChannelsPerFrame() == 1) {
                 synth.add(samplePlayer = new VariableRateMonoReader());
@@ -114,7 +105,7 @@ public class PlaySampleCrossfade extends JApplet {
         add(PortControllerFactory.createExponentialPortSlider(samplePlayer.rate));
 
         // Use fader to select arbitrary loop size.
-        rangeModelSize = new DoubleBoundedRangeModel("LoopSize", 10000, 0.01,
+        rangeModelSize = new DoubleBoundedRangeModel("LoopSize (fraction)", 10000, 0.01,
                 (1.0 - LOOP_START_FRACTION), 0.5);
         rangeModelSize.addChangeListener(new ChangeListener() {
             @Override
@@ -126,7 +117,7 @@ public class PlaySampleCrossfade extends JApplet {
         add(new DoubleBoundedRangeSlider(rangeModelSize, 3));
 
         // Use fader to set the size of the crossfade region.
-        rangeModelCrossfade = new DoubleBoundedRangeModel("Crossfade", 1000, 0.0, 1000.0, 0.0);
+        rangeModelCrossfade = new DoubleBoundedRangeModel("Crossfade (samples)", 1000, 0.0, 1000.0, 0.0);
         rangeModelCrossfade.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -154,7 +145,6 @@ public class PlaySampleCrossfade extends JApplet {
         command.setSkipIfOthers(true);
         command.setCrossFadeIn(crossFadeSize);
 
-        LOGGER.debug("Queue: " + loopStartFrame + ", #" + loopSize + ", X=" + crossFadeSize);
         synth.queueCommand(command);
     }
 

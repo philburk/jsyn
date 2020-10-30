@@ -28,8 +28,6 @@ import com.jsyn.unitgen.UnitOscillator;
 import com.jsyn.unitgen.VariableRateDataReader;
 import com.jsyn.unitgen.VariableRateMonoReader;
 import com.jsyn.util.WaveRecorder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Modulate the amplitude of an oscillator using a segmented envelope.
@@ -37,8 +35,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class PlaySegmentedEnvelope {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlaySegmentedEnvelope.class);
 
     private Synthesizer synth;
     private UnitOscillator osc;
@@ -60,7 +56,7 @@ public class PlaySegmentedEnvelope {
             File waveFile = new File("temp_recording.wav");
             // Default is stereo, 16 bits.
             recorder = new WaveRecorder(synth, waveFile);
-            LOGGER.debug("Writing to WAV file " + waveFile.getAbsolutePath());
+            System.out.println("Writing to WAV file " + waveFile.getAbsolutePath());
         }
 
         // Create an envelope consisting of (duration,value) pairs.

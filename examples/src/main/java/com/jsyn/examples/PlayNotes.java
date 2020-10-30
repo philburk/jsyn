@@ -21,8 +21,6 @@ import com.jsyn.Synthesizer;
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.SawtoothOscillator;
 import com.softsynth.shared.time.TimeStamp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Play notes using timestamped noteOn and noteOff methods of the UnitVoice.
@@ -30,8 +28,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2009 Mobileer Inc
  */
 public class PlayNotes {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlayNotes.class);
 
     private void test() {
 
@@ -86,9 +82,7 @@ public class PlayNotes {
 
         // Sleep while the song is being generated in the background thread.
         try {
-            LOGGER.debug("Sleep while synthesizing.");
             synth.sleepUntil(timeStamp.getTime() + 2.0);
-            LOGGER.debug("Woke up...");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

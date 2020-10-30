@@ -40,8 +40,6 @@ import com.jsyn.unitgen.UnitOscillator;
 import com.jsyn.unitgen.VariableRateDataReader;
 import com.jsyn.unitgen.VariableRateMonoReader;
 import com.jsyn.util.WaveRecorder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * When notes speed up they can become a new tone. <br>
@@ -52,8 +50,6 @@ import org.slf4j.LoggerFactory;
  */
 
 public class NotesToTone {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(NotesToTone.class);
 
     private final static double SONG_AMPLITUDE = 0.7;
     private final static double INTRO_DURATION = 2.0;
@@ -82,7 +78,7 @@ public class NotesToTone {
             File waveFile = new File("notes_to_tone.wav");
             // Default is stereo, 16 bits.
             recorder = new WaveRecorder(synth, waveFile, 1);
-            LOGGER.debug("Writing to WAV file " + waveFile.getAbsolutePath());
+            System.out.println("Writing to WAV file " + waveFile.getAbsolutePath());
         }
 
         createUnits();

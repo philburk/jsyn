@@ -28,8 +28,6 @@ import com.jsyn.unitgen.VariableRateDataReader;
 import com.jsyn.unitgen.VariableRateMonoReader;
 import com.jsyn.unitgen.VariableRateStereoReader;
 import com.jsyn.util.SampleLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Play a sample from a WAV file using JSyn.
@@ -37,8 +35,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class PlaySample {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlaySample.class);
 
     private Synthesizer synth;
     private VariableRateDataReader samplePlayer;
@@ -65,11 +61,11 @@ public class PlaySample {
             // Load the sample and display its properties.
             SampleLoader.setJavaSoundPreferred(false);
             sample = SampleLoader.loadFloatSample(sampleFile);
-            LOGGER.debug("Sample has: channels  = " + sample.getChannelsPerFrame());
-            LOGGER.debug("            frames    = " + sample.getNumFrames());
-            LOGGER.debug("            rate      = " + sample.getFrameRate());
-            LOGGER.debug("            loopStart = " + sample.getSustainBegin());
-            LOGGER.debug("            loopEnd   = " + sample.getSustainEnd());
+            System.out.println("Sample has: channels  = " + sample.getChannelsPerFrame());
+            System.out.println("            frames    = " + sample.getNumFrames());
+            System.out.println("            rate      = " + sample.getFrameRate());
+            System.out.println("            loopStart = " + sample.getSustainBegin());
+            System.out.println("            loopEnd   = " + sample.getSustainEnd());
 
             if (sample.getChannelsPerFrame() == 1) {
                 synth.add(samplePlayer = new VariableRateMonoReader());
@@ -94,13 +90,13 @@ public class PlaySample {
             // We can simply queue the entire file.
             // Or if it has a loop we can play the loop for a while.
             if (sample.getSustainBegin() < 0) {
-                LOGGER.debug("queue the sample");
+                System.out.println("queue the sample");
                 samplePlayer.dataQueue.queue(sample);
             } else {
-                LOGGER.debug("queueOn the sample");
+                System.out.println("queueOn the sample for a short time");
                 samplePlayer.dataQueue.queueOn(sample);
                 synth.sleepFor(8.0);
-                LOGGER.debug("queueOff the sample");
+                System.out.println("queueOff the sample");
                 samplePlayer.dataQueue.queueOff(sample);
             }
 

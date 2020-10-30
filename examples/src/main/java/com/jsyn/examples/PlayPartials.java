@@ -23,8 +23,6 @@ import com.jsyn.unitgen.LinearRamp;
 import com.jsyn.unitgen.Multiply;
 import com.jsyn.unitgen.SineOscillator;
 import com.jsyn.unitgen.UnitOscillator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Play a enharmonic sine tones using JSyn oscillators.
@@ -32,8 +30,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class PlayPartials {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlayPartials.class);
 
     private Synthesizer synth;
     private UnitOscillator[] osc;
@@ -90,8 +86,6 @@ public class PlayPartials {
         // oscillator.
         lineOut.start();
 
-        LOGGER.debug("You should now be hearing a sine wave. ---------");
-
         // Sleep while the sound is generated in the background.
         try {
             // Sleep for a few seconds.
@@ -102,14 +96,11 @@ public class PlayPartials {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        LOGGER.debug("Stop playing. -------------------");
         // Stop everything.
         synth.stop();
     }
 
     public static void main(String[] args) {
-        LOGGER.debug("Java version = " + System.getProperty("java.version"));
         new PlayPartials().test();
     }
 }
