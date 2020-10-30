@@ -1,0 +1,67 @@
+<project name="JSynProject" default="dist" basedir=".">
+    <description>
+        Build JSyn Java Synthesizer
+    </description>
+  <!-- set global properties for this build -->
+  <property name="src.dir"    location="src/main/java"/>
+  <property name="doc.dir"    location="doc"/>
+  <property name="build.dir"  location="buildant"/>
+  <property name="dist"       location="dist"/>
+  <property name="main-class" value="com.jsyn.apps.AboutJSyn"/>
+  <property name="jarname"    value="jsyn"/>
+  <property name="java-version" value="1.8"/>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the necessary directories. -->
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${doc.dir}"/>
+  </target>
+
+  <target name="compile" depends="init"
+        description="compile the source " >
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac target="${java-version}" source="${java-version}"
+        srcdir="${src.dir}" destdir="${build.dir}">
+      <classpath>
+        <pathelement path="libs/jportaudio.jar"/>
+        <pathelement path="libs/slf4j-api-1.7.9.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="dist" depends="compile"
+        description="generate the distribution" >
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}/lib"/>
+
+    <!-- Put everything in ${build} into the jsyn-${DSTAMP}.jar file -->
+    <jar jarfile="${dist}/lib/${jarname}-${DSTAMP}.jar" basedir="${build.dir}">
+        <manifest>
+            <attribute name="Main-Class" value="${main-class}"/>
+        </manifest>
+    </jar>
+  </target>
+
+  <!-- Generate javadocs for current project into ${doc.dir} -->
+  <target name="doc" depends="init" description="generate documentation">
+    <javadoc
+        sourcepath="${src.dir}"
+        destdir="${doc.dir}"
+        packagenames="com.jsyn.*"
+        excludepackagenames="com.portaudio,com.jsyn.devices.jportaudio"
+    />
+    <echo message = "=================================================================" />
+    <echo message = "Javadocs have been generated and placed in the ${doc.dir} folder!" />
+    <echo message = "=================================================================" />
+  </target>
+
+  <target name="clean"
+        description="clean up" >
+    <!-- Delete the directories created by ant. -->
+    <delete dir="${build.dir}"/>
+    <delete dir="${doc.dir}"/>
+    <delete dir="${dist}"/>
+  </target>
+</project>
