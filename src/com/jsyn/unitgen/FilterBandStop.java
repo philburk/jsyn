@@ -21,7 +21,7 @@ package com.jsyn.unitgen;
  * filter. Coefficients are updated whenever the frequency or Q changes.
  * 
  * @author Phil Burk (C) 2009 Mobileer Inc Translated from 'C' to Java by Lisa
- *         Tolenti.
+ *         Tolentino.
  */
 public class FilterBandStop extends FilterBiquadCommon {
 

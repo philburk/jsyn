@@ -9,4 +9,4 @@ Phil Burk was the primary developer of JSyn.
 Portions of this software were developed by Nick Didkovsky of Mobileer. 
 Nick was also a major tester and user of JSyn.
 
-Lisa Tolenti converted many of the unit generators from 'C' to Java in 2009.
+Lisa Tolentino converted many of the unit generators from 'C' to Java in 2009.

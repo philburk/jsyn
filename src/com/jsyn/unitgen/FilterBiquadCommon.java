@@ -22,7 +22,7 @@ import com.jsyn.ports.UnitInputPort;
  * Extend this class to create a filter that implements a Biquad filter with a Q port.
  * 
  * @author Phil Burk (C) 2009 Mobileer Inc Translated from 'C' to Java by Lisa
- *         Tolenti.
+ *         Tolentino.
  */
 public abstract class FilterBiquadCommon extends FilterBiquad {
     public UnitInputPort Q;

@@ -26,7 +26,7 @@ import com.jsyn.ports.UnitInputPort;
  * A UnitFilter with a frequency port.
  *
  * @author Phil Burk (C) 2009 Mobileer Inc Translated from 'C' to Java by Lisa
- *         Tolenti.
+ *         Tolentino.
  */
 public abstract class TunableFilter extends UnitFilter {
 
