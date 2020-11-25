@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ import com.jsyn.ports.UnitOutputPort;
  * signal. The default values for setLevel and resetLevel are both 0.0. Setting setLevel to 0.1 and
  * resetLevel to -0.1 will give some hysteresis. The outputPulse is a single sample wide pulse set
  * when the output transitions from low to high.
- * 
+ *
  * <PRE>
  * if (output == 0.0)
  *     output = (input &gt; setLevel) ? 1.0 : 0.0;
@@ -36,7 +36,7 @@ import com.jsyn.ports.UnitOutputPort;
  * else
  *     output = previous_output;
  * </PRE>
- * 
+ *
  * @author Phil Burk (C) 2009 Mobileer Inc
  * @see Compare
  */
@@ -49,7 +49,6 @@ public class SchmidtTrigger extends UnitFilter {
     public SchmidtTrigger() {
         addPort(setLevel = new UnitInputPort("SetLevel"));
         addPort(resetLevel = new UnitInputPort("ResetLevel"));
-        addPort(input = new UnitInputPort("Input"));
         addPort(outputPulse = new UnitOutputPort("OutputPulse"));
     }
 
