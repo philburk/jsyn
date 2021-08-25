@@ -21,14 +21,13 @@ https://github.com/philburk/jsyn
 
 To build JSyn, use ant. Just enter:
 
-    cd jsyn
-    ant
+    ./gradlew assemble
 
 The resulting jar will be placed in "/dist/lib/".
 To run the built-in test App on a desktop, enter something like this:
 
-    java -jar dist/lib/jsyn-20160203.jar
+    java -jar build/libs/jsyn-17.0.0-SNAPSHOT.jar
 
-but with the correct date.
+but with the correct version.
 
-JSyn - Copyright 1997-2014 Mobileer Inc
+JSyn - Copyright 1997-2021 Mobileer Inc
