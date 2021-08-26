@@ -1,5 +1,4 @@
-JSyn
-====
+# JSyn
 
 JSyn is a modular audio synthesizer for Java by Phil Burk.
 
@@ -19,16 +18,36 @@ The JSyn source code is available at:
 
 https://github.com/philburk/jsyn
 
-To build JSyn, use ant. Just enter:
+## Building JSyn
+
+You can build JSyn using either Ant or Gradle.
+
+### Build Using Ant
+
+Enter:
 
     cd jsyn
     ant
 
-The resulting jar will be placed in "/dist/lib/".
+The resulting jar will be placed in "dist/lib/".
 To run the built-in test App on a desktop, enter something like this:
 
     java -jar dist/lib/jsyn-20160203.jar
 
 but with the correct date.
 
-JSyn - Copyright 1997-2014 Mobileer Inc
+### Build Using Gradle
+
+Enter:
+
+    cd jsyn
+    ./gradlew assemble
+    
+The resulting jar will be placed in "build/libs/".
+To run the built-in test App on a desktop, enter something like this:
+
+    java -jar build/libs/jsyn-17.0.0-SNAPSHOT.jar
+    
+but with the correct version.
+
+JSyn - Copyright 1997 Mobileer Inc
