@@ -402,9 +402,13 @@ public class TestMath {
         ugen.setSynthesisEngine(synthesisEngine);
         final double smallValue = -1.5308084989341915E-17;
         double[] values = {
-                49.0, 49.5, 50.0 + smallValue,
-                60.0 -smallValue,
-                79.2, 12.9, 118.973
+                49.0,
+                49.5,
+                50.0 + smallValue,
+                60.0 - smallValue,
+                79.2,
+                12.9,
+                118.973
         };
         // Sanity check AudioMath
         assertEquals(440.0,  AudioMath.pitchToFrequency(69), 0.001, "PitchToFrequency");
@@ -413,7 +417,8 @@ public class TestMath {
         for (double pitch : values) {
             ugen.input.setValueInternal(pitch);
             ugen.generate();
-            assertEquals(ugen.output.getValue(), 0.001, "PitchToFrequency: " + AudioMath.pitchToFrequency(pitch));
+            double expected = AudioMath.pitchToFrequency(pitch);
+            assertEquals(expected, ugen.output.getValue(), 0.001, "PitchToFrequency: " + expected);
         }
     }
 

@@ -40,6 +40,10 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This is a work in progress.
+ * It generates WAV files that should probably be deleted when done.
+ */
 public class RecordVariousRamps {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordVariousRamps.class);
@@ -176,17 +180,17 @@ public class RecordVariousRamps {
         synth.stop();
     }
 
-    @Test
+    // @Test
     private void stepMode() throws IOException {
         test(MODE_STEP);
     }
 
-    @Test
+    // @Test
     public void linearMode() throws IOException {
         test(MODE_LINEAR);
     }
 
-    @Test
+    // @Test
     public void smoothMode() throws IOException {
         test(MODE_SMOOTH);
     }

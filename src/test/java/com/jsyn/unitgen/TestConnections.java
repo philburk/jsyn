@@ -33,6 +33,8 @@ public class TestConnections {
     @BeforeEach
     private void beforeEach() {
         synth = JSyn.createSynthesizer();
+        synth.setRealTime(false);
+        synth.start();
 
         synth.add(add1 = new Add());
         synth.add(add2 = new Add());

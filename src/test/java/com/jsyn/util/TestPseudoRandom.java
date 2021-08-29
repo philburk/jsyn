@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestPseudoRandom {
-    PseudoRandom pseudoRandom;
+    PseudoRandom pseudoRandom = new PseudoRandom(12345);
     private int[] bins;
     private final static int BIN_SHIFTER = 8;
     private final static int BIN_COUNT = 1 << BIN_SHIFTER;
@@ -41,6 +41,7 @@ public class TestPseudoRandom {
     @Test
     public void testIntegerDistribution() {
         int scaler = 100;
+        bins = new int[BIN_COUNT];
         for (int i = 0; i < (bins.length * scaler); i++) {
             int rand = pseudoRandom.nextRandomInteger();
             int positiveInt = rand & 0x7FFFFFFF;
@@ -54,6 +55,7 @@ public class TestPseudoRandom {
     @Test
     public void test01Distribution() {
         int scaler = 100;
+        bins = new int[BIN_COUNT];
         for (int i = 0; i < (bins.length * scaler); i++) {
             double rand = pseudoRandom.random();
             assertTrue((rand >= 0.0), "not too low, #" + i + " = " + rand);
@@ -65,7 +67,8 @@ public class TestPseudoRandom {
     }
 
     private void checkDistribution(int scaler) {
-        // Generate running average that should stay near scaler
+        // Generate running average that should stay near scaler.
+    	// TODO This could randomly fail.
         double average = scaler;
         double coefficient = 0.9;
         for (int i = 0; i < (bins.length); i++) {

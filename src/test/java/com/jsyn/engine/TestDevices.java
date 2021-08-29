@@ -58,15 +58,16 @@ public class TestDevices {
         LOGGER.debug("Audio passthrough started.");
         // Sleep a while.
         double sleepTime = 2.0;
+        double startTime = synth.getCurrentTime();
         try {
-            double time = synth.getCurrentTime();
             // Sleep for a few seconds.
-            synth.sleepUntil(time + sleepTime);
+            synth.sleepUntil(startTime + sleepTime);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         double synthTime = synth.getCurrentTime();
-        assertEquals(synthTime, 0.2, "Time has advanced. " + synthTime);
+        double actualSleepTime = synthTime - startTime;
+        assertEquals(sleepTime, actualSleepTime, 0.1, "Time has advanced. " + actualSleepTime);
         // Stop everything.
         synth.stop();
         LOGGER.debug("All done.");
