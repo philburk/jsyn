@@ -216,7 +216,7 @@ public class TestFifo {
 
     @Test
     public void testBlockReadAndWriteWaitStress() {
-        final int chunk = 10000000; // 10 Megabytes
+        final int chunk = 3000000;
         final AudioFifo fifo = new AudioFifo();
         fifo.allocate(8);
 
@@ -236,7 +236,9 @@ public class TestFifo {
             }
         }).start();
 
-        Thread watchdog = startWatchdog(10000);
+        // TODO Watchdog is apparently not working.
+        // I set the watchdog to be very short and it did not trigger.
+        Thread watchdog = startWatchdog(10 * 1000);
         for (int i = 0; i < chunk; i++) {
             assertEquals(value + i, fifo.read(), "reading back data");
         }
