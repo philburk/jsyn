@@ -16,9 +16,6 @@
 
 package com.softsynth.math;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Vector;
 
 /**
@@ -31,8 +28,6 @@ import java.util.Vector;
  */
 
 public class Polynomial {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(Polynomial.class);
 
     private final Vector terms;
 
@@ -225,34 +220,34 @@ public class Polynomial {
 
     public static void main(String[] args) {
         Polynomial p1 = new Polynomial();
-        LOGGER.debug("p1=" + p1);
+        System.out.println("p1=" + p1);
         Polynomial p2 = new Polynomial(3);
-        LOGGER.debug("p2=" + p2);
+        System.out.println("p2=" + p2);
         Polynomial p3 = new Polynomial(2, 3);
-        LOGGER.debug("p3=" + p3);
+        System.out.println("p3=" + p3);
         Polynomial p4 = new Polynomial(1, 2, 3);
-        LOGGER.debug("p4=" + p4);
-        LOGGER.debug("p4*5=" + Polynomial.mult(5.0, p4));
+        System.out.println("p4=" + p4);
+        System.out.println("p4*5=" + Polynomial.mult(5.0, p4));
 
-        LOGGER.debug("{}", p4.evaluate(10));
+        System.out.println(p4.evaluate(10));
 
-        LOGGER.debug("{}", Polynomial.plus(p4, p1));
-        LOGGER.debug("{}", Polynomial.minus(p4, p3));
+        System.out.println(Polynomial.plus(p4, p1));
+        System.out.println(Polynomial.minus(p4, p3));
         p4.setTerm(12.2, 5);
-        LOGGER.debug("{}", p4);
+        System.out.println(p4);
         p4.addTerm(0.8, 5);
-        LOGGER.debug("{}", p4);
+        System.out.println(p4);
         p4.addTerm(0.8, 7);
-        LOGGER.debug("{}", p4);
-        LOGGER.debug("{}", Polynomial.mult(p3, p2));
-        LOGGER.debug("{}", Polynomial.mult(p3, p3));
-        LOGGER.debug("{}", Polynomial.mult(p2, p2));
+        System.out.println(p4);
+        System.out.println(Polynomial.mult(p3, p2));
+        System.out.println(Polynomial.mult(p3, p3));
+        System.out.println(Polynomial.mult(p2, p2));
 
         Polynomial t2 = new Polynomial(2, 0, -1); // 2x^2-1, Chebyshev Polynomial of order 2
         Polynomial t3 = new Polynomial(4, 0, -3, 0); // 4x^3-3x, Chebyshev Polynomial of order 3
         // Calculate Chebyshev Polynomial of order 4 from relation Tk+1(x) = 2xTk(x) - Tk-1(x)
         Polynomial t4 = Polynomial.minus(Polynomial.mult(t3, (new Polynomial(2, 0))), t2);
-        LOGGER.debug(t2 + "\n" + t3 + "\n" + t4);
+        System.out.println(t2 + "\n" + t3 + "\n" + t4);
         // com.softsynth.jmsl.util
 
     }

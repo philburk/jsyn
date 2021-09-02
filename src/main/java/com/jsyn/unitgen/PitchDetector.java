@@ -20,8 +20,6 @@ import com.jsyn.ports.UnitInputPort;
 import com.jsyn.ports.UnitOutputPort;
 import com.jsyn.util.AutoCorrelator;
 import com.jsyn.util.SignalCorrelator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Estimate the fundamental frequency of a monophonic signal. Analyzes an input signal and outputs
@@ -35,7 +33,6 @@ import org.slf4j.LoggerFactory;
  */
 public class PitchDetector extends UnitGenerator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PitchDetector.class);
 
     public UnitInputPort input;
 
@@ -81,10 +78,7 @@ public class PitchDetector extends UnitGenerator {
         for (int i = start; i < limit; i++) {
             double current = inputs[i];
             if (signalCorrelator.addSample(current)) {
-                lastPeriod = signalCorrelator.getPeriod();
-                if (lastPeriod < 0.1) {
-                    LOGGER.debug("ILLEGAL PERIOD");
-                }
+                lastPeriod = Math.max(0.1, signalCorrelator.getPeriod());
                 double currentFrequency = getFrameRate() / (lastPeriod + 0);
                 double confidence = signalCorrelator.getConfidence();
                 if (confidence > 0.1) {

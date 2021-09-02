@@ -16,29 +16,20 @@
 
 package com.jsyn.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class JavaTools {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(JavaTools.class);
 
     @SuppressWarnings("rawtypes")
     public static Class loadClass(String className, boolean verbose) {
         Class newClass = null;
         try {
             newClass = Class.forName(className);
-        } catch (Throwable e) {
-            if (verbose)
-                LOGGER.debug("Caught " + e);
-        }
-        if (newClass == null) {
+        } catch (Throwable e1) {
             try {
                 ClassLoader systemLoader = ClassLoader.getSystemClassLoader();
                 newClass = Class.forName(className, true, systemLoader);
-            } catch (Throwable e) {
+            } catch (Throwable e2) {
                 if (verbose)
-                    LOGGER.debug("Caught " + e);
+                    System.err.println("Caught " + e2);
             }
         }
         return newClass;

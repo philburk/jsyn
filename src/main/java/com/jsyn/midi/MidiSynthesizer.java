@@ -17,8 +17,6 @@
 package com.jsyn.midi;
 
 import com.jsyn.util.MultiChannelSynthesizer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Map MIDI messages into calls to a MultiChannelSynthesizer.
@@ -41,7 +39,6 @@ import org.slf4j.LoggerFactory;
  */
 public class MidiSynthesizer extends MessageParser {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MidiSynthesizer.class);
 
     private MultiChannelSynthesizer multiSynth;
 
@@ -56,7 +53,6 @@ public class MidiSynthesizer extends MessageParser {
         switch (index) {
             case MidiConstants.CONTROLLER_MOD_WHEEL:
                 double vibratoDepth = 0.1 * normalized;
-                LOGGER.debug( "vibratoDepth = " + vibratoDepth );
                 multiSynth.setVibratoDepth(channel, vibratoDepth);
                 break;
             case MidiConstants.CONTROLLER_TIMBRE:

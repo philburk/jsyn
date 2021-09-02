@@ -29,12 +29,9 @@ import javax.swing.JToggleButton.ToggleButtonModel;
 
 import com.jsyn.scope.AudioScopeProbe;
 import com.jsyn.swing.RotaryTextController;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ScopeProbePanel extends JPanel {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScopeProbePanel.class);
     private static final long serialVersionUID = 4511589171299298548L;
 
     private AudioScopeProbeView audioScopeProbeView;
@@ -70,7 +67,6 @@ public class ScopeProbePanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 ToggleButtonModel model = (ToggleButtonModel) e.getSource();
                 boolean enabled = !model.isSelected();
-                LOGGER.debug("Knob enabled = " + enabled);
                 verticalScaleKnob.setEnabled(!model.isSelected());
             }
         });

@@ -22,12 +22,8 @@ import java.io.IOException;
 import com.jsyn.data.FloatSample;
 import com.jsyn.data.SampleMarker;
 import com.jsyn.util.SampleLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class WAVEFileParser extends AudioFileParser implements ChunkHandler {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(WAVEFileParser.class);
 
     static final short WAVE_FORMAT_PCM = 1;
     static final short WAVE_FORMAT_IEEE_FLOAT = 3;
@@ -94,9 +90,6 @@ class WAVEFileParser extends AudioFileParser implements ChunkHandler {
     /* Parse various chunks encountered in WAV file. */
     void parseCueChunk(IFFParser parser, int ckSize) throws IOException {
         int numCuePoints = parser.readIntLittle();
-        if (IFFParser.debug) {
-            LOGGER.debug("WAV: numCuePoints = " + numCuePoints);
-        }
         if ((ckSize - 4) != (6 * 4 * numCuePoints))
             throw new EOFException("Cue chunk too short!");
         for (int i = 0; i < numCuePoints; i++) {
@@ -104,11 +97,6 @@ class WAVEFileParser extends AudioFileParser implements ChunkHandler {
             int position = parser.readIntLittle(); // dwPosition
             parser.skip(3 * 4); // fccChunk, dwChunkStart, dwBlockStart
             int sampleOffset = parser.readIntLittle(); // dwPosition
-
-            if (IFFParser.debug) {
-                LOGGER.debug("WAV: parseCueChunk: #" + i + ", dwPosition = " + position
-                        + ", dwName = " + dwName + ", dwSampleOffset = " + sampleOffset);
-            }
             SampleMarker cuePoint = findOrCreateCuePoint(dwName);
             cuePoint.position = position;
         }
@@ -118,9 +106,6 @@ class WAVEFileParser extends AudioFileParser implements ChunkHandler {
         int dwName = parser.readIntLittle();
         int textLength = (ckSize - 4) - 1; // don't read NUL terminator
         String text = parseString(parser, textLength);
-        if (IFFParser.debug) {
-            LOGGER.debug("WAV: label id = " + dwName + ", text = " + text);
-        }
         SampleMarker cuePoint = findOrCreateCuePoint(dwName);
         cuePoint.name = text;
     }
@@ -133,10 +118,6 @@ class WAVEFileParser extends AudioFileParser implements ChunkHandler {
                                                              // terminator
         if (textLength > 0) {
             String text = parseString(parser, textLength);
-            if (IFFParser.debug) {
-                LOGGER.debug("WAV: ltxt id = " + dwName + ", dwSampleLength = "
-                        + dwSampleLength + ", text = " + text);
-            }
             SampleMarker cuePoint = findOrCreateCuePoint(dwName);
             cuePoint.comment = text;
         }
@@ -149,12 +130,6 @@ class WAVEFileParser extends AudioFileParser implements ChunkHandler {
         parser.readIntLittle(); /* skip dwAvgBytesPerSec */
         blockAlign = parser.readShortLittle();
         bitsPerSample = parser.readShortLittle();
-
-        if (IFFParser.debug) {
-            LOGGER.debug("WAV: format = 0x" + Integer.toHexString(format));
-            LOGGER.debug("WAV: bitsPerSample = " + bitsPerSample);
-            LOGGER.debug("WAV: samplesPerFrame = " + samplesPerFrame);
-        }
         bytesPerFrame = blockAlign;
         bytesPerSample = bytesPerFrame / samplesPerFrame;
         samplesPerBlock = (8 * blockAlign) / bitsPerSample;
@@ -165,16 +140,6 @@ class WAVEFileParser extends AudioFileParser implements ChunkHandler {
             int channelMask = parser.readIntLittle();
             byte[] guid = new byte[16];
             parser.read(guid);
-            if (IFFParser.debug) {
-                LOGGER.debug("WAV: extraSize = " + extraSize);
-                LOGGER.debug("WAV: validBitsPerSample = " + validBitsPerSample);
-                LOGGER.debug("WAV: channelMask = " + channelMask);
-                System.out.print("guid = {");
-                for (int i = 0; i < guid.length; i++) {
-                    System.out.print(guid[i] + ", ");
-                }
-                LOGGER.debug("}");
-            }
             if (matchBytes(guid, KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)) {
                 format = WAVE_FORMAT_IEEE_FLOAT;
             } else if (matchBytes(guid, KSDATAFORMAT_SUBTYPE_PCM)) {

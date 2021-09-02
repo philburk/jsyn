@@ -22,8 +22,6 @@ import com.jsyn.Synthesizer;
 import com.jsyn.engine.SynthesisEngine;
 import com.softsynth.shared.time.ScheduledCommand;
 import com.softsynth.shared.time.TimeStamp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Part of a multi-part port, for example, the left side of a stereo port.
@@ -31,8 +29,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2009 Mobileer Inc
  */
 public class PortBlockPart implements ConnectableOutput, ConnectableInput {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PortBlockPart.class);
 
     private double[] values = new double[Synthesizer.FRAMES_PER_BLOCK];
     private ArrayList<PortBlockPart> connections = new ArrayList<PortBlockPart>();
@@ -66,19 +62,12 @@ public class PortBlockPart implements ConnectableOutput, ConnectableInput {
     }
 
     private void addConnection(PortBlockPart otherPart) {
-        // LOGGER.debug("addConnection from " + this + " to " + otherPart
-        // );
-        if (connections.contains(otherPart)) {
-            LOGGER.debug("addConnection already had connection from " + this + " to "
-                    + otherPart);
-        } else {
+        if (!connections.contains(otherPart)) {
             connections.add(otherPart);
         }
     }
 
     private void removeConnection(PortBlockPart otherPart) {
-        // LOGGER.debug("removeConnection from " + this + " to " +
-        // otherPart );
         connections.remove(otherPart);
     }
 
