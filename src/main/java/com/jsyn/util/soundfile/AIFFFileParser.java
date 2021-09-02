@@ -22,12 +22,8 @@ import java.io.IOException;
 import com.jsyn.data.FloatSample;
 import com.jsyn.data.SampleMarker;
 import com.jsyn.util.SampleLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AIFFFileParser extends AudioFileParser {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AIFFFileParser.class);
 
     private static final String SUPPORTED_FORMATS = "Only 16 and 24 bit PCM or 32-bit float AIF files supported.";
     static final int AIFF_ID = ('A' << 24) | ('I' << 16) | ('F' << 8) | 'F';
@@ -166,8 +162,6 @@ public class AIFFFileParser extends AudioFileParser {
             // are at end.
             long numInMark = parser.getOffset() - startOffset;
             if (numInMark >= ckSize) {
-                LOGGER.debug("Reached end of MARK chunk with bogus numCuePoints = "
-                        + numCuePoints);
                 break;
             }
 
@@ -182,10 +176,6 @@ public class AIFFFileParser extends AudioFileParser {
             SampleMarker cuePoint = findOrCreateCuePoint(uniqueID);
             cuePoint.position = position;
             cuePoint.name = markerName;
-
-            if (IFFParser.debug) {
-                LOGGER.debug("AIFF Marker at " + position + ", " + markerName);
-            }
         }
     }
 

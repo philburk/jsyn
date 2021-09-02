@@ -27,8 +27,6 @@ import com.jsyn.ports.UnitInputPort;
 import com.jsyn.ports.UnitOutputPort;
 import com.jsyn.ports.UnitPort;
 import com.softsynth.shared.time.TimeStamp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Base class for all unit generators.
@@ -36,8 +34,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2009 Mobileer Inc
  */
 public abstract class UnitGenerator {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(UnitGenerator.class);
 
     protected static final double VERY_SMALL_FLOAT = 1.0e-26;
 
@@ -147,7 +143,6 @@ public abstract class UnitGenerator {
         while (unit.circuit != null) {
             unit = unit.circuit;
         }
-        LOGGER.debug("getTopUnit " + this + " => " + unit);
         return unit;
     }
 
@@ -331,9 +326,7 @@ public abstract class UnitGenerator {
     public void setPort(String portName, double value, TimeStamp timeStamp) {
         UnitInputPort port = (UnitInputPort) getPortByName(portName);
         // LOGGER.debug("setPort " + port );
-        if (port == null) {
-            LOGGER.warn("port was null for name " + portName + ", " + this.getClass().getName());
-        } else {
+        if (port != null) {
             port.set(value, timeStamp);
         }
     }

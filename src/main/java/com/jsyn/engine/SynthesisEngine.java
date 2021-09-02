@@ -16,6 +16,7 @@
 
 package com.jsyn.engine;
 
+import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -31,8 +32,6 @@ import com.jsyn.unitgen.UnitGenerator;
 import com.softsynth.shared.time.ScheduledCommand;
 import com.softsynth.shared.time.ScheduledQueue;
 import com.softsynth.shared.time.TimeStamp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 //TODO Resolve problem with HearDAHDSR where "Rate" port.set is not reflected in knob. Engine not running.
 //TODO new tutorial and docs on website
@@ -54,8 +53,6 @@ import org.slf4j.LoggerFactory;
  * @see Synthesizer
  */
 public class SynthesisEngine implements Synthesizer {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SynthesisEngine.class);
 
     private final static int BLOCKS_PER_BUFFER = 8;
     private final static int FRAMES_PER_BUFFER = Synthesizer.FRAMES_PER_BLOCK * BLOCKS_PER_BUFFER;
@@ -95,6 +92,8 @@ public class SynthesisEngine implements Synthesizer {
     public static final double DB96 = (1.0 / 63095.73444801943);
     /** A fraction that is approximately -90.3 dB. Defined as 1 bit of an S16. */
     public static final double DB90 = (1.0 / (1 << 15));
+
+    static Logger logger = Logger.getLogger(SynthesisEngine.class.getName());
 
     public SynthesisEngine(AudioDeviceManager audioDeviceManager) {
         this.audioDeviceManager = audioDeviceManager;
@@ -217,7 +216,6 @@ public class SynthesisEngine implements Synthesizer {
     public synchronized void start(int frameRate, int inputDeviceID, int numInputChannels,
             int outputDeviceID, int numOutputChannels) {
         if (started) {
-            LOGGER.info("JSyn already started.");
             return;
         }
 
@@ -226,7 +224,7 @@ public class SynthesisEngine implements Synthesizer {
 
         setupAudioBuffers(numInputChannels, numOutputChannels);
 
-        LOGGER.info("Pure Java JSyn from www.softsynth.com, rate = " + frameRate + ", "
+        logger.info("Pure Java JSyn from www.softsynth.com, rate = " + frameRate + ", "
                 + (useRealTime ? "RT" : "NON-RealTime") + ", " + JSyn.VERSION_TEXT);
 
         inverseNyquist = 2.0 / frameRate;
@@ -234,11 +232,11 @@ public class SynthesisEngine implements Synthesizer {
         if (useRealTime) {
             engineThread = new EngineThread(inputDeviceID, numInputChannels,
                     outputDeviceID, numOutputChannels);
-            LOGGER.debug("Synth thread old priority = " + engineThread.getPriority());
+            logger.fine("Synth thread old priority = " + engineThread.getPriority());
             int engineThreadPriority = engineThread.getPriority() + 2 > Thread.MAX_PRIORITY ?
                 Thread.MAX_PRIORITY : engineThread.getPriority() + 2;
             engineThread.setPriority(engineThreadPriority);
-            LOGGER.debug("Synth thread new priority = " + engineThread.getPriority());
+            logger.fine("Synth thread new priority = " + engineThread.getPriority());
             engineThread.start();
         }
 
@@ -254,7 +252,7 @@ public class SynthesisEngine implements Synthesizer {
     @Override
     public synchronized void stop() {
         if (!started) {
-            LOGGER.info("JSyn already stopped.");
+            logger.info("JSyn already stopped.");
             return;
         }
 
@@ -301,23 +299,23 @@ public class SynthesisEngine implements Synthesizer {
 
         @Override
         public void run() {
-            LOGGER.debug("JSyn synthesis thread starting.");
+            logger.fine("JSyn synthesis thread starting.");
             try {
                 if (audioInputStream != null) {
-                    LOGGER.debug("JSyn synthesis thread trying to start audio INPUT!");
+                    logger.fine("JSyn synthesis thread trying to start audio INPUT!");
                     audioInputStream.start();
                     mInputLatency = audioInputStream.getLatency();
                     String msg = String.format("Input Latency in = %5.1f msec",
                             1000 * mInputLatency);
-                    LOGGER.debug(msg);
+                    logger.fine(msg);
                 }
                 if (audioOutputStream != null) {
-                    LOGGER.debug("JSyn synthesis thread trying to start audio OUTPUT!");
+                    logger.fine("JSyn synthesis thread trying to start audio OUTPUT!");
                     audioOutputStream.start();
                     mOutputLatency = audioOutputStream.getLatency();
                     String msg = String.format("Output Latency = %5.1f msec",
                             1000 * mOutputLatency);
-                    LOGGER.debug(msg);
+                    logger.fine(msg);
                     // Buy some time while we fill the buffer.
                     audioOutputStream.write(outputBuffer.interleavedBuffer);
                 }
@@ -350,7 +348,7 @@ public class SynthesisEngine implements Synthesizer {
                 go = false;
 
             } finally {
-                LOGGER.info("JSyn synthesis thread in finally code.");
+                logger.info("JSyn synthesis thread in finally code.");
                 // Stop audio system.
                 if (audioInputStream != null) {
                     audioInputStream.stop();
@@ -359,7 +357,7 @@ public class SynthesisEngine implements Synthesizer {
                     audioOutputStream.stop();
                 }
             }
-            LOGGER.debug("JSyn synthesis thread exiting.");
+            logger.fine("JSyn synthesis thread exiting.");
         }
     }
 
@@ -408,7 +406,7 @@ public class SynthesisEngine implements Synthesizer {
         while (timeList != null) {
             while (!timeList.isEmpty()) {
                 ScheduledCommand command = timeList.remove(0);
-                LOGGER.debug("processing " + command + ", at time " + timeStamp.getTime());
+                logger.fine("processing " + command + ", at time " + timeStamp.getTime());
                 command.run();
             }
             // Get next list of commands at the given time.
@@ -421,7 +419,7 @@ public class SynthesisEngine implements Synthesizer {
         if ((Thread.currentThread() == engineThread) && (timeStamp.getTime() <= getCurrentTime())) {
             command.run();
         } else {
-            LOGGER.debug("scheduling " + command + ", at time " + timeStamp.getTime());
+            logger.fine("scheduling " + command + ", at time " + timeStamp.getTime());
             commandQueue.add(timeStamp, command);
         }
     }
@@ -541,7 +539,7 @@ public class SynthesisEngine implements Synthesizer {
     }
 
     private void internalStartUnit(UnitGenerator unit) {
-        // LOGGER.info( "internalStartUnit " + unit + " with circuit " +
+        // logger.info( "internalStartUnit " + unit + " with circuit " +
         // unit.getCircuit() );
         if (unit.getCircuit() == null) {
             synchronized (runningUnitList) {
@@ -552,7 +550,7 @@ public class SynthesisEngine implements Synthesizer {
         }
         // else
         // {
-        // LOGGER.info(
+        // logger.info(
         // "internalStartUnit detected race condition !!!! from old JSyn" + unit
         // + " with circuit " + unit.getCircuit() );
         // }

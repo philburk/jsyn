@@ -16,8 +16,6 @@
 
 package com.jsyn.devices.javasound;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
@@ -27,20 +25,18 @@ import javax.sound.midi.Synthesizer;
 
 public class MidiDeviceTools {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MidiDeviceTools.class);
-
     /** Print the available MIDI Devices. */
     public static void listDevices() {
         // Ask the MidiSystem what is available.
         MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
         // Print info about each device.
         for (MidiDevice.Info info : infos) {
-            LOGGER.debug("MIDI Info: " + info.getDescription() + ", " + info.getName() + ", "
+            System.out.println("MIDI Info: " + info.getDescription() + ", " + info.getName() + ", "
                     + info.getVendor() + ", " + info.getVersion());
             // Get the device for more information.
             try {
                 MidiDevice device = MidiSystem.getMidiDevice(info);
-                LOGGER.debug("   Device: " + ", #recv = " + device.getMaxReceivers()
+                 System.out.println("   Device: " + ", #recv = " + device.getMaxReceivers()
                         + ", #xmit = " + device.getMaxTransmitters() + ", open = "
                         + device.isOpen() + ", " + device);
             } catch (MidiUnavailableException e) {
@@ -67,7 +63,7 @@ public class MidiDeviceTools {
                                 || (info.getDescription().toLowerCase()
                                         .contains(text.toLowerCase()))) {
                             keyboard = device;
-                            LOGGER.debug("Chose: " + info.getDescription());
+                             System.out.println("Chose: " + info.getDescription());
                             break;
                         }
                     }

@@ -16,9 +16,6 @@
 
 package com.jsyn.swing;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -38,8 +35,6 @@ import javax.swing.JPanel;
  */
 @SuppressWarnings("serial")
 public abstract class ASCIIMusicKeyboard extends JPanel {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ASCIIMusicKeyboard.class);
 
     private final JCheckBox sustainBox;
     private final JButton focusButton;
@@ -69,7 +64,6 @@ public abstract class ASCIIMusicKeyboard extends JPanel {
             public void keyPressed(KeyEvent e) {
                 int key = e.getKeyChar();
                 int idx = keyboardLayout.indexOf(key);
-                LOGGER.debug("keyPressed " + idx);
                 if (idx >= 0) {
                     if (!pressedKeys.contains(idx)) {
                         keyOn(convertIndexToPitch(idx));
@@ -86,7 +80,6 @@ public abstract class ASCIIMusicKeyboard extends JPanel {
             public void keyReleased(KeyEvent e) {
                 int key = e.getKeyChar();
                 int idx = keyboardLayout.indexOf(key);
-                LOGGER.debug("keyReleased " + idx);
                 if (idx >= 0) {
                     if (!sustainBox.isSelected()) {
                         noteOffInternal(idx);

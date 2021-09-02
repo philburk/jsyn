@@ -41,8 +41,6 @@ import com.jsyn.util.PolyphonicInstrument;
 import com.jsyn.util.VoiceDescription;
 import com.softsynth.math.AudioMath;
 import com.softsynth.shared.time.TimeStamp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Let the user select an instrument using the InstrumentBrowser and play
@@ -52,8 +50,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2012 Mobileer Inc
  */
 public class InstrumentTester extends JApplet {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(InstrumentTester.class);
     private static final long serialVersionUID = -2704222221111608377L;
 
     private Synthesizer synth;
@@ -110,10 +106,10 @@ public class InstrumentTester extends JApplet {
             // Put the receiver in the transmitter.
             // This gives fairly low latency playing.
             keyboard.getTransmitter().setReceiver(receiver);
-            LOGGER.debug("Play MIDI keyboard: " + keyboard.getDeviceInfo().getDescription());
+            System.out.println("Play MIDI keyboard: " + keyboard.getDeviceInfo().getDescription());
             result = 0;
         } else {
-            LOGGER.debug("Could not find a keyboard.");
+            System.out.println("Could not find a keyboard.");
         }
         return result;
     }

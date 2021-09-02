@@ -30,8 +30,6 @@ import javax.sound.sampled.TargetDataLine;
 import com.jsyn.devices.AudioDeviceInputStream;
 import com.jsyn.devices.AudioDeviceManager;
 import com.jsyn.devices.AudioDeviceOutputStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Use JavaSound to access the audio hardware.
@@ -39,8 +37,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2009 Mobileer Inc
  */
 public class JavaSoundAudioDevice implements AudioDeviceManager {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(JavaSoundAudioDevice.class);
 
     private static final int BYTES_PER_SAMPLE = 2;
     private static final boolean USE_BIG_ENDIAN = false;
@@ -55,17 +51,15 @@ public class JavaSoundAudioDevice implements AudioDeviceManager {
         String osName = System.getProperty("os.name");
         if (osName.contains("Windows")) {
             suggestedOutputLatency = 0.08;
-            LOGGER.info("JSyn: default output latency set to "
-                    + ((int) (suggestedOutputLatency * 1000)) + " msec for " + osName);
         }
         deviceRecords = new ArrayList<DeviceInfo>();
         sniffAvailableMixers();
-        dumpAvailableMixers();
+        if (false) dumpAvailableMixers();
     }
 
     private void dumpAvailableMixers() {
         for (DeviceInfo deviceInfo : deviceRecords) {
-            LOGGER.debug("" + deviceInfo);
+            System.out.println("" + deviceInfo);
         }
     }
 
@@ -177,14 +171,12 @@ public class JavaSoundAudioDevice implements AudioDeviceManager {
         public void start() {
             DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
             if (!AudioSystem.isLineSupported(info)) {
-                // Handle the error.
-                LOGGER.error("JavaSoundOutputStream - not supported." + format);
+                // TODO Handle the error.
             } else {
                 try {
                     line = (SourceDataLine) getDataLine(info);
                     int bufferSize = calculateBufferSize(suggestedOutputLatency);
                     line.open(format, bufferSize);
-                    LOGGER.debug("Output buffer size = " + bufferSize + " bytes.");
                     line.start();
 
                 } catch (Exception e) {
@@ -273,14 +265,12 @@ public class JavaSoundAudioDevice implements AudioDeviceManager {
         public void start() {
             DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
             if (!AudioSystem.isLineSupported(info)) {
-                // Handle the error.
-                LOGGER.error("JavaSoundInputStream - not supported." + format);
+                // TODO Handle the error.
             } else {
                 try {
                     line = (TargetDataLine) getDataLine(info);
                     int bufferSize = calculateBufferSize(suggestedInputLatency);
                     line.open(format, bufferSize);
-                    LOGGER.debug("Input buffer size = " + bufferSize + " bytes.");
                     line.start();
                 } catch (Exception e) {
                     e.printStackTrace();

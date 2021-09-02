@@ -24,12 +24,8 @@ import com.portaudio.DeviceInfo;
 import com.portaudio.HostApiInfo;
 import com.portaudio.PortAudio;
 import com.portaudio.StreamParameters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class JPortAudioDevice implements AudioDeviceManager {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(JPortAudioDevice.class);
 
     private double suggestedOutputLatency = 0.030;
     private double suggestedInputLatency = 0.050;
@@ -165,7 +161,6 @@ public class JPortAudioDevice implements AudioDeviceManager {
             streamParameters.device = deviceID;
             streamParameters.suggestedLatency = suggestedOutputLatency;
             int flags = 0;
-            LOGGER.debug("Audio output on " + getDeviceName(deviceID));
             blockingStream = PortAudio.openStream(null, streamParameters, frameRate,
                     FRAMES_PER_BUFFER, flags);
         }
@@ -213,7 +208,6 @@ public class JPortAudioDevice implements AudioDeviceManager {
             streamParameters.device = deviceID;
             streamParameters.suggestedLatency = suggestedInputLatency;
             int flags = 0;
-            LOGGER.debug("Audio input from " + getDeviceName(deviceID));
             blockingStream = PortAudio.openStream(streamParameters, null, frameRate,
                     FRAMES_PER_BUFFER, flags);
         }

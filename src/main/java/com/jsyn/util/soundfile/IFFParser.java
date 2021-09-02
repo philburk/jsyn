@@ -16,9 +16,6 @@
 
 package com.jsyn.util.soundfile;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.EOFException;
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -36,8 +33,6 @@ import java.io.InputStream;
  */
 
 class IFFParser extends FilterInputStream {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(IFFParser.class);
 
     private long numBytesRead = 0;
     private long totalSize = 0;
@@ -197,8 +192,6 @@ class IFFParser extends FilterInputStream {
         int numBytes = readChunkSize();
         totalSize = numBytes + 8;
         parseChunk(handler, fileId, numBytes);
-        if (debug)
-            LOGGER.debug("parse() ------- end");
     }
 
     /**
@@ -206,16 +199,10 @@ class IFFParser extends FilterInputStream {
      * after the type field.
      */
     void parseForm(ChunkHandler handler, int ID, int numBytes, int type) throws IOException {
-        if (debug) {
-            LOGGER.debug("IFF: parseForm >>>>>>>>>>>>>>>>>> BEGIN");
-        }
         while (numBytes > 8) {
             int ckid = readIntBig();
             int size = readChunkSize();
             numBytes -= 8;
-            if (debug) {
-                LOGGER.debug("chunk( " + IDToString(ckid) + ", " + size + " )");
-            }
             if (size < 0) {
                 throw new IOException("Bad IFF chunk Size: " + IDToString(ckid) + " = 0x"
                         + Integer.toHexString(ckid) + ", Size = " + size);
@@ -224,17 +211,9 @@ class IFFParser extends FilterInputStream {
             if ((size & 1) == 1)
                 size++; // even-up
             numBytes -= size;
-            if (debug) {
-                LOGGER.debug("parseForm: numBytes left in form = " + numBytes);
-            }
-        }
-        if (debug) {
-            LOGGER.debug("IFF: parseForm <<<<<<<<<<<<<<<<<<<< END");
         }
 
         if (numBytes > 0) {
-            LOGGER.debug("IFF Parser detected " + numBytes
-                    + " bytes of garbage at end of FORM.");
             skip(numBytes);
         }
     }
@@ -249,9 +228,6 @@ class IFFParser extends FilterInputStream {
         startOffset = getOffset();
         if (isForm(ckid)) {
             int type = readIntBig();
-            if (debug)
-                LOGGER.debug("parseChunk:    form = " + IDToString(ckid) + ", " + numBytes
-                        + ", " + IDToString(type));
             handler.handleForm(this, ckid, numBytes - 4, type);
             endOffset = getOffset();
             numRead = (int) (endOffset - startOffset);
@@ -262,10 +238,6 @@ class IFFParser extends FilterInputStream {
         }
         endOffset = getOffset();
         numRead = (int) (endOffset - startOffset);
-        if (debug) {
-            LOGGER.debug("parseChunk:    endOffset = " + endOffset);
-            LOGGER.debug("parseChunk:    numRead = " + numRead);
-        }
         if ((numBytes & 1) == 1)
             numBytes++; // even-up
         if (numRead < numBytes)
@@ -273,8 +245,6 @@ class IFFParser extends FilterInputStream {
     }
 
     public void readHead() throws IOException {
-        if (debug)
-            LOGGER.debug("parse() ------- begin");
         numBytesRead = 0;
         fileId = readIntBig();
     }

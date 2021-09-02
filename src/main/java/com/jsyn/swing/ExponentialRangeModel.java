@@ -16,9 +16,6 @@
 
 package com.jsyn.swing;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Maps integer range info to a double value along an exponential scale.
  *
@@ -40,7 +37,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ExponentialRangeModel extends DoubleBoundedRangeModel {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExponentialRangeModel.class);
     private static final long serialVersionUID = -142785624892302160L;
 
     double a = 1.0;
@@ -104,7 +100,6 @@ public class ExponentialRangeModel extends DoubleBoundedRangeModel {
     public void test(int sliderValue) {
         double dval = sliderToDouble(sliderValue);
         int ival = doubleToSlider(dval);
-        LOGGER.debug(sliderValue + " => " + dval + " => " + ival);
     }
 
 }

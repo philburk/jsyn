@@ -16,9 +16,6 @@
 
 package com.jsyn.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Formatted numeric output. Convert integers and floats to strings based on field widths and
  * desired decimal places.
@@ -27,8 +24,6 @@ import org.slf4j.LoggerFactory;
  */
 
 public class NumericOutput {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(NumericOutput.class);
 
     static char digitToChar(int digit) {
         if (digit > 9) {
@@ -54,9 +49,9 @@ public class NumericOutput {
         boolean ifNeg = false;
         // only do sign if decimal
         if (radix != 10) {
-            // LOGGER.debug("MASK before : ln = " + ln );
+            // System.out.println("MASK before : ln = " + ln );
             ln = ln & 0x00000000FFFFFFFFL;
-            // LOGGER.debug("MASK after : ln = " + ln );
+            // System.out.println("MASK after : ln = " + ln );
         } else if (ln < 0) {
             ifNeg = true;
             ln = -ln;
@@ -64,7 +59,7 @@ public class NumericOutput {
         if (ln == 0) {
             buf.append('0');
         } else {
-            // LOGGER.debug(" ln = " + ln );
+            // System.out.println(" ln = " + ln );
             while (ln > 0) {
                 int rem = (int) (ln % radix);
                 buf.append(digitToChar(rem));
@@ -147,34 +142,34 @@ public class NumericOutput {
     }
 
     static void testInteger(int n) {
-        LOGGER.debug("Test " + n + ", 0x" + Integer.toHexString(n) + ", %"
+        System.out.println("Test " + n + ", 0x" + Integer.toHexString(n) + ", %"
                 + Integer.toBinaryString(n));
-        LOGGER.debug("  +,8,t,10 = " + integerToString(n, 8, true, 10));
-        LOGGER.debug("  +,8,f,10 = " + integerToString(n, 8, false, 10));
-        LOGGER.debug("  -,8,t,10 = " + integerToString(-n, 8, true, 10));
-        LOGGER.debug("  -,8,f,10 = " + integerToString(-n, 8, false, 10));
-        LOGGER.debug("  +,8,t,16 = " + integerToString(n, 8, true, 16));
-        LOGGER.debug("  +,8,f,16 = " + integerToString(n, 8, false, 16));
-        LOGGER.debug("  -,8,t,16 = " + integerToString(-n, 8, true, 16));
-        LOGGER.debug("  -,8,f,16 = " + integerToString(-n, 8, false, 16));
-        LOGGER.debug("  +,8,t, 2 = " + integerToString(n, 8, true, 2));
-        LOGGER.debug("  +,8,f, 2 = " + integerToString(n, 8, false, 2));
+        System.out.println("  +,8,t,10 = " + integerToString(n, 8, true, 10));
+        System.out.println("  +,8,f,10 = " + integerToString(n, 8, false, 10));
+        System.out.println("  -,8,t,10 = " + integerToString(-n, 8, true, 10));
+        System.out.println("  -,8,f,10 = " + integerToString(-n, 8, false, 10));
+        System.out.println("  +,8,t,16 = " + integerToString(n, 8, true, 16));
+        System.out.println("  +,8,f,16 = " + integerToString(n, 8, false, 16));
+        System.out.println("  -,8,t,16 = " + integerToString(-n, 8, true, 16));
+        System.out.println("  -,8,f,16 = " + integerToString(-n, 8, false, 16));
+        System.out.println("  +,8,t, 2 = " + integerToString(n, 8, true, 2));
+        System.out.println("  +,8,f, 2 = " + integerToString(n, 8, false, 2));
     }
 
     static void testDouble(double value) {
-        LOGGER.debug("Test " + value);
-        LOGGER.debug("  +,5,1 = " + doubleToString(value, 5, 1));
-        LOGGER.debug("  -,5,1 = " + doubleToString(-value, 5, 1));
+        System.out.println("Test " + value);
+        System.out.println("  +,5,1 = " + doubleToString(value, 5, 1));
+        System.out.println("  -,5,1 = " + doubleToString(-value, 5, 1));
 
-        LOGGER.debug("  +,14,3 = " + doubleToString(value, 14, 3));
-        LOGGER.debug("  -,14,3 = " + doubleToString(-value, 14, 3));
+        System.out.println("  +,14,3 = " + doubleToString(value, 14, 3));
+        System.out.println("  -,14,3 = " + doubleToString(-value, 14, 3));
 
-        LOGGER.debug("  +,6,2,true = " + doubleToString(value, 6, 2, true));
-        LOGGER.debug("  -,6,2,true = " + doubleToString(-value, 6, 2, true));
+        System.out.println("  +,6,2,true = " + doubleToString(value, 6, 2, true));
+        System.out.println("  -,6,2,true = " + doubleToString(-value, 6, 2, true));
     }
 
     public static void main(String argv[]) {
-        LOGGER.debug("Test NumericOutput");
+        System.out.println("Test NumericOutput");
         testInteger(0);
         testInteger(1);
         testInteger(16);
