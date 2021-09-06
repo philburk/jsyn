@@ -22,19 +22,15 @@ import com.jsyn.devices.AudioDeviceManager;
 import com.jsyn.devices.AudioDeviceOutputStream;
 import com.jsyn.devices.javasound.JavaSoundAudioDevice;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Phil Burk, (C) 2009 Mobileer Inc
  */
 public class TestAudioOutput {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestAudioOutput.class);
-
     @Test
     public void testMonoSine() throws IOException {
-        LOGGER.debug("Test mono output.");
+        System.out.println("Test mono output.");
         final int FRAMES_PER_BUFFER = 128;
         final int SAMPLES_PER_FRAME = 1;
         double[] buffer = new double[FRAMES_PER_BUFFER * SAMPLES_PER_FRAME];
@@ -55,7 +51,7 @@ public class TestAudioOutput {
 
     @Test
     public void testStereoSine() throws IOException {
-        LOGGER.debug("Test stereo output.");
+        System.out.println("Test stereo output.");
         final int FRAMES_PER_BUFFER = 128;
         final int SAMPLES_PER_FRAME = 2;
         double[] buffer = new double[FRAMES_PER_BUFFER * SAMPLES_PER_FRAME];

@@ -22,15 +22,11 @@ import com.jsyn.unitgen.PitchDetector;
 import com.jsyn.unitgen.SineOscillator;
 import com.jsyn.unitgen.ZeroCrossingCounter;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestEngine {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestEngine.class);
 
     @Test
     public void testInitialization() {
@@ -175,14 +171,14 @@ public class TestEngine {
             double confidenceMeasured = pitchDetector.confidence.get();
             double oscFreq = osc.frequency.get();
             String msg = "freq at " + rate + " Hz";
-            LOGGER.debug(msg);
+            System.out.println(msg);
             assertEquals(oscFreq, frequencyMeasured, oscFreq * 0.1, msg);
             assertEquals(0.9, confidenceMeasured, 0.1, "pitch confidence");
 
             double expectedCount = interval * oscFreq;
             double framesMeasured = counter.getCount() - previousFrameCount;
             msg = "count at " + rate + " Hz";
-            LOGGER.debug(msg);
+            System.out.println(msg);
             assertEquals(expectedCount, framesMeasured, expectedCount * 0.1, msg);
 
             synth.stop();

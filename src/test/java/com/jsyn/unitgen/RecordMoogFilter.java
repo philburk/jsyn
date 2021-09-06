@@ -25,8 +25,6 @@ import javax.swing.JApplet;
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.util.WaveRecorder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Measure actual frequency as a function of input frequency and Q.
@@ -34,8 +32,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class RecordMoogFilter extends JApplet {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(RecordMoogFilter.class);
 
     private final static boolean SWEEP_Q = false;
     private final static boolean SWEEP_FREQUENCY = true;
@@ -82,7 +78,7 @@ public class RecordMoogFilter extends JApplet {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        LOGGER.debug("Writing to WAV file " + waveFile.getAbsolutePath());
+        System.out.println("Writing to WAV file " + waveFile.getAbsolutePath());
     }
 
     @Override

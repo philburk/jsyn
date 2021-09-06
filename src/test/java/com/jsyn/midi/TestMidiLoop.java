@@ -23,8 +23,6 @@ import javax.sound.midi.Receiver;
 
 import com.jsyn.devices.javasound.MidiDeviceTools;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Connect a USB MIDI Keyboard to the internal MIDI Synthesizer using JavaSound.
@@ -32,8 +30,6 @@ import org.slf4j.LoggerFactory;
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
 public class TestMidiLoop {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestMidiLoop.class);
 
     @Test
     private void midiLoop() {
@@ -56,7 +52,7 @@ public class TestMidiLoop {
         @Override
         public void send(MidiMessage message, long timeStamp) {
             byte[] bytes = message.getMessage();
-            LOGGER.debug("Got " + bytes.length + " bytes.");
+            System.out.println("Got " + bytes.length + " bytes.");
         }
     }
 
@@ -72,13 +68,13 @@ public class TestMidiLoop {
             // Put the receiver in the transmitter.
             // This gives fairly low latency playing.
             keyboard.getTransmitter().setReceiver(receiver);
-            LOGGER.debug("Play MIDI keyboard: " + keyboard.getDeviceInfo().getDescription());
+            System.out.println("Play MIDI keyboard: " + keyboard.getDeviceInfo().getDescription());
             result = 0;
             Thread.sleep(4000);
-            LOGGER.debug("Close the keyboard. It may not work after this according to the docs!");
+            System.out.println("Close the keyboard. It may not work after this according to the docs!");
             keyboard.close();
         } else {
-            LOGGER.debug("Could not find a keyboard.");
+            System.out.println("Could not find a keyboard.");
         }
         return result;
     }

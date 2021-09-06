@@ -23,20 +23,16 @@ import com.jsyn.data.FloatSample;
 import com.jsyn.util.SampleLoader;
 import com.jsyn.util.WaveFileWriter;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestWaveFileReadWrite {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestWaveFileReadWrite.class);
-
     public void checkWriteReadWave(int numChannels, float[] data) throws IOException {
         File temp = File.createTempFile("test_wave", ".wav");
         temp.deleteOnExit();
-        LOGGER.debug("Creating wave file " + temp);
+        System.out.println("Creating wave file " + temp);
 
         WaveFileWriter writer = new WaveFileWriter(temp);
         writer.setFrameRate(44100);
@@ -91,7 +87,7 @@ public class TestWaveFileReadWrite {
     public void testArguments() throws IOException {
         File temp = File.createTempFile("test_wave", ".wav");
         temp.deleteOnExit();
-        LOGGER.debug("Creating wave file " + temp);
+        System.out.println("Creating wave file " + temp);
 
         WaveFileWriter writer = new WaveFileWriter(temp);
         writer.setBitsPerSample(16);
@@ -108,7 +104,7 @@ public class TestWaveFileReadWrite {
             writer.close();
         }
 
-        fail("17 generated exception");
+        fail("17 bits per sample generated exception");
     }
 
 }

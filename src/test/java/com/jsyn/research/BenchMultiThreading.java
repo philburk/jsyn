@@ -17,8 +17,6 @@
 package com.jsyn.research;
 
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
@@ -26,8 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // TODO: Use thread pools, or maybe JMH?
 public class BenchMultiThreading {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BenchMultiThreading.class);
 
     private static final int FRAMES_PER_BLOCK = 64;
     int numThreads = 4;
@@ -72,9 +68,9 @@ public class BenchMultiThreading {
                     long stopNano = System.nanoTime();
                 }
             } catch (InterruptedException e) {
-                LOGGER.debug("CustomThread interrupted. ");
+                System.out.println("CustomThread interrupted. ");
             }
-            LOGGER.debug("Finishing " + this);
+            System.out.println("Finishing " + this);
         }
 
         public void abort() {

@@ -18,14 +18,10 @@ package com.jsyn.ports;
 
 import com.jsyn.data.FloatSample;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestSequentialData {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestSequentialData.class);
 
     private final static float[] data1 = {
             0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f
@@ -45,7 +41,6 @@ public class TestSequentialData {
         for (int i = 0; i < 3; i++) {
             double factor = i / 3.0;
             double value = ((1.0 - factor) * data1[i + 4]) + (factor * data2[i + 1]);
-            LOGGER.debug("i = " + i + ", factor = " + factor + ", value = " + value);
             assertEquals(value, xfade.readDouble(i), 0.00001, "crossfade " + i);
         }
         for (int i = 3; i < 6; i++) {

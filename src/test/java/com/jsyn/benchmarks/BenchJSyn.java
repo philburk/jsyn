@@ -29,15 +29,11 @@ import com.jsyn.unitgen.SquareOscillatorBL;
 import com.jsyn.unitgen.UnitOscillator;
 import com.softsynth.math.FourierMath;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Phil Burk (C) 2013 Mobileer Inc
  */
 public class BenchJSyn {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BenchJSyn.class);
 
     private Synthesizer synth;
     private long startTime;
@@ -86,7 +82,7 @@ public class BenchJSyn {
 
         double amplitude = 1.0;
         addSineWave(size, bin, ar, amplitude);
-        LOGGER.debug("Bench double FFT");
+        System.out.println("Bench double FFT");
         startTiming();
         for (int i = 0; i < count; i++) {
             FourierMath.transform(1, size, ar, ai);
@@ -112,7 +108,7 @@ public class BenchJSyn {
         float amplitude = 1.0f;
         addSineWave(size, bin, ar, amplitude);
 
-        LOGGER.debug("Bench float FFT");
+        System.out.println("Bench float FFT");
         startTiming();
         for (int i = 0; i < count; i++) {
             FourierMath.transform(1, size, ar, ai);
@@ -132,7 +128,7 @@ public class BenchJSyn {
         double phaseIncrement = 2.0 * Math.PI * bin / size;
         for (int i = 0; i < size; i++) {
             ar[i] += Math.sin(phase) * amplitude;
-            // LOGGER.debug( i + " = " + ar[i] );
+            // System.out.println( i + " = " + ar[i] );
             phase += phaseIncrement;
         }
     }
@@ -142,7 +138,7 @@ public class BenchJSyn {
         float phaseIncrement = (float) (2.0 * Math.PI * bin / size);
         for (int i = 0; i < size; i++) {
             ar[i] += (float) Math.sin(phase) * amplitude;
-            // LOGGER.debug( i + " = " + ar[i] );
+            // System.out.println( i + " = " + ar[i] );
             phase += phaseIncrement;
         }
     }
@@ -198,7 +194,7 @@ public class BenchJSyn {
 
         double measuredPeriod = detector.period.getValue();
         double confidence = detector.confidence.getValue();
-        LOGGER.debug("period = " + period + ", measured = " + measuredPeriod
+        System.out.println("period = " + period + ", measured = " + measuredPeriod
                 + ", confidence = " + confidence);
         if (confidence > 0.1) {
             assert (Math.abs(measuredPeriod - period) < 0.1);

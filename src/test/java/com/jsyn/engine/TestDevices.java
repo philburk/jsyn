@@ -23,14 +23,10 @@ import com.jsyn.devices.AudioDeviceManager;
 import com.jsyn.unitgen.LineIn;
 import com.jsyn.unitgen.LineOut;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestDevices {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestDevices.class);
 
     @Test
     public void testPassThrough() {
@@ -55,7 +51,7 @@ public class TestDevices {
 
         // We only need to start the LineOut. It will pull data from the LineIn.
         lineOut.start();
-        LOGGER.debug("Audio passthrough started.");
+        System.out.println("Audio passthrough started.");
         // Sleep a while.
         double sleepTime = 2.0;
         double startTime = synth.getCurrentTime();
@@ -70,7 +66,7 @@ public class TestDevices {
         assertEquals(sleepTime, actualSleepTime, 0.1, "Time has advanced. " + actualSleepTime);
         // Stop everything.
         synth.stop();
-        LOGGER.debug("All done.");
+        System.out.println("All done.");
 
     }
 }
