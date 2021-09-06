@@ -25,8 +25,6 @@ import com.jsyn.unitgen.FixedRateMonoReader;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -38,8 +36,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Phil Burk, (C) 2009 Mobileer Inc
  */
 public class TestQueuedDataPort {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestQueuedDataPort.class);
 
     private static Synthesizer synth;
     private static final float[] floatData = {
@@ -164,7 +160,6 @@ public class TestQueuedDataPort {
 
     @Test
     public void testQueueNoLoops() throws InterruptedException {
-        LOGGER.debug("testQueueNoLoops() ================");
         UnitDataQueuePort dataQueue = setupFloatSample();
 
         dataQueue.queueOn(floatSample, synth.createTimeStamp());
@@ -179,7 +174,6 @@ public class TestQueuedDataPort {
 
     @Test
     public void testQueueLoopForever() throws InterruptedException {
-        LOGGER.debug("testQueueLoopForever() ================");
 
         UnitDataQueuePort dataQueue = setupFloatSample();
 
@@ -208,7 +202,6 @@ public class TestQueuedDataPort {
 
     @Test
     public void testQueueLoopAtLeastOnce() throws InterruptedException {
-        LOGGER.debug("testQueueLoopAtLeastOnce() ================");
 
         UnitDataQueuePort dataQueue = setupFloatSample();
 
@@ -228,7 +221,6 @@ public class TestQueuedDataPort {
 
     @Test
     public void testQueueNumLoops() throws InterruptedException {
-        LOGGER.debug("testQueueNumLoops() ================");
         UnitDataQueuePort dataQueue = setupFloatSample();
 
         dataQueue.queue(floatSample, 0, 2);
@@ -248,12 +240,12 @@ public class TestQueuedDataPort {
 
         checkQueuedData(floatData, dataQueue, 0, 2);
         for (int i = 0; i < (numLoopsA + 1); i++) {
-            LOGGER.debug("loop A #" + i);
+            System.out.println("loop A #" + i);
             checkQueuedData(floatData, dataQueue, 2, 3);
         }
         checkQueuedData(floatData, dataQueue, 4, 2);
         for (int i = 0; i < (numLoopsB + 1); i++) {
-            LOGGER.debug("loop B #" + i);
+            System.out.println("loop B #" + i);
             checkQueuedData(floatData, dataQueue, 3, 4);
         }
 
@@ -274,7 +266,6 @@ public class TestQueuedDataPort {
 
     @Test
     public void testQueueSustainLoop() throws InterruptedException {
-        LOGGER.debug("testQueueSustainLoop() ================");
 
         UnitDataQueuePort dataQueue = setupFloatSample();
 
@@ -302,7 +293,6 @@ public class TestQueuedDataPort {
 
     @Test
     public void testQueueReleaseLoop() throws InterruptedException {
-        LOGGER.debug("testQueueReleaseLoop() ================");
         UnitDataQueuePort dataQueue = setupFloatSample();
 
         // set up sustain loops ===========================
@@ -331,7 +321,6 @@ public class TestQueuedDataPort {
 
     @Test
     public void testQueueSustainReleaseLoops() throws InterruptedException {
-        LOGGER.debug("testQueueSustainReleaseLoops() ================");
         UnitDataQueuePort dataQueue = setupFloatSample();
 
         // set up sustain loops ===========================
@@ -384,21 +373,21 @@ public class TestQueuedDataPort {
 
         @Override
         public void started(QueueDataEvent event) {
-            LOGGER.debug("Callback started.");
+            System.out.println("Callback started.");
             gotStarted = true;
             lastEvent = event;
         }
 
         @Override
         public void looped(QueueDataEvent event) {
-            LOGGER.debug("Callback looped.");
+            System.out.println("Callback looped.");
             gotLooped = true;
             lastEvent = event;
         }
 
         @Override
         public void finished(QueueDataEvent event) {
-            LOGGER.debug("Callback finished.");
+            System.out.println("Callback finished.");
             gotFinished = true;
             lastEvent = event;
         }
@@ -501,7 +490,7 @@ public class TestQueuedDataPort {
         for (int i = 0; i < 3; i++) {
             double factor = i / 3.0;
             double value = ((1.0 - factor) * data1[i + 4]) + (factor * data2[i + 1]);
-            LOGGER.debug("i = " + i + ", factor = " + factor + ", value = " + value);
+            System.out.println("i = " + i + ", factor = " + factor + ", value = " + value);
 
             double actual = dataQueue.readNextMonoDouble(synth.getFramePeriod());
             assertEquals(value, actual, 0.00001, "crossfade " + i);
@@ -537,7 +526,7 @@ public class TestQueuedDataPort {
         for (int i = 0; i < 3; i++) {
             double factor = i / 3.0;
             double value = ((1.0 - factor) * data1[i + beforeInterrupt]) + (factor * data2[i + 1]);
-            LOGGER.debug("i = " + i + ", factor = " + factor + ", value = " + value);
+            System.out.println("i = " + i + ", factor = " + factor + ", value = " + value);
 
             double actual = dataQueue.readNextMonoDouble(synth.getFramePeriod());
             assertEquals(value, actual, 0.00001, "crossfade " + i);

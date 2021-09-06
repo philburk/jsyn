@@ -20,15 +20,12 @@ import com.jsyn.engine.SynthesisEngine;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestEnvelopeDAHDSR extends TestUnitGate {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestEnvelopeDAHDSR.class);
 
     double delayTime;
     double attackTime;
@@ -328,7 +325,7 @@ public class TestEnvelopeDAHDSR extends TestUnitGate {
         // Start envelope release.
         ramp.input.set(0.0);
         final double db90 = 20.0 * Math.log(1.0 / 32768.0) / Math.log(10.0);
-        LOGGER.debug("JSyns DB90 is actually " + db90);
+        System.out.println("JSyns DB90 is actually " + db90);
         int numSteps = 10;
         for (int i = 0; i < 10; i++) {
             time += releaseTime / numSteps;

@@ -37,16 +37,12 @@ import com.jsyn.unitgen.UnitFilter;
 import com.jsyn.unitgen.UnitOscillator;
 import com.jsyn.util.WaveRecorder;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This is a work in progress.
  * It generates WAV files that should probably be deleted when done.
  */
 public class RecordVariousRamps {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(RecordVariousRamps.class);
 
     private Synthesizer synth;
     private UnitOscillator osc;
@@ -91,7 +87,7 @@ public class RecordVariousRamps {
         File waveFile = new File("ramp_pitch_" + modeNames[mode] + ".wav");
         // Mono 16 bits.
         recorder = new WaveRecorder(synth, waveFile, 1, 16);
-        LOGGER.debug("Writing to 16-bit WAV file " + waveFile.getAbsolutePath());
+        System.out.println("Writing to 16-bit WAV file " + waveFile.getAbsolutePath());
 
         // Add some tone generators.
         synth.add(osc = new SawtoothOscillatorBL());
@@ -163,7 +159,7 @@ public class RecordVariousRamps {
             ramp.getInput().set(rampEvent.target);
 
             nextEventTime += rampEvent.eventDuration;
-            LOGGER.debug("target = " + rampEvent.target + ", rampDur = "
+            System.out.println("target = " + rampEvent.target + ", rampDur = "
                     + rampEvent.rampDuration + ", eventDur = " + rampEvent.eventDuration);
             try {
                 synth.sleepUntil(nextEventTime);

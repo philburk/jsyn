@@ -17,14 +17,10 @@
 package com.jsyn.util;
 
 import com.softsynth.math.FourierMath;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestFFT {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestFFT.class);
 
     public void checkSingleSineDouble(int size, int bin) {
         double[] ar = new double[size];
