@@ -30,11 +30,16 @@ Enter:
     ant
 
 The resulting jar will be placed in "dist/lib/".
+    
 To run the built-in test App on a desktop, enter something like this:
 
     java -jar dist/lib/jsyn-20160203.jar
 
 but with the correct date.
+
+To create javadocs enter:
+
+    ant docs
 
 ### Build Using Gradle
 
