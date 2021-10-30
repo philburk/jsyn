@@ -119,4 +119,13 @@ public class Circuit extends UnitGenerator {
         return port;
     }
 
+    /**
+     * The units are guaranteed to be in the same order
+     * as they were added.
+     *
+     * @return an array of units that have been added to this circuit.
+     */
+    UnitGenerator[] getUnits() {
+        return units.toArray(new UnitGenerator[0]);
+    }
 }
