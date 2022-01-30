@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,7 @@ import com.jsyn.io.AudioOutputStream;
 
 /**
  * Read from an AudioInputStream and write to an AudioOutputStream as a background thread.
- * 
+ *
  * @author Phil Burk (C) 2011 Mobileer Inc
  */
 public class StreamingThread extends Thread {
@@ -47,17 +47,18 @@ public class StreamingThread extends Thread {
         try {
             transportModel.firePositionChanged(framePosition);
             transportModel.fireStateChanged(TransportModel.STATE_RUNNING);
-            int framesToRead = geteFramesToRead(buffer);
+            int framesToRead = getFramesToRead(buffer);
             while (go && (framesToRead > 0)) {
                 int samplesToRead = framesToRead * samplesPerFrame;
                 while (samplesToRead > 0) {
                     int samplesRead = inputStream.read(buffer, 0, samplesToRead);
                     outputStream.write(buffer, 0, samplesRead);
                     samplesToRead -= samplesRead;
+                    if (samplesRead < samplesToRead) break; // stream closed
                 }
                 framePosition += framesToRead;
                 transportModel.firePositionChanged(framePosition);
-                framesToRead = geteFramesToRead(buffer);
+                framesToRead = getFramesToRead(buffer);
             }
             transportModel.fireStateChanged(TransportModel.STATE_STOPPED);
         } catch (IOException e) {
@@ -65,7 +66,7 @@ public class StreamingThread extends Thread {
         }
     }
 
-    private int geteFramesToRead(double[] buffer) {
+    private int getFramesToRead(double[] buffer) {
         if (maxFrames > 0) {
             long numToRead = maxFrames - framePosition;
             if (numToRead < 0) {
@@ -85,7 +86,7 @@ public class StreamingThread extends Thread {
 
     /**
      * Only call this before the thread has started.
-     * 
+     *
      * @param framesPerBuffer
      */
     public void setFramesPerBuffer(int framesPerBuffer) {
