@@ -55,4 +55,11 @@ To run the built-in test App on a desktop, enter something like this:
     
 but with the correct version.
 
+### Test Using Gradle
+
+To run the unit tests, enter:
+
+    cd jsyn
+    ./gradlew test
+    
 JSyn - Copyright 1997 Mobileer Inc
