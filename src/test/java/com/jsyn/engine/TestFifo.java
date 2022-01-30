@@ -34,7 +34,7 @@ public class TestFifo {
         fifo.allocate(8);
         assertEquals(0, fifo.available(), "start empty");
 
-        assertEquals(Double.NaN, fifo.read(), "read back Nan when emopty");
+        assertEquals(Double.NaN, fifo.read(), "read back Nan when empty");
 
         fifo.write(1.0);
         assertEquals(1, fifo.available(), "added one value");
@@ -49,6 +49,29 @@ public class TestFifo {
             assertEquals(fifo.size() - i, fifo.available(), "removing data");
             assertEquals(100.0 + i, fifo.read(), "reading back data");
         }
+        watchdog.interrupt();
+    }
+
+    @Test
+    public void testReadAvailable() {
+        Thread watchdog = startWatchdog(600);
+
+        AudioFifo fifo = new AudioFifo();
+        fifo.setReadWaitEnabled(false);
+        fifo.allocate(8);
+
+        final double x1 = 0.234;
+        fifo.write(x1);
+        final double x2 = 0.750;
+        fifo.write(x2);
+        assertEquals(2, fifo.available(), "added two values");
+
+        double[] buffer = new double[6];
+        int numRead = fifo.read(buffer, 2, buffer.length - 2);
+        assertEquals(2, numRead, "should have read two values");
+        assertEquals(x1, buffer[2], "read x1");
+        assertEquals(x2, buffer[3], "read x2");
+
         watchdog.interrupt();
     }
 

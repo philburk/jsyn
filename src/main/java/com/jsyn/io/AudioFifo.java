@@ -80,7 +80,7 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
 
     @Override
     public double read() {
-        double value = 0.0;
+        double value = Double.NaN;
         if (readWaitEnabled) {
             lock.lock();
             try {
@@ -99,7 +99,7 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
             }
 
         } else {
-            if (readIndex != writeIndex) {
+            if (mOpen && readIndex != writeIndex) {
                 value = readOneInternal();
             }
         }
@@ -167,21 +167,15 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
         if (!mOpen) {
             return 0;
         }
+        if (!readWaitEnabled) {
+            count = Math.min(available(), count);
+        }
         int numRead = 0;
-        if (readWaitEnabled) {
-            for (int i = 0; mOpen && i < count; i++) {
-                buffer[i + start] = read();
-                numRead++;
-            }
-        } else {
-            if (available() < count) {
-                count = available();
-            } else {
-                for (int i = 0; i < count; i++) {
-                    buffer[i + start] = read();
-                    numRead++;
-                }
-            }
+        for (int i = 0; mOpen && i < count; i++) {
+            double value = read();
+            if (value == Double.NaN) break;
+            buffer[i + start] = value;
+            numRead++;
         }
         return numRead;
     }
