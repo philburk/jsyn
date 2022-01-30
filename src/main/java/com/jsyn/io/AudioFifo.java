@@ -37,6 +37,7 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
     private int sizeMask;
     private boolean writeWaitEnabled = true;
     private boolean readWaitEnabled = true;
+    private volatile boolean mOpen = true;
     final Lock lock = new ReentrantLock();
     final Condition notFull  = lock.newCondition();
     final Condition notEmpty = lock.newCondition();
@@ -69,23 +70,30 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
 
     @Override
     public void close() {
-        // TODO Maybe we should tell any thread that is waiting that the FIFO is closed.
+        // Tell any thread that is waiting that the FIFO is closed.
+        mOpen = false;
+        lock.lock();
+        notEmpty.signal();
+        notFull.signal();
+        lock.unlock();
     }
 
     @Override
     public double read() {
-        double value = Double.NaN;
+        double value = 0.0;
         if (readWaitEnabled) {
             lock.lock();
             try {
-              while (available() < 1) {
+              while (mOpen && available() < 1) {
                 try {
                     notEmpty.await();
                 } catch (InterruptedException e) {
                     return Double.NaN;
                 }
               }
-              value = readOneInternal();
+              if (mOpen) {
+                  value = readOneInternal();
+              }
             } finally {
               lock.unlock();
             }
@@ -116,7 +124,7 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
         if (writeWaitEnabled) {
             lock.lock();
             try {
-                while (available() == buffer.length)
+                while (mOpen && available() == buffer.length)
                 {
                     try {
                         notFull.await();
@@ -124,7 +132,9 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
                         return; // Silently fail
                     }
                 }
-                writeOneInternal(value);
+                if (mOpen) {
+                    writeOneInternal(value);
+                }
             } finally {
                 lock.unlock();
             }
@@ -154,9 +164,14 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
 
     @Override
     public int read(double[] buffer, int start, int count) {
+        if (!mOpen) {
+            return 0;
+        }
+        int numRead = 0;
         if (readWaitEnabled) {
-            for (int i = 0; i < count; i++) {
+            for (int i = 0; mOpen && i < count; i++) {
                 buffer[i + start] = read();
+                numRead++;
             }
         } else {
             if (available() < count) {
@@ -164,10 +179,11 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
             } else {
                 for (int i = 0; i < count; i++) {
                     buffer[i + start] = read();
+                    numRead++;
                 }
             }
         }
-        return count;
+        return numRead;
     }
 
     @Override

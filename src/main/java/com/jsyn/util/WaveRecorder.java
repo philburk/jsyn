@@ -24,7 +24,8 @@ import com.jsyn.Synthesizer;
 import com.jsyn.ports.UnitInputPort;
 
 /**
- * Connect a unit generator to the input. Then start() recording. The signal will be written to a
+ * Connect a unit generator to the input. Then start() recording.
+ * The signal will be written to a
  * WAV format file that can be read by other programs.
  *
  * @author Phil Burk (C) 2011 Mobileer Inc
@@ -60,7 +61,8 @@ public class WaveRecorder {
      * @param bitsPerSample 16 or 24
      * @throws FileNotFoundException
      */
-    public WaveRecorder(Synthesizer synth, File outputFile, int samplesPerFrame, int bitsPerSample)
+    public WaveRecorder(Synthesizer synth, File outputFile,
+            int samplesPerFrame, int bitsPerSample)
             throws FileNotFoundException {
         this.synth = synth;
         reader = new AudioStreamReader(synth, samplesPerFrame);
@@ -86,10 +88,12 @@ public class WaveRecorder {
 
     public void stop() {
         if (thread != null) {
+            reader.close();
             thread.requestStop();
             try {
                 thread.join(500);
             } catch (InterruptedException ignored) {
+                System.out.println("join() " + ignored);
             }
             thread = null;
         }
