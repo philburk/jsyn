@@ -125,6 +125,8 @@ public class RecordSineSweep {
         }
         // Stop everything.
         synth.stop();
+
+        System.out.println("Test finished.");
     }
 
     public static void main(String[] args) {
