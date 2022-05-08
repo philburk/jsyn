@@ -48,7 +48,7 @@ public class RenderMidiNotes {
     private MultiChannelSynthesizer mMultiSynth;
 
     private AudioStreamReader mReader;
-    private double[] buffer = new double[256 * mNumChannels];
+    private double[] mBuffer = new double[256 * mNumChannels];
     private ArrayList<Double> mSampleArray = new ArrayList<Double>();
 
     private void test() throws IOException, InterruptedException {
@@ -105,7 +105,7 @@ public class RenderMidiNotes {
         System.out.println("Test finished.");
     }
 
-
+    // Run the synthesizer and gather the PCM output until the specified time.
     private void renderUntil(double time) throws InterruptedException
     {
         while (mSynth.getCurrentTime() < time) {
@@ -114,10 +114,10 @@ public class RenderMidiNotes {
             int available = mReader.available();
             // System.out.println("available = " + available);
             while (available > 0) {
-                int numSamplesToRead = Math.min(buffer.length, available);
-                int numRead = mReader.read(buffer, 0, numSamplesToRead);
+                int numSamplesToRead = Math.min(mBuffer.length, available);
+                int numRead = mReader.read(mBuffer, 0, numSamplesToRead);
                 for (int i = 0; i < numRead; i++) {
-                    mSampleArray.add(buffer[i]);
+                    mSampleArray.add(mBuffer[i]);
                 }
                 available -= numRead;
                 // System.out.println("numRead = " + numRead);
