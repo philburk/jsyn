@@ -78,12 +78,13 @@ public class RenderMidiNotes {
         for (int i = 0; i<8; i++) {
             // Note On
             byte[] bar = {(byte) MidiConstants.NOTE_ON,
-                    (byte) (60 + (2*i)), 100};
+                    (byte) (60 + (2*i)), // pitch
+                    100}; // velocity
             sendMidiMessage(bar);
             now += 0.2;
             renderUntil(now);
 
-            // Note Off using velicity=zero
+            // Turn the Note Off by setting velocity to zero
             bar[2] = 0;
             sendMidiMessage(bar);
             now += 0.2;
