@@ -26,7 +26,6 @@
         srcdir="${src.dir}" destdir="${build.dir}">
       <classpath>
         <pathelement path="libs/jportaudio.jar"/>
-        <pathelement path="libs/slf4j-api-1.7.9.jar"/>
       </classpath>
     </javac>
   </target>
