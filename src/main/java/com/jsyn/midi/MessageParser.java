@@ -28,44 +28,58 @@ public class MessageParser {
     private int MASK_14BIT = (1 << 14) - 1;
 
     public void parse(byte[] message) {
-        int status = message[0];
+        parse(message, /* offset= */ 0, message.length);
+    }
+
+    public void parse(byte[] message, int offset, int length) {
+        checkMessageLength(/* expectedLength= */ 1, length);
+        int status = message[offset];
         int command = status & 0xF0;
         int channel = status & 0x0F;
 
         switch (command) {
             case MidiConstants.NOTE_ON:
-                int velocity = message[2];
+                checkMessageLength(/* expectedLength= */ 3, length);
+                int velocity = message[offset + 2];
                 if (velocity == 0) {
-                    noteOff(channel, message[1], velocity);
+                    noteOff(channel, message[offset + 1], velocity);
                 } else {
-                    noteOn(channel, message[1], velocity);
+                    noteOn(channel, message[offset + 1], velocity);
                 }
                 break;
 
             case MidiConstants.NOTE_OFF:
-                noteOff(channel, message[1], message[2]);
+                checkMessageLength(/* expectedLength= */ 3, length);
+                noteOff(channel, message[offset + 1], message[offset + 2]);
                 break;
 
             case MidiConstants.POLYPHONIC_AFTERTOUCH:
-                polyphonicAftertouch(channel, message[1], message[2]);
+                checkMessageLength(/* expectedLength= */ 3, length);
+                polyphonicAftertouch(channel, message[offset + 1], message[offset + 2]);
                 break;
 
             case MidiConstants.CHANNEL_PRESSURE:
-                channelPressure(channel, message[1]);
+                checkMessageLength(/* expectedLength= */ 2, length);
+                channelPressure(channel, message[offset + 1]);
                 break;
 
             case MidiConstants.CONTROL_CHANGE:
-                rawControlChange(channel, message[1], message[2]);
+                checkMessageLength(/* expectedLength= */ 3, length);
+                rawControlChange(channel, message[offset + 1], message[offset + 2]);
                 break;
 
             case MidiConstants.PROGRAM_CHANGE:
-                programChange(channel, message[1]);
+                checkMessageLength(/* expectedLength= */ 2, length);
+                programChange(channel, message[offset + 1]);
                 break;
 
             case MidiConstants.PITCH_BEND:
-                int bend = (message[2] << 7) + message[1];
+                checkMessageLength(/* expectedLength= */ 3, length);
+                int bend = (message[offset + 2] << 7) + message[offset + 1];
                 pitchBend(channel, bend);
                 break;
+            default:
+                break; // We ignore unsupported commands.
         }
 
     }
@@ -114,6 +128,17 @@ public class MessageParser {
             registeredParameter(channel, paramIndex, parameterValues[channel]);
         } else {
             nonRegisteredParameter(channel, paramIndex & MASK_14BIT, parameterValues[channel]);
+        }
+    }
+
+    private void checkMessageLength(int expectedLength, int actualLength) {
+        if (actualLength < expectedLength) {
+            throw new IllegalArgumentException(
+                "Expected message of at least "
+                    + expectedLength
+                    + " bytes but got "
+                    + actualLength
+                    + " bytes.");
         }
     }
 

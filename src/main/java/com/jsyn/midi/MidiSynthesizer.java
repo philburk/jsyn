@@ -110,8 +110,8 @@ public class MidiSynthesizer extends MessageParser {
         multiSynth.setPitchBend(channel, offset);
     }
 
-    public void onReceive(byte[] bytes, int i, int length) {
-        parse(bytes); // TODO
+    public void onReceive(byte[] bytes, int offset, int length) {
+        parse(bytes, offset, length);
     }
 
 }
