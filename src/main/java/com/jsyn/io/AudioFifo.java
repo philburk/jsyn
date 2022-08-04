@@ -173,7 +173,7 @@ public class AudioFifo implements AudioInputStream, AudioOutputStream {
         int numRead = 0;
         for (int i = 0; mOpen && i < count; i++) {
             double value = read();
-            if (value == Double.NaN) break;
+            if (Double.isNaN(value)) break;
             buffer[i + start] = value;
             numRead++;
         }
