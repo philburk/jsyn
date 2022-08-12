@@ -105,7 +105,6 @@ public class MessageParser {
                 break;
             case MidiConstants.CONTROLLER_NRPN_MSB:
                 parameterIndices[channel] = (value << 7) | BIT_NON_RPM;
-                ;
                 break;
             case MidiConstants.CONTROLLER_RPN_LSB:
                 paramIndex = parameterIndices[channel] & ~0x7F;
