@@ -35,14 +35,15 @@ import com.softsynth.math.AudioMath;
 import com.softsynth.shared.time.TimeStamp;
 
 /**
- * General purpose synthesizer with "channels"
- * that could be used to implement a MIDI synthesizer.
- *
+ * General purpose synthesizer with "channels" that could be used to implement a MIDI synthesizer.
  * Each channel has:
- * <pre><code>
+ *
+ * <pre>
+ * <code>
  * lfo -&gt; pitchToLinear -&gt; [VOICES] -&gt; volume* -&gt; panner
  * bend --/
- * </code></pre>
+ * </code>
+ * </pre>
  *
  * Note: this class is experimental and subject to change.
  *
@@ -53,6 +54,9 @@ public class MultiChannelSynthesizer {
     private TwoInDualOut outputUnit;
     private ChannelContext[] channels;
     private final static int MAX_VELOCITY = 127;
+    private final static int DEFAULT_RHYTHM_CHANNEL = 9; // known as channel "10" by musicians
+    // Use preset 128 as a special code to indicate that a voice is being used for rhythm.
+    private final static int RHYTHM_PRESET = 128;
     private double mMasterAmplitude = 0.25;
 
     private class ChannelGroupContext {
@@ -69,7 +73,6 @@ public class MultiChannelSynthesizer {
                 UnitGenerator ugen = voice.getUnitGenerator();
                 synth.add(ugen);
                 voices[i] = voice;
-
             }
             allocator = new VoiceAllocator(voices);
         }
@@ -87,9 +90,20 @@ public class MultiChannelSynthesizer {
         private double bendRangeOctaves = 2.0 / 12.0;
         private int presetIndex;
         private ChannelGroupContext groupContext;
+        private int channelIndex;
+        private boolean rhythm; // Is this channel a drum channel or a melodic channel?
+
+        ChannelContext(int channelIndex) {
+            this.channelIndex = channelIndex;
+            if (channelIndex == DEFAULT_RHYTHM_CHANNEL) {
+                rhythm = true;
+                presetIndex = RHYTHM_PRESET;
+            }
+        }
+
         VoiceOperation voiceOperation = new VoiceOperation() {
             @Override
-            public void operate (UnitVoice voice) {
+            public void operate(UnitVoice voice) {
                 voice.usePreset(presetIndex);
                 connectVoice(voice);
             }
@@ -98,8 +112,8 @@ public class MultiChannelSynthesizer {
         void setup(ChannelGroupContext groupContext) {
             this.groupContext = groupContext;
             synth.add(pitchToLinear = new PowerOfTwo());
-            synth.add(lfo = new SineOscillator()); // TODO use a MorphingOscillator or switch
-                                                   // between S&H etc.
+            synth.add(lfo = new SineOscillator());
+            // TODO use a MorphingOscillator or switch between S&H etc.
             // Use a ramp to smooth out the timbre changes.
             // This helps reduce pops from changing filter cutoff too abruptly.
             synth.add(timbreRamp = new LinearRamp());
@@ -151,18 +165,31 @@ public class MultiChannelSynthesizer {
         }
 
         void programChange(int program) {
-            int programWrapped = program % groupContext.voiceDescription.getPresetCount();
-            String name = groupContext.voiceDescription.getPresetNames()[programWrapped];
-            //LOGGER.debug("Preset[" + program + "] = " + name);
-            presetIndex = programWrapped;
+            if (!rhythm) {
+                int programWrapped = program % groupContext.voiceDescription.getPresetCount();
+                String name = groupContext.voiceDescription.getPresetNames()[programWrapped];
+                // LOGGER.debug("Preset[" + program + "] = " + name);
+                presetIndex = programWrapped;
+            }
+        }
+
+        /**
+         * Combine channel and noteNumber in case we are sharing a VoiceAllocator across multiple
+         * channels.
+         *
+         * @param noteNumber
+         * @return a tag that is unique per channel and note
+         */
+        private int makeNoteTag(int noteNumber) {
+            return (channelIndex << 8) + noteNumber;
         }
 
         void noteOff(int noteNumber, double amplitude) {
-            groupContext.allocator.noteOff(noteNumber, synth.createTimeStamp());
+            noteOff(noteNumber, amplitude, synth.createTimeStamp());
         }
 
         void noteOff(int noteNumber, double amplitude, TimeStamp timeStamp) {
-            groupContext.allocator.noteOff(noteNumber, timeStamp);
+            groupContext.allocator.noteOff(makeNoteTag(noteNumber), timeStamp);
         }
 
         void noteOn(int noteNumber, double amplitude) {
@@ -171,8 +198,8 @@ public class MultiChannelSynthesizer {
 
         void noteOn(int noteNumber, double amplitude, TimeStamp timeStamp) {
             double frequency = AudioMath.pitchToFrequency(noteNumber);
-            //LOGGER.debug("noteOn(noteNumber) -> " + frequency + " Hz");
-            groupContext.allocator.noteOn(noteNumber, frequency, amplitude, voiceOperation, timeStamp);
+            groupContext.allocator.noteOn(makeNoteTag(noteNumber), frequency, amplitude,
+                    voiceOperation, timeStamp);
         }
 
         public void setPitchBend(double offset) {
@@ -228,11 +255,10 @@ public class MultiChannelSynthesizer {
         this(MidiConstants.MAX_CHANNELS);
     }
 
-
     public MultiChannelSynthesizer(int maxChannels) {
         channels = new ChannelContext[maxChannels];
         for (int i = 0; i < channels.length; i++) {
-            channels[i] = new ChannelContext();
+            channels[i] = new ChannelContext(i);
         }
     }
 
@@ -251,7 +277,8 @@ public class MultiChannelSynthesizer {
         if (outputUnit == null) {
             synth.add(outputUnit = new TwoInDualOut());
         }
-        ChannelGroupContext groupContext = new ChannelGroupContext(voicesPerChannel,
+        int voicesPerChannelGroupContext = numChannels * voicesPerChannel;
+        ChannelGroupContext groupContext = new ChannelGroupContext(voicesPerChannelGroupContext,
                 voiceDescription);
         for (int i = 0; i < numChannels; i++) {
             channels[startChannel + i].setup(groupContext);
@@ -263,9 +290,9 @@ public class MultiChannelSynthesizer {
         channelContext.programChange(program);
     }
 
-
     /**
      * Turn off a note.
+     *
      * @param channel
      * @param noteNumber
      * @param velocity between 0 and 127, will be scaled by masterAmplitude
@@ -277,6 +304,7 @@ public class MultiChannelSynthesizer {
 
     /**
      * Turn off a note.
+     *
      * @param channel
      * @param noteNumber
      * @param amplitude between 0 and 1.0, will be scaled by masterAmplitude
@@ -288,6 +316,7 @@ public class MultiChannelSynthesizer {
 
     /**
      * Turn off a note.
+     *
      * @param channel
      * @param noteNumber
      * @param amplitude between 0 and 1.0, will be scaled by masterAmplitude
@@ -299,6 +328,7 @@ public class MultiChannelSynthesizer {
 
     /**
      * Turn on a note.
+     *
      * @param channel
      * @param noteNumber
      * @param velocity between 0 and 127, will be scaled by masterAmplitude
@@ -310,6 +340,7 @@ public class MultiChannelSynthesizer {
 
     /**
      * Turn on a note.
+     *
      * @param channel
      * @param noteNumber
      * @param amplitude between 0 and 1.0, will be scaled by masterAmplitude
@@ -321,6 +352,7 @@ public class MultiChannelSynthesizer {
 
     /**
      * Turn on a note.
+     *
      * @param channel
      * @param noteNumber
      * @param amplitude between 0 and 1.0, will be scaled by masterAmplitude
@@ -337,7 +369,7 @@ public class MultiChannelSynthesizer {
      * @param offset ranges from -1.0 to +1.0
      */
     public void setPitchBend(int channel, double offset) {
-        //LOGGER.debug("setPitchBend[" + channel + "] = " + offset);
+        // LOGGER.debug("setPitchBend[" + channel + "] = " + offset);
         ChannelContext channelContext = channels[channel];
         channelContext.setPitchBend(offset);
     }
@@ -393,11 +425,13 @@ public class MultiChannelSynthesizer {
 
     /**
      * Set amplitude for a single voice when the velocity is 127.
+     *
      * @param masterAmplitude
      */
     public void setMasterAmplitude(double masterAmplitude) {
         mMasterAmplitude = masterAmplitude;
     }
+
     public double getMasterAmplitude() {
         return mMasterAmplitude;
     }

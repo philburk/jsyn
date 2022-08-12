@@ -19,26 +19,26 @@ package com.jsyn.midi;
 import com.jsyn.util.MultiChannelSynthesizer;
 
 /**
- * Map MIDI messages into calls to a MultiChannelSynthesizer.
- * Handles CONTROLLER_MOD_WHEEL, TIMBRE, VOLUME and PAN.
- * Handles Bend Range RPN.
+ * Map MIDI messages into calls to a MultiChannelSynthesizer. Handles CONTROLLER_MOD_WHEEL, TIMBRE,
+ * VOLUME and PAN. Handles Bend Range RPN.
  *
- * <pre><code>
-    voiceDescription = DualOscillatorSynthVoice.getVoiceDescription();
-    multiSynth = new MultiChannelSynthesizer();
-    final int startChannel = 0;
-    multiSynth.setup(synth, startChannel, NUM_CHANNELS, VOICES_PER_CHANNEL, voiceDescription);
-    midiSynthesizer = new MidiSynthesizer(multiSynth);
-    // pass MIDI bytes
-    midiSynthesizer.onReceive(bytes, 0, bytes.length);
-    </code></pre>
+ * <pre>
+ * <code>
+ voiceDescription = DualOscillatorSynthVoice.getVoiceDescription();
+ multiSynth = new MultiChannelSynthesizer();
+ final int startChannel = 0;
+ multiSynth.setup(synth, startChannel, NUM_CHANNELS, VOICES_PER_CHANNEL, voiceDescription);
+ midiSynthesizer = new MidiSynthesizer(multiSynth);
+ // pass MIDI bytes
+ midiSynthesizer.onReceive(bytes, 0, bytes.length);
+ </code>
+ * </pre>
  *
  * See the example UseMidiKeyboard.java
  *
  * @author Phil Burk (C) 2016 Mobileer Inc
  */
 public class MidiSynthesizer extends MessageParser {
-
 
     private MultiChannelSynthesizer multiSynth;
 
@@ -48,7 +48,7 @@ public class MidiSynthesizer extends MessageParser {
 
     @Override
     public void controlChange(int channel, int index, int value) {
-        //LOGGER.debug("controlChange(" + channel + ", " + index + ", " + value + ")");
+        // LOGGER.debug("controlChange(" + channel + ", " + index + ", " + value + ")");
         double normalized = value * (1.0 / 127.0);
         switch (index) {
             case MidiConstants.CONTROLLER_MOD_WHEEL:
@@ -70,7 +70,7 @@ public class MidiSynthesizer extends MessageParser {
 
     @Override
     public void registeredParameter(int channel, int index14, int value14) {
-        switch(index14) {
+        switch (index14) {
             case MidiConstants.RPN_BEND_RANGE:
                 int semitones = value14 >> 7;
                 int cents = value14 & 0x7F;

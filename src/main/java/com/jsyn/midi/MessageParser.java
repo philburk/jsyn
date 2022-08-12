@@ -87,7 +87,7 @@ public class MessageParser {
     public void rawControlChange(int channel, int index, int value) {
         int paramIndex;
         int paramValue;
-        switch(index) {
+        switch (index) {
             case MidiConstants.CONTROLLER_DATA_ENTRY:
                 parameterValues[channel] = value << 7;
                 fireParameterChange(channel);
@@ -104,7 +104,7 @@ public class MessageParser {
                 parameterIndices[channel] = paramIndex;
                 break;
             case MidiConstants.CONTROLLER_NRPN_MSB:
-                parameterIndices[channel] = (value << 7) | BIT_NON_RPM;;
+                parameterIndices[channel] = (value << 7) | BIT_NON_RPM;
                 break;
             case MidiConstants.CONTROLLER_RPN_LSB:
                 paramIndex = parameterIndices[channel] & ~0x7F;
@@ -133,12 +133,8 @@ public class MessageParser {
 
     private void checkMessageLength(int expectedLength, int actualLength) {
         if (actualLength < expectedLength) {
-            throw new IllegalArgumentException(
-                "Expected message of at least "
-                    + expectedLength
-                    + " bytes but got "
-                    + actualLength
-                    + " bytes.");
+            throw new IllegalArgumentException("Expected message of at least " + expectedLength
+                    + " bytes but got " + actualLength + " bytes.");
         }
     }
 
