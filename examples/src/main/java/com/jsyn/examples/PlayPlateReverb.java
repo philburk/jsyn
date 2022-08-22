@@ -18,15 +18,22 @@ package com.jsyn.examples;
 
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
+import com.jsyn.unitgen.EnvelopeDAHDSR;
+import com.jsyn.unitgen.ImpulseOscillator;
 import com.jsyn.unitgen.LineOut;
+import com.jsyn.unitgen.PinkNoise;
+import com.jsyn.unitgen.PlateReverb;
+import com.jsyn.unitgen.SawtoothOscillator;
 import com.jsyn.unitgen.SineOscillator;
+import com.jsyn.unitgen.SquareOscillator;
+import com.jsyn.unitgen.UnitOscillator;
 
 /**
- * Play impulses through a PlateReverb.
+ * Play a tone using a JSyn oscillator.
  *
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
-public class PlayTone {
+public class PlayPlateReverb {
 
     private void test() {
 
@@ -37,29 +44,38 @@ public class PlayTone {
         synth.start();
 
         // Add a tone generator.
-        SineOscillator oscillator = new SineOscillator();
-        synth.add(oscillator);
-        // Add a stereo audio output unit.
+        PinkNoise source = new PinkNoise();
+        PlateReverb reverb = new PlateReverb();
+        // Use a square wave to trigger the envelope.
+        SquareOscillator gatingOsc = new SquareOscillator();
+        EnvelopeDAHDSR dahdsr = new EnvelopeDAHDSR();
         LineOut lineOut = new LineOut();
+
+        synth.add(source);
+        synth.add(gatingOsc);
+        synth.add(dahdsr);
+        synth.add(reverb);
         synth.add(lineOut);
 
         // Connect the oscillator to both channels of the output.
-        oscillator.output.connect(0, lineOut.input, 0);
-        oscillator.output.connect(0, lineOut.input, 1);
+        gatingOsc.output.connect(dahdsr.input);
+        gatingOsc.frequency.set(0.5);
+        dahdsr.output.connect(source.amplitude);
+        dahdsr.attack.set(0.01);
+        dahdsr.decay.set(0.05);
+        dahdsr.sustain.set(0.00);
 
-        // Set the frequency and amplitude for the sine wave.
-        oscillator.frequency.set(345.0);
-        oscillator.amplitude.set(0.6);
+        source.output.connect(reverb.input);
+        source.output.connect(0, lineOut.input, 0);
+        reverb.output.connect(0, lineOut.input, 1);
 
-        // We only need to start the LineOut. It will pull data from the
-        // oscillator.
         lineOut.start();
 
         // Sleep while the sound is generated in the background.
         try {
             double time = synth.getCurrentTime();
             // Sleep for a few seconds.
-            synth.sleepUntil(time + 4.0);
+            synth.sleepUntil(time + 8.0);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -69,6 +85,7 @@ public class PlayTone {
     }
 
     public static void main(String[] args) {
-        new PlayTone().test();
+        new PlayPlateReverb().test();
+        System.exit(0);
     }
 }
