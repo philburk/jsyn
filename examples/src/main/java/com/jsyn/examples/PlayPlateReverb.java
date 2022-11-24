@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Phil Burk, Mobileer Inc
+ * Copyright 2022 Phil Burk, Mobileer Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import com.jsyn.unitgen.EnvelopeDAHDSR;
 import com.jsyn.unitgen.ImpulseOscillator;
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.PinkNoise;
+import com.jsyn.unitgen.RoomReverb;
 import com.jsyn.unitgen.PlateReverb;
 import com.jsyn.unitgen.SawtoothOscillator;
 import com.jsyn.unitgen.SineOscillator;
@@ -29,9 +30,10 @@ import com.jsyn.unitgen.SquareOscillator;
 import com.jsyn.unitgen.UnitOscillator;
 
 /**
- * Play a tone using a JSyn oscillator.
+ * Play a noise pulse through a PlateReverb.
+ * The pulse will be on the left channel and the reverb on the right.
  *
- * @author Phil Burk (C) 2010 Mobileer Inc
+ * @author Phil Burk (C) 2022 Mobileer Inc
  */
 public class PlayPlateReverb {
 
@@ -45,7 +47,8 @@ public class PlayPlateReverb {
 
         // Add a tone generator.
         PinkNoise source = new PinkNoise();
-        PlateReverb reverb = new PlateReverb();
+        //PlateReverb reverb = new PlateReverb();
+        RoomReverb reverb = new RoomReverb();
         // Use a square wave to trigger the envelope.
         SquareOscillator gatingOsc = new SquareOscillator();
         EnvelopeDAHDSR dahdsr = new EnvelopeDAHDSR();

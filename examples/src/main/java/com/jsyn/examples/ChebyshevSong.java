@@ -31,6 +31,7 @@ import com.jsyn.swing.PortControllerFactory;
 import com.jsyn.unitgen.Add;
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.PlateReverb;
+import com.jsyn.unitgen.RoomReverb;
 import com.jsyn.util.PseudoRandom;
 import com.jsyn.util.VoiceAllocator;
 import com.softsynth.math.AudioMath;
@@ -45,7 +46,7 @@ public class ChebyshevSong extends JApplet implements Runnable {
 
     private Synthesizer synth;
     private Add mixer;
-    private PlateReverb reverb;
+    private RoomReverb reverb;
     private LineOut lineOut;
     private AudioScope scope;
     private volatile boolean go = false;
@@ -78,7 +79,7 @@ public class ChebyshevSong extends JApplet implements Runnable {
         // Use a submix so we can show it on the scope.
         synth.add(mixer = new Add());
         synth.add(lineOut = new LineOut());
-        synth.add(reverb = new PlateReverb(1.0));
+        synth.add(reverb = new RoomReverb(1.0));
         mixer.output.connect(reverb.input);
         mixer.output.connect(0, lineOut.input, 0); // dry
         reverb.output.connect(0, lineOut.input, 1); // wet
@@ -110,8 +111,8 @@ public class ChebyshevSong extends JApplet implements Runnable {
         southPanel.setLayout(new GridLayout(0, 1));
         add(BorderLayout.SOUTH, southPanel);
 
-        southPanel.add(PortControllerFactory.createExponentialPortSlider(reverb.time));
-        southPanel.add(PortControllerFactory.createExponentialPortSlider(reverb.damping));
+//        southPanel.add(PortControllerFactory.createExponentialPortSlider(reverb.time));
+//        southPanel.add(PortControllerFactory.createExponentialPortSlider(reverb.damping));
 
 
         /* Synchronize Java display. */

@@ -16,6 +16,8 @@
 
 package com.jsyn.unitgen;
 
+import com.jsyn.dsp.AllPassDelay;
+import com.jsyn.dsp.SimpleDelay;
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.util.PseudoRandom;
 
@@ -43,45 +45,8 @@ public class PlateReverb extends UnitFilter {
     private static final float DECAY_DIFFUSION_2 = 0.50f;
     private static final float INPUT_DIFFUSION_1 = 0.75f;
     private static final float INPUT_DIFFUSION_2 = 0.625f;
-    private static final float DAMPING = 0.0005f;
+    private static final float DAMPING = 0.0005f; // Must match comment below for damping port.
     private static final float BANDWIDTH = 0.99995f;
-
-    private static class SimpleDelay {
-        private float[] mBuffer;
-        private int mCursor;
-
-        SimpleDelay(int length) {
-            mBuffer = new float[length];
-        }
-
-        private float process(float input) {
-            float output = mBuffer[mCursor];
-            mBuffer[mCursor] = input;
-            mCursor++;
-            if (mCursor >= mBuffer.length) mCursor = 0;
-            return output;
-        }
-    }
-
-    private static class AllPassDelay {
-        private float[] mBuffer;
-        private int mCursor;
-        private float mCoefficient = 0.65f;
-
-        AllPassDelay(int length, float coefficient) {
-            mBuffer = new float[length];
-            mCoefficient = coefficient;
-        }
-
-        private float process(float input) {
-            float z = mBuffer[mCursor];
-            float x = input - (z * mCoefficient );
-            mBuffer[mCursor] = x;
-            mCursor++;
-            if (mCursor >= mBuffer.length) mCursor = 0;
-            return z + (x * mCoefficient);
-        }
-    }
 
     private static class FastSineOscillator {
         private float mPhaseIncrement = 0.0001f;
@@ -213,7 +178,7 @@ public class PlateReverb extends UnitFilter {
     private class ReverbSide {
         VariableAllPassDelay variableDelay;
         OnePoleLowPassFilter mLowPass = new OnePoleLowPassFilter(1.0f - DAMPING);
-        SimpleDelay  mDelay1;
+        SimpleDelay mDelay1;
         AllPassDelay mAllPassDelay;
         SimpleDelay  mDelay2;
         private float outputScaler = 0.6f;
@@ -273,8 +238,15 @@ public class PlateReverb extends UnitFilter {
      * Approximate time in seconds to decay to -60 dB.
      */
     public UnitInputPort time;
+    /**
+     * Damping factor for the feedback filters.
+     * Must be <= 1.0. Default is 0.0005.
+     */
     public UnitInputPort damping;
 
+    /**
+     * Create a PlateReverb with a default size of 1.0.
+     */
     public PlateReverb() {
         this(1.0);
     }
@@ -339,7 +311,7 @@ public class PlateReverb extends UnitFilter {
     // decay = Math.sqrt(1.001 - Math.exp((0.52 - (time/size))/ 4.7))
     private double convertTimeToDecay(double size, double time) {
         double exponent = (0.52 - (time / size))/ 4.7;
-        double square = 1.001 - Math.exp(exponent);
+        double square = 1.001 - Math.exp(exponent); // TODO optimize
         double decay = Math.sqrt(Math.max(0.0, square)); // avoid sqrt(negative)
         return Math.min(MAX_DECAY, decay);
     }

@@ -22,7 +22,7 @@ import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.SineOscillator;
 
 /**
- * Play impulses through a PlateReverb.
+ * Play a tone using a JSyn oscillator.
  *
  * @author Phil Burk (C) 2010 Mobileer Inc
  */
