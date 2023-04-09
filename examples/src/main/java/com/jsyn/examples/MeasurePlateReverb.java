@@ -32,7 +32,7 @@ import com.jsyn.unitgen.WhiteNoise;
 import com.softsynth.math.AudioMath;
 
 /**
- * Measure the decay time of a PlateReverb tail..
+ * Measure the decay time of a PlateReverb tail.
  */
 public class MeasurePlateReverb {
 

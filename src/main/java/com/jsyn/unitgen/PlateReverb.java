@@ -19,12 +19,12 @@ package com.jsyn.unitgen;
 import com.jsyn.dsp.AllPassDelay;
 import com.jsyn.dsp.SimpleDelay;
 import com.jsyn.ports.UnitInputPort;
+import com.jsyn.ports.UnitOutputPort;
 import com.jsyn.util.PseudoRandom;
 
-// TODO Move internal DSP classes to an external package.
 // TODO Experiment with prime delay sizes
 /**
- * Simple reverberator based on a "figure eight"
+ * Simple reverberation effect based on a "figure eight"
  * network of all-pass filters and delays.
  *
  * This reverb  does not have a pre-delay or early reflections.
@@ -38,14 +38,36 @@ import com.jsyn.util.PseudoRandom;
  * @see InterpolatingDelay
  */
 
-public class PlateReverb extends UnitFilter {
+public class PlateReverb extends UnitGenerator {
+
+    /**
+     * Mono input.
+     */
+    public UnitInputPort input;
+
+    /**
+     * Stereo output.
+     */
+    public UnitOutputPort output;
+
+    /**
+     * Approximate time in seconds to decay by -60 dB.
+     */
+    public UnitInputPort time;
+
+    /**
+     * Damping factor for the feedback filters.
+     * Must be between 0.0 and 1.0. Default is 0.2.
+     */
+    public UnitInputPort damping;
+
     private static final double MAX_DECAY = 0.98;
     // These default values are based on table-1 of the paper by Jon Dattorro.
     private static final float DECAY_DIFFUSION_1 = 0.70f;
     private static final float DECAY_DIFFUSION_2 = 0.50f;
     private static final float INPUT_DIFFUSION_1 = 0.75f;
     private static final float INPUT_DIFFUSION_2 = 0.625f;
-    private static final float DAMPING = 0.0005f; // Must match comment below for damping port.
+    private static final float DAMPING = 0.2f; // Must match default comment above for damping port.
     private static final float BANDWIDTH = 0.99995f;
 
     private static class FastSineOscillator {
@@ -234,15 +256,6 @@ public class PlateReverb extends UnitFilter {
     private ReverbSide mLeftSide;
     private ReverbSide mRightSide;
 
-    /**
-     * Approximate time in seconds to decay to -60 dB.
-     */
-    public UnitInputPort time;
-    /**
-     * Damping factor for the feedback filters.
-     * Must be <= 1.0. Default is 0.0005.
-     */
-    public UnitInputPort damping;
 
     /**
      * Create a PlateReverb with a default size of 1.0.
@@ -262,12 +275,19 @@ public class PlateReverb extends UnitFilter {
      * @param size adjust internal delay sizes
      */
     public PlateReverb(double size) {
+
+        addPort(input = new UnitInputPort("Input"));
+
+
         size = Math.max(0.05, Math.min(5.0, size));
         mSize = size;
         addPort(time = new UnitInputPort("Time"));
         time.setup(0.01, 1.5, 30.0);
         addPort(damping = new UnitInputPort("Damping"));
         damping.setup(0.0001, DAMPING, 1.0);
+
+        addPort(output = new UnitOutputPort(2,"Output"));
+
         int[] zs = {142, 107, 379, 277, // diffusion
                 672, 4453, 1800, 3720, // left
                 908, 4217, 2656, 3163}; // right
@@ -284,7 +304,10 @@ public class PlateReverb extends UnitFilter {
         mRightSide.setFrequency(1.2f, 44100.0f); // TODO
     }
 
-    private float process(float x) {
+    // Unfortunately, Java does not have a simple duple support.
+    // So we return void and then get teh two values from the left and
+    // right sides.
+    private void process(float x) {
         x = mBandwidthLowPass.process(x);
         x = mDiffusion1.process(x);
         x = mDiffusion2.process(x);
@@ -296,7 +319,6 @@ public class PlateReverb extends UnitFilter {
         // right side of the figure eight uses left side feedback
         float rightSum = x + mLeftFeedback;
         mRightFeedback = mRightSide.process(rightSum);
-        return (mLeftSide.getOutput() + mRightSide.getOutput()) * 0.5f;
     }
 
 
@@ -319,7 +341,8 @@ public class PlateReverb extends UnitFilter {
     @Override
     public void generate(int start, int limit) {
         double[] inputs = input.getValues();
-        double[] outputs = output.getValues();
+        double[] leftOutputs = output.getValues(0);
+        double[] rightOutputs = output.getValues(1);
 
         double timeValue = (float) time.getValues()[0];
         if (timeValue != mPreviousTime) {
@@ -330,7 +353,9 @@ public class PlateReverb extends UnitFilter {
         mLeftSide.setDamping(dampingValue);
         mRightSide.setDamping(dampingValue);
         for (int i = start; i < limit; i++) {
-            outputs[i] = process((float) inputs[i]);
+            process((float) inputs[i]);
+            leftOutputs[i] = mLeftSide.getOutput();
+            rightOutputs[i] = mRightSide.getOutput();
         }
     }
 

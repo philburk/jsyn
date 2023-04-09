@@ -19,23 +19,18 @@ package com.jsyn.examples;
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.unitgen.EnvelopeDAHDSR;
-import com.jsyn.unitgen.ImpulseOscillator;
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.PinkNoise;
 import com.jsyn.unitgen.RoomReverb;
-import com.jsyn.unitgen.PlateReverb;
-import com.jsyn.unitgen.SawtoothOscillator;
-import com.jsyn.unitgen.SineOscillator;
 import com.jsyn.unitgen.SquareOscillator;
-import com.jsyn.unitgen.UnitOscillator;
 
 /**
- * Play a noise pulse through a PlateReverb.
+ * Play a noise pulse through a RoomReverb.
  * The pulse will be on the left channel and the reverb on the right.
  *
  * @author Phil Burk (C) 2022 Mobileer Inc
  */
-public class PlayPlateReverb {
+public class PlayRoomReverb {
 
     private void test() {
 
@@ -88,7 +83,7 @@ public class PlayPlateReverb {
     }
 
     public static void main(String[] args) {
-        new PlayPlateReverb().test();
+        new PlayRoomReverb().test();
         System.exit(0);
     }
 }
