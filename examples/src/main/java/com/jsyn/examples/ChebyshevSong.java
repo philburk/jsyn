@@ -17,16 +17,19 @@
 package com.jsyn.examples;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 
 import javax.swing.JApplet;
+import javax.swing.JPanel;
 
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.instruments.WaveShapingVoice;
 import com.jsyn.scope.AudioScope;
 import com.jsyn.swing.JAppletFrame;
-import com.jsyn.unitgen.Add;
 import com.jsyn.unitgen.LineOut;
+import com.jsyn.unitgen.RoomReverb;
+import com.jsyn.unitgen.PassThrough;
 import com.jsyn.util.PseudoRandom;
 import com.jsyn.util.VoiceAllocator;
 import com.softsynth.math.AudioMath;
@@ -40,7 +43,8 @@ import com.softsynth.shared.time.TimeStamp;
 public class ChebyshevSong extends JApplet implements Runnable {
 
     private Synthesizer synth;
-    private Add mixer;
+    private PassThrough mixer; // use input as a summing node
+    private RoomReverb reverb;
     private LineOut lineOut;
     private AudioScope scope;
     private volatile boolean go = false;
@@ -71,18 +75,19 @@ public class ChebyshevSong extends JApplet implements Runnable {
         synth = JSyn.createSynthesizer();
 
         // Use a submix so we can show it on the scope.
-        synth.add(mixer = new Add());
+        synth.add(mixer = new PassThrough());
         synth.add(lineOut = new LineOut());
-
-        mixer.output.connect(0, lineOut.input, 0);
-        mixer.output.connect(0, lineOut.input, 1);
+        synth.add(reverb = new RoomReverb(1.0));
+        mixer.output.connect(reverb.input);
+        mixer.output.connect(0, lineOut.input, 0); // dry
+        reverb.output.connect(0, lineOut.input, 1); // wet
 
         WaveShapingVoice[] voices = new WaveShapingVoice[MAX_VOICES];
         for (int i = 0; i < MAX_VOICES; i++) {
             WaveShapingVoice voice = new WaveShapingVoice();
             synth.add(voice);
             voice.usePreset(0);
-            voice.getOutput().connect(mixer.inputA);
+            voice.getOutput().connect(mixer.input);
             voices[i] = voice;
         }
         allocator = new VoiceAllocator(voices);
@@ -94,10 +99,15 @@ public class ChebyshevSong extends JApplet implements Runnable {
         // Use a scope to show the mixed output.
         scope = new AudioScope(synth);
         scope.addProbe(mixer.output);
+        scope.addProbe(reverb.output);
         scope.setTriggerMode(AudioScope.TriggerMode.NORMAL);
         scope.getView().setControlsVisible(false);
         add(BorderLayout.CENTER, scope.getView());
         scope.start();
+
+        JPanel southPanel = new JPanel();
+        southPanel.setLayout(new GridLayout(0, 1));
+        add(BorderLayout.SOUTH, southPanel);
 
         /* Synchronize Java display. */
         getParent().validate();
@@ -107,7 +117,6 @@ public class ChebyshevSong extends JApplet implements Runnable {
         Thread thread = new Thread(this);
         go = true;
         thread.start();
-
     }
 
     @Override

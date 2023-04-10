@@ -224,8 +224,11 @@ public class SynthesisEngine implements Synthesizer {
 
         setupAudioBuffers(numInputChannels, numOutputChannels);
 
-        logger.info("Pure Java JSyn from www.softsynth.com, rate = " + frameRate + ", "
-                + (useRealTime ? "RT" : "NON-RealTime") + ", " + JSyn.VERSION_TEXT);
+        if (false) {
+            logger.info("Pure Java JSyn from www.softsynth.com, rate = " + frameRate
+                    + ", " + (useRealTime ? "RT" : "NON-RealTime")
+                    + ", " + JSyn.VERSION_TEXT);
+        }
 
         inverseNyquist = 2.0 / frameRate;
 

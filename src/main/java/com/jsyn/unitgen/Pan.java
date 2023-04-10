@@ -41,6 +41,7 @@ public class Pan extends UnitGenerator {
     public Pan() {
         addPort(input = new UnitInputPort("Input"));
         addPort(pan = new UnitInputPort("Pan"));
+        pan.setup(-1.0, 0.0, 1.0);
         addPort(output = new UnitOutputPort(2, "Output"));
     }
 
