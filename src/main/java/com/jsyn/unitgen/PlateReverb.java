@@ -46,20 +46,20 @@ public class PlateReverb extends UnitGenerator {
     public UnitInputPort input;
 
     /**
-     * Stereo output.
-     */
-    public UnitOutputPort output;
-
-    /**
      * Approximate time in seconds to decay by -60 dB.
      */
     public UnitInputPort time;
 
     /**
      * Damping factor for the feedback filters.
-     * Must be between 0.0 and 1.0. Default is 0.2.
+     * Must be between 0.0 and 1.0. Default is 0.5.
      */
     public UnitInputPort damping;
+
+    /**
+     * Stereo output.
+     */
+    public UnitOutputPort output;
 
     private static final double MAX_DECAY = 0.98;
     // These default values are based on table-1 of the paper by Jon Dattorro.
@@ -67,7 +67,7 @@ public class PlateReverb extends UnitGenerator {
     private static final float DECAY_DIFFUSION_2 = 0.50f;
     private static final float INPUT_DIFFUSION_1 = 0.75f;
     private static final float INPUT_DIFFUSION_2 = 0.625f;
-    private static final float DAMPING = 0.2f; // Must match default comment above for damping port.
+    private static final float DAMPING = 0.5f; // Must match default comment above for damping port.
     private static final float BANDWIDTH = 0.99995f;
 
     private static class FastSineOscillator {
@@ -278,19 +278,24 @@ public class PlateReverb extends UnitGenerator {
 
         addPort(input = new UnitInputPort("Input"));
 
-
         size = Math.max(0.05, Math.min(5.0, size));
         mSize = size;
         addPort(time = new UnitInputPort("Time"));
-        time.setup(0.01, 1.5, 30.0);
+        time.setup(0.01, 2.0, 30.0);
         addPort(damping = new UnitInputPort("Damping"));
         damping.setup(0.0001, DAMPING, 1.0);
 
         addPort(output = new UnitOutputPort(2,"Output"));
 
-        int[] zs = {142, 107, 379, 277, // diffusion
-                672, 4453, 1800, 3720, // left
-                908, 4217, 2656, 3163}; // right
+        // delay line sizes
+        // These are from the original paper.
+        // int[] zs = {142, 107, 379, 277, // diffusion
+        //     672, 4453, 1800, 3720, // left
+        //     908, 4217, 2656, 3163}; // right
+        // These are aligned to nearby primes.
+        int[] zs = {149, 107, 379, 277, // diffusion
+            677, 4453, 1801, 3727, // left
+            911, 4217, 2657, 3169}; // right
 
         mDiffusion1 = new AllPassDelay((int)(zs[0] * size), INPUT_DIFFUSION_1);
         mDiffusion2 = new AllPassDelay((int)(zs[1] * size), INPUT_DIFFUSION_1);

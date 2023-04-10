@@ -28,22 +28,28 @@ import com.jsyn.ports.UnitOutputPort;
  * @see PlateReverb
  */
 public class RoomReverb extends Circuit {
-
-    /** Pre-delay time in milliseconds. */
-    public UnitInputPort preDelayMillis;
-
     private static final double SIZE_SCALER_MIN = 0.05;
     private static final double SIZE_SCALER_MAX = 5.0;
+    private static final int[] kPositions = {
+        10, 197, 401,
+        521, 733, 1117,
+        1481, 2731, 4177,
+        6073, 7927, 9463};
+    // Gains based on attenuation in air after a pre-delay.
+    // See spreadsheet MiscSynthCalculations
+    private static final float[] kGains = {
+        0.1840f, -0.1543f, -0.1311f,
+        0.1205f, -0.1054f, -0.0859f,
+        -0.0731f, -0.0484f, 0.0347f,
+        0.0254f, 0.0201f, -0.0171f};
 
     /**
      * Mono input.
      */
     public UnitInputPort input;
 
-    /**
-     * Stereo output.
-     */
-    public UnitOutputPort output;
+    /** Pre-delay time in milliseconds. */
+    public UnitInputPort preDelayMillis;
 
     /**
      * Approximate time in seconds to decay by -60 dB.
@@ -52,7 +58,7 @@ public class RoomReverb extends Circuit {
 
     /**
      * Damping factor for the feedback filters.
-     * Must be <= 1.0. Default is 0.0005.
+     * Must be <= 1.0. Default is 0.5.
      */
     public UnitInputPort damping;
 
@@ -68,23 +74,14 @@ public class RoomReverb extends Circuit {
      */
     public UnitInputPort diffusion;
 
-    // TODO better set of positions and gains, maybe 12
-    private static final int[] kPositions = {
-            10, 197, 401,
-            521, 733, 1117,
-            1481, 2731, 4177,
-            6073, 7927, 9463};
-    // Gains based on attenuation in air after a pre-delay.
-    // See spreadsheet MiscSynthCalculations
-    private static final float[] kGains = {
-            0.1840f, -0.1543f, -0.1311f,
-            0.1205f, -0.1054f, -0.0859f,
-            -0.0731f, -0.0484f, 0.0347f,
-            0.0254f, 0.0201f, -0.0171f};
+    /**
+     * Stereo output.
+     */
+    public UnitOutputPort output;
+
     private final PlateReverb mPlateReverb;
     private final MultiTapDelay mMultiTapDelay;
     private final RoomReverbMixer mRoomReverbMixer;
-
 
     /**
      * Construct a RoomReverb with a default size of 1.0.
@@ -153,8 +150,8 @@ public class RoomReverb extends Circuit {
             addPort(diffusionInput = new UnitInputPort(2,"DiffusionInput"));
             addPort(multiTapGain = new UnitInputPort("MultiTap"));
             addPort(diffusionGain = new UnitInputPort(2,"Diffusion"));
-            multiTapGain.setup(0.0, 0.3, 1.0);
-            diffusionGain.setup(0.0, 0.7, 1.0);
+            multiTapGain.setup(0.0, 1.0, 1.0);
+            diffusionGain.setup(0.0, 1.0, 1.0);
             addPort(output = new UnitOutputPort(2,"Output"));
         }
 
@@ -174,6 +171,5 @@ public class RoomReverb extends Circuit {
                 outputs1[i] = multiTapScaled + (diffusionInputs1[i] * diffusionGainValue);
             }
         }
-
     }
 }

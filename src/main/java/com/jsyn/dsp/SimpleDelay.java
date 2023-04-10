@@ -41,11 +41,18 @@ public class SimpleDelay {
     }
 
     /**
-     * Add a new value to the head of the delay line.
+     * Write a new value to the head of the delay line.
+     * This does not advance the cursor.
      * @param input sample value
      */
-    public void add(float input) {
+    public void write(float input) {
         mBuffer[mCursor] = input;
+    }
+
+    /**
+     * Advance the cursor position. Wrap around in a circle.
+     */
+    public void advance() {
         mCursor++;
         if (mCursor >= mBuffer.length) mCursor = 0;
     }
@@ -57,7 +64,8 @@ public class SimpleDelay {
      */
     public float process(float input) {
         float output = mBuffer[mCursor];
-        add(input);
+        write(input);
+        advance();
         return output;
     }
 }

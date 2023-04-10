@@ -109,7 +109,7 @@ public class TuneReverb extends JApplet {
     /* Can be run as either an application or as an applet. */
     public static void main(String[] args) {
         TuneReverb applet = new TuneReverb();
-        JAppletFrame frame = new JAppletFrame("HiYaSynth", applet);
+        JAppletFrame frame = new JAppletFrame("Tune Reverb", applet);
         frame.setSize(440, 600);
         frame.setVisible(true);
         frame.test();
