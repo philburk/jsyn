@@ -27,11 +27,9 @@ import com.jsyn.Synthesizer;
 import com.jsyn.instruments.WaveShapingVoice;
 import com.jsyn.scope.AudioScope;
 import com.jsyn.swing.JAppletFrame;
-import com.jsyn.swing.PortControllerFactory;
-import com.jsyn.unitgen.Add;
 import com.jsyn.unitgen.LineOut;
-import com.jsyn.unitgen.PlateReverb;
 import com.jsyn.unitgen.RoomReverb;
+import com.jsyn.unitgen.PassThrough;
 import com.jsyn.util.PseudoRandom;
 import com.jsyn.util.VoiceAllocator;
 import com.softsynth.math.AudioMath;
@@ -45,7 +43,7 @@ import com.softsynth.shared.time.TimeStamp;
 public class ChebyshevSong extends JApplet implements Runnable {
 
     private Synthesizer synth;
-    private Add mixer;
+    private PassThrough mixer; // use input as a summing node
     private RoomReverb reverb;
     private LineOut lineOut;
     private AudioScope scope;
@@ -77,7 +75,7 @@ public class ChebyshevSong extends JApplet implements Runnable {
         synth = JSyn.createSynthesizer();
 
         // Use a submix so we can show it on the scope.
-        synth.add(mixer = new Add());
+        synth.add(mixer = new PassThrough());
         synth.add(lineOut = new LineOut());
         synth.add(reverb = new RoomReverb(1.0));
         mixer.output.connect(reverb.input);
@@ -89,7 +87,7 @@ public class ChebyshevSong extends JApplet implements Runnable {
             WaveShapingVoice voice = new WaveShapingVoice();
             synth.add(voice);
             voice.usePreset(0);
-            voice.getOutput().connect(mixer.inputA);
+            voice.getOutput().connect(mixer.input);
             voices[i] = voice;
         }
         allocator = new VoiceAllocator(voices);
@@ -111,10 +109,6 @@ public class ChebyshevSong extends JApplet implements Runnable {
         southPanel.setLayout(new GridLayout(0, 1));
         add(BorderLayout.SOUTH, southPanel);
 
-//        southPanel.add(PortControllerFactory.createExponentialPortSlider(reverb.time));
-//        southPanel.add(PortControllerFactory.createExponentialPortSlider(reverb.damping));
-
-
         /* Synchronize Java display. */
         getParent().validate();
         getToolkit().sync();
@@ -123,7 +117,6 @@ public class ChebyshevSong extends JApplet implements Runnable {
         Thread thread = new Thread(this);
         go = true;
         thread.start();
-
     }
 
     @Override

@@ -65,8 +65,8 @@ public class TestSimpleDelay {
         assertEquals(1.23f, delay.read(1), 0.00001, "w1 read[1]");
         assertEquals(0.0f, delay.read(2), 0.00001, "w1 read[2]");
         delay.advance();
-        delay.write(0.0f);
-        assertEquals(0.0f, delay.read(0), 0.00001, "w1 read[0]");
+        delay.write(0.567f);
+        assertEquals(0.567f, delay.read(0), 0.00001, "w1 read[0]");
         assertEquals(0.0f, delay.read(1), 0.00001, "w1 read[1]");
         assertEquals(1.23f, delay.read(2), 0.00001, "w1 read[2]");
     }

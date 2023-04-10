@@ -22,7 +22,6 @@ import com.jsyn.ports.UnitInputPort;
 import com.jsyn.ports.UnitOutputPort;
 import com.jsyn.util.PseudoRandom;
 
-// TODO Experiment with prime delay sizes
 /**
  * Simple reverberation effect based on a "figure eight"
  * network of all-pass filters and delays.
@@ -305,8 +304,8 @@ public class PlateReverb extends UnitGenerator {
                 (int)(zs[6] * size), (int)(zs[7] * size));
         mRightSide = new ReverbSide((int)(zs[8] * size), (int)(zs[9] * size),
                 (int)(zs[10] * size), (int)(zs[11] * size));
-        mLeftSide.setFrequency(0.7f, 44100.0f); // TODO
-        mRightSide.setFrequency(1.2f, 44100.0f); // TODO
+        mLeftSide.setFrequency(0.7f, 44100.0f); // TODO use actual sample rate
+         mRightSide.setFrequency(1.2f, 44100.0f); // TODO use actual sample rate
     }
 
     // Unfortunately, Java does not have a simple duple support.

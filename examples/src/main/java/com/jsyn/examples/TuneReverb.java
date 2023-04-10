@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Phil Burk, Mobileer Inc
+ * Copyright 2023 Phil Burk
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,6 @@ import javax.swing.JApplet;
 
 /**
  * Play various sounds interactively through a reverb.
- *
- * @author Phil Burk (C) 2023 Mobileer Inc
  */
 public class TuneReverb extends JApplet {
     private Synthesizer synth;
