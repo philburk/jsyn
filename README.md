@@ -18,6 +18,34 @@ The JSyn source code is available at:
 
 https://github.com/philburk/jsyn
 
+## Using JSyn in Your Project
+
+If your project is not using gradle then build or [download](https://github.com/philburk/jsyn/releases)
+the JSyn jar file and add it to your classpath. See Build section below.
+
+If you are using gradle then you can simply add a dependency on JSyn to your project.
+The easiest way is to use jitpack to add the latest release from GitHub.
+
+For Groovy gradle files use:
+
+    repositories {
+        maven { url  "https://jitpack.io" }
+    }
+
+    dependencies {
+        implementation "com.github.philburk:jsyn:latest.release"
+    }
+    
+The syntax is slightly different if you are using ".kts" files.
+
+    repositories {
+        maven { url = uri("https://jitpack.io") }
+    }
+
+    dependencies {
+        implementation("com.github.philburk:jsyn:latest.release")
+    }
+
 ## Building JSyn
 
 You can build JSyn using either Ant or Gradle.
@@ -33,7 +61,7 @@ The resulting jar will be placed in "dist/lib/".
     
 To run the built-in test App on a desktop, enter something like this:
 
-    java -jar dist/lib/jsyn-20160203.jar
+    java -jar dist/lib/jsyn-20230410.jar
 
 but with the correct date.
 
@@ -51,7 +79,7 @@ Enter:
 The resulting jar will be placed in "build/libs/".
 To run the built-in test App on a desktop, enter something like this:
 
-    java -jar build/libs/jsyn-17.0.0-SNAPSHOT.jar
+    java -jar build/libs/jsyn-17.1.0.jar
     
 but with the correct version.
 
@@ -61,5 +89,3 @@ To run the unit tests, enter:
 
     cd jsyn
     ./gradlew test
-    
-JSyn - Copyright 1997 Mobileer Inc
