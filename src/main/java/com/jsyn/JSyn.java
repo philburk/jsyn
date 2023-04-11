@@ -54,12 +54,12 @@ import com.jsyn.engine.SynthesisEngine;
  */
 public class JSyn {
     // Update these for every release.
-    private final static int VERSION_MAJOR = 16;
-    private final static int VERSION_MINOR = 8;
-    private final static int VERSION_REVISION = 1;
-    public final static int BUILD_NUMBER = 464;
-    private final static long BUILD_TIME = new GregorianCalendar(2017,
-            GregorianCalendar.OCTOBER, 16).getTime().getTime();
+    private final static int VERSION_MAJOR = 17;
+    private final static int VERSION_MINOR = 1;
+    private final static int VERSION_REVISION = 0;
+    public final static int BUILD_NUMBER = 465;
+    private final static long BUILD_TIME = new GregorianCalendar(2023,
+            GregorianCalendar.APRIL, 10).getTime().getTime();
 
     public final static String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + "."
             + VERSION_REVISION;
