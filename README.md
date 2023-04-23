@@ -73,7 +73,7 @@ but with the correct date.
 
 To create javadocs enter:
 
-    ant docs
+    ant doc
 
 ### Build Using Gradle
 
