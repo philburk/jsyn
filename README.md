@@ -54,7 +54,7 @@ Note that if you clone the repository then you will end up with a folder called 
 
 ### Build Using Ant
 
-You may need to install "any" first. On Mac you can do:
+You may need to install Ant first. On Mac you can do:
 
     brew install ant
 
