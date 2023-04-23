@@ -50,11 +50,17 @@ The syntax is slightly different if you are using ".kts" files.
 
 You can build JSyn using either Ant or Gradle.
 
+Note that if you clone the repository then you will end up with a folder called "jsyn". But if you download the ZIP file it will be called "jsyn-master".
+
 ### Build Using Ant
 
-Enter:
+You may need to install "any" first. On Mac you can do:
 
-    cd jsyn
+    brew install ant
+
+Then enter:
+
+    cd jsyn   # or jsyn-master
     ant
 
 The resulting jar will be placed in "dist/lib/".
@@ -73,7 +79,7 @@ To create javadocs enter:
 
 Enter:
 
-    cd jsyn
+    cd jsyn   # or jsyn-master
     ./gradlew assemble
     
 The resulting jar will be placed in "build/libs/".
