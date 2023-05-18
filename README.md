@@ -35,7 +35,7 @@ For Groovy gradle files use:
     dependencies {
         implementation "com.github.philburk:jsyn:latest.release"
     }
-    
+
 The syntax is slightly different if you are using ".kts" files.
 
     repositories {
@@ -64,7 +64,7 @@ Then enter:
     ant
 
 The resulting jar will be placed in "dist/lib/".
-    
+
 To run the built-in test App on a desktop, enter something like this:
 
     java -jar dist/lib/jsyn-20230410.jar
@@ -81,12 +81,12 @@ Enter:
 
     cd jsyn   # or jsyn-master
     ./gradlew assemble
-    
+
 The resulting jar will be placed in "build/libs/".
 To run the built-in test App on a desktop, enter something like this:
 
     java -jar build/libs/jsyn-17.1.0.jar
-    
+
 but with the correct version.
 
 ### Test Using Gradle
