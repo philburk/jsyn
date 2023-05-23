@@ -53,12 +53,30 @@ public class AudioDeviceFactory {
     public static AudioDeviceManager createAudioDeviceManager(boolean preferJavaSound) {
         if (preferJavaSound) {
             tryJavaSound();
+            tryOpenAL();
             tryJPortAudio();
         } else {
+            tryOpenAL();
             tryJPortAudio();
             tryJavaSound();
         }
         return instance;
+    }
+
+    private static void tryOpenAL() {
+        if (instance == null) {
+            try {
+                @SuppressWarnings("unchecked")
+                final
+                Class<AudioDeviceManager> clazz = JavaTools.loadClass(
+                        "com.jsyn.devices.openal.ALDevice", true);
+                if (clazz != null) {
+                    instance = clazz.newInstance();
+                }
+            } catch (final Throwable e) {
+                System.err.println("Could not load JOAL/OpenAL device. " + e);
+            }
+        }
     }
 
     private static void tryJavaSound() {

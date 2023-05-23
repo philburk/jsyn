@@ -23,9 +23,12 @@
         description="compile the source " >
     <!-- Compile the java code from ${src} into ${build} -->
     <javac target="${java-version}" source="${java-version}"
-        srcdir="${src.dir}" destdir="${build.dir}">
+        srcdir="${src.dir}" destdir="${build.dir}"
+        debug="${javacdebug}" debuglevel="${javacdebuglevel}">
       <classpath>
         <pathelement path="libs/jportaudio.jar"/>
+        <pathelement path="libs/gluegen-rt.jar"/>
+        <pathelement path="libs/joal.jar"/>
       </classpath>
     </javac>
   </target>
