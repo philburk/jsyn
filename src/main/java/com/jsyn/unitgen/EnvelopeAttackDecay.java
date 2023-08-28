@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,7 @@ import com.jsyn.ports.UnitInputPort;
 /**
  * Two stage Attack/Decay envelope that is triggered by an input level greater than THRESHOLD. This
  * does not sustain.
- * 
+ *
  * @author Phil Burk (C) 2011 Mobileer Inc
  */
 public class EnvelopeAttackDecay extends UnitGate {
@@ -71,12 +71,11 @@ public class EnvelopeAttackDecay extends UnitGate {
         double[] outputs = output.getValues();
 
         for (int i = start; i < limit;) {
-            boolean triggered = input.checkGate(i);
             switch (state) {
                 case IDLE:
                     for (; i < limit; i++) {
                         outputs[i] = level;
-                        if (triggered) {
+                        if (input.checkGate(i)) {
                             startAttack(i);
                             break;
                         }
@@ -99,7 +98,7 @@ public class EnvelopeAttackDecay extends UnitGate {
                     for (; i < limit; i++) {
                         outputs[i] = level * amplitudes[i];
                         level *= scaler;
-                        if (triggered) {
+                        if (input.checkGate(i)) {
                             startAttack(i);
                             break;
                         } else if (level < SynthesisEngine.DB90) {
