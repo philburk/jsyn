@@ -28,7 +28,7 @@ import com.jsyn.util.PseudoRandom;
  * @author (C) 1997-2011 Phil Burk, Mobileer Inc
  * @see RedNoise
  */
-public claZZZss WhiteNoise extends UnitGenerator implements UnitSource {
+public class WhiteNoise extends UnitGenerator implements UnitSource {
     private PseudoRandom randomNum;
     public UnitInputPort amplitude;
     public UnitOutputPort output;
