@@ -57,7 +57,7 @@ public class JSyn {
     private final static int VERSION_MAJOR = 17;
     private final static int VERSION_MINOR = 1;
     private final static int VERSION_REVISION = 1;
-    public final static int BUILD_NUMBER = 465;
+    public final static int BUILD_NUMBER = 466;
     private final static long BUILD_TIME = new GregorianCalendar(2023,
             GregorianCalendar.AUGUST, 28).getTime().getTime();
 
