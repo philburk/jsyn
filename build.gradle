@@ -52,3 +52,32 @@ artifacts {
 test {
     useJUnitPlatform()
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = 'JSyn'
+                description = 'Java synthesizer library with unit generators.'
+                url = 'https://www.softsynth.com/jsyn'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'philburk'
+                        name = 'Phil Burk'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/philburk/jsyn.git'
+                    developerConnection = 'scm:git:git@github.com:philburk/jsyn.git'
+                    url = 'https://github.com/philburk/jsyn'
+                }
+            }
+        }
+    }
+}
