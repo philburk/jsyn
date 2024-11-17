@@ -16,9 +16,6 @@
 
 package com.jsyn;
 
-import java.sql.Date;
-import java.util.GregorianCalendar;
-
 import com.jsyn.devices.AudioDeviceManager;
 import com.jsyn.engine.SynthesisEngine;
 
@@ -58,15 +55,15 @@ public class JSyn {
     private final static int VERSION_MINOR = 1;
     private final static int VERSION_REVISION = 1;
     public final static int BUILD_NUMBER = 466;
-    private final static long BUILD_TIME = new GregorianCalendar(2023,
-            GregorianCalendar.AUGUST, 28).getTime().getTime();
+    private final static String BUILD_DATE = "2023-08-28";
 
+    // These are built from the updated values.
     public final static String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + "."
             + VERSION_REVISION;
     public final static int VERSION_CODE = (VERSION_MAJOR << 16) + (VERSION_MINOR << 8)
             + VERSION_REVISION;
     public final static String VERSION_TEXT = "V" + VERSION + " (build " + BUILD_NUMBER + ", "
-            + (new Date(BUILD_TIME)) + ")";
+            + BUILD_DATE + ")";
 
     public static Synthesizer createSynthesizer() {
         return new SynthesisEngine();

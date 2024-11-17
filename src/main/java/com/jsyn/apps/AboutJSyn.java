@@ -67,8 +67,8 @@ public class AboutJSyn extends JApplet {
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new GridLayout(0, 1));
         infoPanel.add(new JLabel("About: " + synth, SwingConstants.CENTER));
-        infoPanel.add(new JLabel("From: http://www.softsynth.com/", SwingConstants.CENTER));
-        infoPanel.add(new JLabel("(C) 1997-2011 Mobileer Inc", SwingConstants.CENTER));
+        infoPanel.add(new JLabel("From: https://www.softsynth.com/", SwingConstants.CENTER));
+        infoPanel.add(new JLabel("(C) 1997 Mobileer Inc", SwingConstants.CENTER));
         add(infoPanel);
 
         // Set the minimum, current and maximum values for the port.
