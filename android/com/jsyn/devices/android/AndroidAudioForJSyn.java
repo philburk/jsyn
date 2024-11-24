@@ -15,6 +15,8 @@
  */
 package com.jsyn.devices.android;
 import java.util.ArrayList;
+
+import android.media.AudioAttributes;
 import android.os.Process;
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -87,10 +89,21 @@ public class AndroidAudioForJSyn implements AudioDeviceManager {
             // LOGGER.debug("Audio minBufferSize = " + minBufferSize);
             bufferSize = (3 * (minBufferSize / 2)) & ~3;
             // LOGGER.debug("Audio bufferSize = " + bufferSize);
-            audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, frameRate,
-                    AudioFormat.CHANNEL_OUT_STEREO,
-                    AudioFormat.ENCODING_PCM_FLOAT, bufferSize,
-                    AudioTrack.MODE_STREAM);
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build();
+            AudioFormat audioFormat = new AudioFormat.Builder()
+                    .setSampleRate(frameRate)
+                    .setEncoding(AudioFormat.ENCODING_PCM_FLOAT)
+                    .setChannelMask(AudioFormat.CHANNEL_OUT_STEREO)
+                    .build();
+            audioTrack = new AudioTrack(
+                    audioAttributes,
+                    audioFormat,
+                    bufferSize,
+                    AudioTrack.MODE_STREAM,
+                    0);
             audioTrack.play();
         }
         /** Grossly inefficient. Call the array version instead. */
