@@ -29,8 +29,6 @@ import com.jsyn.util.NumericOutput;
 
 /**
  * Slider that takes a DoubleBoundedRangeModel. It displays the current value in a titled border.
- *
- * @author Phil Burk, (C) 2002 SoftSynth.com, PROPRIETARY and CONFIDENTIAL
  */
 
 public class DoubleBoundedRangeSlider extends JSlider {
