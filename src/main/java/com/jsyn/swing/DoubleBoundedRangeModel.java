@@ -20,8 +20,6 @@ import javax.swing.DefaultBoundedRangeModel;
 
 /**
  * Double precision data model for sliders and knobs. Maps integer range info to a double value.
- * 
- * @author Phil Burk, (C) 2002 SoftSynth.com, PROPRIETARY and CONFIDENTIAL
  */
 public class DoubleBoundedRangeModel extends DefaultBoundedRangeModel {
     private static final long serialVersionUID = 284361767102120148L;
