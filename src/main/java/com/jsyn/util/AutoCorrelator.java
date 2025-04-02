@@ -20,8 +20,6 @@ package com.jsyn.util;
  * Calculate period of a repeated waveform in an array. This algorithm is based on a normalized
  * auto-correlation function as dewscribed in: "A Smarter Way to Find Pitch" by Philip McLeod and
  * Geoff Wyvill
- *
- * @author (C) 2004 Mobileer, PROPRIETARY and CONFIDENTIAL
  */
 public class AutoCorrelator implements SignalCorrelator {
     // A higher number will reject suboctaves more.
