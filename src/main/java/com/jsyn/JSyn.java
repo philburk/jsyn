@@ -52,10 +52,10 @@ import com.jsyn.engine.SynthesisEngine;
 public class JSyn {
     // Update these for every release.
     private final static int VERSION_MAJOR = 17;
-    private final static int VERSION_MINOR = 1;
-    private final static int VERSION_REVISION = 1;
-    public final static int BUILD_NUMBER = 466;
-    private final static String BUILD_DATE = "2023-08-28";
+    private final static int VERSION_MINOR = 2;
+    private final static int VERSION_REVISION = 0;
+    public final static int BUILD_NUMBER = 467;
+    private final static String BUILD_DATE = "2025-06-29";
 
     // These are built from the updated values.
     public final static String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + "."
