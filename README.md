@@ -87,7 +87,7 @@ Enter:
 The resulting jar will be placed in "build/libs/".
 To run the built-in test App on a desktop, enter something like this:
 
-    java -jar build/libs/jsyn-17.1.0.jar
+    java -jar build/libs/jsyn-17.2.0.jar
 
 but with the correct version.
 
@@ -105,4 +105,9 @@ To run the unit tests, enter:
 3. Check out the latest code locally.
 4. Build the Jar using the Gradle instructions above.
 5. Test using the instructions above.
-6. FAILING!
+6. In one window, go to the latest release, eg. https://github.com/philburk/jsyn/releases/tag/v17.1.0
+7. Click "{N} commits to master since this release"
+8. In a second window, go to https://github.com/philburk/jsyn/releases and click "Draft a New Release".
+9. Write release notes based on the new commit list.
+10. Drag and drop the JAR file created by gradle to the Release page.
+11. Click "Publish Release".
