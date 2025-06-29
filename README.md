@@ -12,6 +12,8 @@ http://www.softsynth.com/jsyn/
 
 Pre-compiled JSyn JAR files are at:
 
+https://github.com/philburk/jsyn/releases
+and
 http://www.softsynth.com/jsyn/developers/download.php
 
 The JSyn source code is available at:
@@ -95,3 +97,12 @@ To run the unit tests, enter:
 
     cd jsyn
     ./gradlew test
+
+## How to Release a new version of JSyn
+
+1. Update the version, BUILD_NUMBER and BUILD_DATE in src/main/java/com/jsyn/JSyn.java
+2. Update the version in build.gradle
+3. Check out the latest code locally.
+4. Build the Jar using the Gradle instructions above.
+5. Test using the instructions above.
+6. FAILING!
