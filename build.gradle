@@ -20,6 +20,36 @@ dependencies {
     implementation fileTree(dir: 'libs', include: '*.jar')
 }
 
+sourceSets {
+    jsynExamples {
+        java {
+            srcDirs = [
+                'examples/src/main/java',
+                'src/main/java'
+            ]
+            exclude 'com/jsyn/devices/jportaudio/**'
+        }
+        resources {
+            srcDirs = ['examples/src/main/resources']
+        }
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+// Create a new task of type Jar
+task jsynExamplesJar(type: Jar) {
+    // Set the base name of the JAR file
+    archiveBaseName.set('jsyn-examples-v2')
+
+    // Set the version of the JAR file
+    archiveVersion.set(project.version)
+
+    // Use the output of your custom source set as the source for this JAR
+    from sourceSets.jsynExamples.output
+
+}
+
 jar {
     manifest {
         attributes('Main-Class': mainClassName)
