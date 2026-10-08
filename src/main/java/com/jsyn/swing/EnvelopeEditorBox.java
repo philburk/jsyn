@@ -407,10 +407,10 @@ public class EnvelopeEditorBox extends XYController implements MouseListener, Mo
             for (int i = 0; i <= (end - 1); i++) {
                 double dar[] = (double[]) points.elementAt(i);
                 wx += dar[0];
-                if (start == (i + 1)) {
+                if (start == (i + 1)) { // handle +1 offset in loop points
                     gx0 = convertWXtoGX(wx) + radius;
                 }
-                if (end == (i + 1)) {
+                if (end == (i + 1)) { // handle +1 offset in loop points
                     gx1 = convertWXtoGX(wx) + radius;
                 }
             }
@@ -563,11 +563,12 @@ public class EnvelopeEditorBox extends XYController implements MouseListener, Mo
 
         /* Show X,Y,TotalX as text. */
         g.drawString(points.getName() + ", len=" + String.format("%7.3f", wx), 5, 15);
+        g.drawString("S:" + points.getSustainBegin() + ", " + points.getSustainEnd(), 5, 30);
         if ((draggedPoint != null) && (dragIndex >= 0)) {
             String s = "i=" + dragIndex + ", dur="
                     + String.format("%7.3f", draggedPoint[0]) + ", y = "
                     + String.format("%8.4f", draggedPoint[1]);
-            g.drawString(s, 5, 30);
+            g.drawString(s, 5, 45);
         }
     }
 }

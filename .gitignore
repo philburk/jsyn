@@ -2,6 +2,8 @@
 .DS_Store
 build/
 .gradle/
+bin/
+examples/bin/
 
 # Ignore IDE data to push towards a universally Gradle controlled environment
 .idea/
