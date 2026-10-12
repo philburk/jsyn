@@ -28,7 +28,7 @@ import com.jsyn.ports.UnitInputPort;
  * where y(n) is Output, x(n) is Input, x(n-1) is a delayed copy of the input, and y(n-1) is a
  * delayed copy of the output. An all-pass filter will pass all frequencies with equal amplitude.
  * But it changes the phase relationships of the partials by delaying them by an amount proportional
- * to their wavelength,.
+ * to their wavelength.
  * 
  * @author (C) 2014 Phil Burk, SoftSynth.com
  * @see FilterLowPass
