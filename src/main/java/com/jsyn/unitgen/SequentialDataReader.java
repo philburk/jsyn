@@ -25,7 +25,7 @@ import com.jsyn.ports.UnitOutputPort;
  * 
  * @author Phil Burk (C) 2009 Mobileer Inc
  */
-public abstract class SequentialDataReader extends UnitGenerator {
+public abstract class SequentialDataReader extends UnitGenerator implements SupportsAutoDisable {
     public UnitDataQueuePort dataQueue;
     public UnitInputPort amplitude;
     public UnitOutputPort output;
@@ -41,21 +41,17 @@ public abstract class SequentialDataReader extends UnitGenerator {
      *
      * @param unit the UnitGenerator, such as a Circuit or voice, to disable
      */
+    @Override
     public void setupAutoDisable(UnitGenerator unit) {
         dataQueue.setupAutoDisable(unit);
     }
 
-    /**
-     * Disable this reader when the envelope or sample finishes.
-     */
-    public void setupAutoDisable() {
-        setupAutoDisable(this);
-    }
-
+    @Override
     public boolean isAutoDisableEnabled() {
         return dataQueue.isAutoDisableEnabled();
     }
 
+    @Override
     public void setAutoDisableEnabled(boolean enabled) {
         dataQueue.setAutoDisableEnabled(enabled);
     }
