@@ -167,4 +167,22 @@ public abstract class QueueDataCommand extends QueueDataEvent implements Schedul
         this.crossFadeIn = size;
     }
 
+    /**
+     * @return true if the data ends when this block finishes, so a unit can be auto disabled.
+     *     False if the block loops, or if it is only part of the data, for example the attack
+     *     portion before a sustain point.
+     */
+    public boolean isEndBlock() {
+        if (numLoops == UnitDataQueuePort.LOOP_IF_LAST || numLoops > 0) {
+            return false;
+        }
+        if (autoStop) {
+            return true;
+        }
+        if (sequentialData == null) {
+            return true;
+        }
+        return (startFrame + numFrames) >= sequentialData.getNumFrames();
+    }
+
 }
