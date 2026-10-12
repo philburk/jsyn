@@ -127,13 +127,18 @@ public class UnitGatePort extends UnitInputPort {
     }
 
     /**
-     * Request the containing UnitGenerator be disabled when checkAutoDisabled() is called. This can
-     * be used to reduce CPU load.
+     * Request the gated UnitGenerator be disabled when checkAutoDisabled() is called. This can
+     * be used to reduce CPU load. When turned off, the gated unit is enabled so that it runs until
+     * it is triggered again.
      *
      * @param autoDisableEnabled
      */
     public void setAutoDisableEnabled(boolean autoDisableEnabled) {
+        boolean wasEnabled = this.autoDisableEnabled;
         this.autoDisableEnabled = autoDisableEnabled;
+        if (wasEnabled && !autoDisableEnabled) {
+            getGatedUnit().setEnabled(true);
+        }
     }
 
     /**

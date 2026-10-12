@@ -24,7 +24,7 @@ import com.jsyn.ports.UnitOutputPort;
  * 
  * @author Phil Burk (C) 2012 Mobileer Inc
  */
-public abstract class UnitGate extends UnitGenerator implements UnitSource {
+public abstract class UnitGate extends UnitGenerator implements UnitSource, SupportsAutoDisable {
     /**
      * Input that triggers the envelope. Use amplitude port if you want to connect a signal to be
      * modulated by the envelope.
@@ -44,11 +44,22 @@ public abstract class UnitGate extends UnitGenerator implements UnitSource {
 
     /**
      * Specify a unit to be disabled when the envelope finishes.
-     * 
-     * @param unit
+     *
+     * @param unit the UnitGenerator, such as a Circuit or voice, to disable
      */
+    @Override
     public void setupAutoDisable(UnitGenerator unit) {
         input.setupAutoDisable(unit);
+    }
+
+    @Override
+    public boolean isAutoDisableEnabled() {
+        return input.isAutoDisableEnabled();
+    }
+
+    @Override
+    public void setAutoDisableEnabled(boolean enabled) {
+        input.setAutoDisableEnabled(enabled);
     }
 
 }
