@@ -33,7 +33,10 @@ public class TestSupportsAutoDisable {
                 new FixedRateMonoReader(),
                 new FixedRateStereoReader(),
                 new VariableRateMonoReader(),
-                new VariableRateStereoReader());
+                new VariableRateStereoReader(),
+                new FixedStringResonator(),
+                new VariableStringResonator(),
+                new FilterComb());
     }
 
     @Test

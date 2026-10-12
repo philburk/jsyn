@@ -16,6 +16,8 @@
 
 package com.jsyn.dsp;
 
+import java.util.Arrays;
+
 /**
  * Delay line based on a circular buffer.
  */
@@ -25,6 +27,15 @@ public class SimpleDelay {
 
     public SimpleDelay(int length) {
         mBuffer = new float[length];
+    }
+
+    public int getLength() {
+        return mBuffer.length;
+    }
+
+    /** Set all of the delayed values to zero. */
+    public void clear() {
+        Arrays.fill(mBuffer, 0.0f);
     }
 
     /**

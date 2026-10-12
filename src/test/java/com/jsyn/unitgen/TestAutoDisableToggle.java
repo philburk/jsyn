@@ -71,4 +71,11 @@ public class TestAutoDisableToggle extends NonRealTimeTestCase {
         Arrays.fill(data, 0.5f);
         checkTargetRemembered(reader, () -> reader.dataQueue.queue(new FloatSample(data)));
     }
+
+    @Test
+    public void testStringResonator() throws InterruptedException {
+        // With no excitation the string is quiet, so it should disable the target soon.
+        checkTargetRemembered(new FixedStringResonator(), () -> {
+        });
+    }
 }
