@@ -117,7 +117,10 @@ public class EnvelopeDAHDSR extends UnitGate implements UnitSource {
                 case DELAYING:
                     for (; i < limit; i++) {
                         outputs[i] = level * amplitudes[i];
-                        if (input.isOff()) {
+                        if (triggered) {
+                            startDelay(i);
+                            break;
+                        } else if (input.isOff()) {
                             startRelease(i);
                             break;
                         } else {
@@ -132,6 +135,10 @@ public class EnvelopeDAHDSR extends UnitGate implements UnitSource {
 
                 case ATTACKING:
                     for (; i < limit; i++) {
+                        if (triggered) {
+                            startDelay(i);
+                            break;
+                        }
                         // Increment first so we can render fast attacks.
                         level += increment;
                         if (level >= 1.0) {
@@ -152,6 +159,10 @@ public class EnvelopeDAHDSR extends UnitGate implements UnitSource {
                 case HOLDING:
                     for (; i < limit; i++) {
                         outputs[i] = amplitudes[i]; // level is 1.0
+                        if (triggered) {
+                            startDelay(i);
+                            break;
+                        }
                         countdown -= 1;
                         if (countdown <= 0) {
                             startDecay(i);
