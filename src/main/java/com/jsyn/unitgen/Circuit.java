@@ -34,8 +34,17 @@ public class Circuit extends UnitGenerator {
 
     @Override
     public void generate(int start, int limit) {
-        for (UnitGenerator unit : units) {
-            unit.generate(start, limit);
+        SynthesisEngine engine = getSynthesisEngine();
+        if (engine != null && engine.isPullDataEnabled()) {
+            // Use pullData() so a unit that was already pulled this block is not generated twice.
+            long frameCount = engine.getFrameCount();
+            for (UnitGenerator unit : units) {
+                unit.pullData(frameCount, start, limit);
+            }
+        } else {
+            for (UnitGenerator unit : units) {
+                unit.generate(start, limit);
+            }
         }
     }
 
