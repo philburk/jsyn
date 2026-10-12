@@ -35,4 +35,28 @@ public abstract class SequentialDataReader extends UnitGenerator {
         addPort(dataQueue = new UnitDataQueuePort("Data"));
         addPort(amplitude = new UnitInputPort("Amplitude", UnitOscillator.DEFAULT_AMPLITUDE));
     }
+
+    /**
+     * Specify a unit to be disabled when the envelope or sample finishes.
+     *
+     * @param unit the UnitGenerator, such as a Circuit or voice, to disable
+     */
+    public void setupAutoDisable(UnitGenerator unit) {
+        dataQueue.setupAutoDisable(unit);
+    }
+
+    /**
+     * Disable this reader when the envelope or sample finishes.
+     */
+    public void setupAutoDisable() {
+        setupAutoDisable(this);
+    }
+
+    public boolean isAutoDisableEnabled() {
+        return dataQueue.isAutoDisableEnabled();
+    }
+
+    public void setAutoDisableEnabled(boolean enabled) {
+        dataQueue.setAutoDisableEnabled(enabled);
+    }
 }

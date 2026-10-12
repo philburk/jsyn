@@ -20,6 +20,7 @@ import java.util.LinkedList;
 
 import com.jsyn.data.SequentialData;
 import com.jsyn.exceptions.ChannelMismatchException;
+import com.jsyn.unitgen.UnitGenerator;
 import com.softsynth.shared.time.ScheduledCommand;
 import com.softsynth.shared.time.TimeStamp;
 
@@ -39,6 +40,8 @@ public class UnitDataQueuePort extends UnitPort {
     private boolean targetValid;
     private QueueDataCommand finishingBlock;
     private QueueDataCommand loopingBlock;
+    private UnitGenerator autoDisableTarget;
+    private boolean autoDisableEnabled;
     public static final int LOOP_IF_LAST = -1;
 
     public UnitDataQueuePort(String name) {
@@ -87,6 +90,13 @@ public class UnitDataQueuePort extends UnitPort {
                 }
 
                 blocks.add(this);
+
+                if (autoDisableEnabled) {
+                    UnitGenerator target = getTargetUnit();
+                    if (target != null) {
+                        target.setEnabled(true);
+                    }
+                }
             }
         }
     }
@@ -149,11 +159,16 @@ public class UnitDataQueuePort extends UnitPort {
             loopingBlock = null;
         }
         if (finishingBlock != null) {
-            if (finishingBlock.getCallback() != null) {
-                finishingBlock.getCallback().finished(currentBlock); // FIXME - Should this pass
-                                                                     // finishingBlock?!
-            }
+            QueueDataCommand finished = finishingBlock;
             finishingBlock = null;
+            if (finished.getCallback() != null) {
+                finished.getCallback().finished(currentBlock); // FIXME - Should this pass
+                                                               // finished?!
+            }
+            // Do not disable when the queue just runs dry, for example at a sustain point.
+            if (finished.isEndBlock()) {
+                checkAutoDisable();
+            }
         }
     }
 
@@ -256,6 +271,7 @@ public class UnitDataQueuePort extends UnitPort {
         @Override
         public void run() {
             clearQueue();
+            checkAutoDisable();
         }
     }
 
@@ -424,6 +440,74 @@ public class UnitDataQueuePort extends UnitPort {
             }
         }
         /* If no sustain loop, then nothing to do. */
+    }
+
+    private UnitGenerator getTargetUnit() {
+        return (autoDisableTarget == null) ? getUnitGenerator() : autoDisableTarget;
+    }
+
+    /**
+     * Specify a unit to be disabled when the data queue finishes. This can be used to reduce CPU
+     * load. The target unit starts off disabled if the queue is empty. It is enabled again when
+     * data is queued.
+     *
+     * @param unit the UnitGenerator, such as a Circuit or voice, to disable when the queue finishes
+     */
+    public void setupAutoDisable(UnitGenerator unit) {
+        autoDisableTarget = unit;
+        setAutoDisableEnabled(true);
+        // Start off disabled if the queue is empty so we don't immediately swamp the CPU.
+        if (!hasMore()) {
+            UnitGenerator target = getTargetUnit();
+            if (target != null) {
+                target.setEnabled(false);
+            }
+        }
+    }
+
+    /**
+     * Set up auto disable targeting the UnitGenerator containing this port.
+     */
+    public void setupAutoDisable() {
+        UnitGenerator target = getUnitGenerator();
+        if (target == null) {
+            throw new IllegalStateException("Port not added to a UnitGenerator");
+        }
+        setupAutoDisable(target);
+    }
+
+    public boolean isAutoDisableEnabled() {
+        return autoDisableEnabled;
+    }
+
+    /**
+     * Request the target UnitGenerator be disabled when the data finishes. The target is
+     * remembered, so auto disable can be turned off and on again. When turned off, the target is
+     * enabled because nothing would enable it again.
+     *
+     * @param enabled
+     */
+    public void setAutoDisableEnabled(boolean enabled) {
+        boolean wasEnabled = autoDisableEnabled;
+        autoDisableEnabled = enabled;
+        if (wasEnabled && !enabled) {
+            UnitGenerator target = getTargetUnit();
+            if (target != null) {
+                target.setEnabled(true);
+            }
+        }
+    }
+
+    /**
+     * Called when the data queue reaches the end of the data or is cleared.
+     */
+    public void checkAutoDisable() {
+        if (autoDisableEnabled && !hasMore()) {
+            UnitGenerator target = getTargetUnit();
+            if (target != null) {
+                target.setEnabled(false);
+            }
+        }
     }
 
     public void clear(TimeStamp timeStamp) {
