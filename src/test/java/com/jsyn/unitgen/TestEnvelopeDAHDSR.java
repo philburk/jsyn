@@ -349,4 +349,72 @@ public class TestEnvelopeDAHDSR extends TestUnitGate {
         checkReleaseTiming(10.0, 0.001);
     }
 
+    /**
+     * Trigger the envelope while it is still attacking. It should restart from the delay stage
+     * and hold its current level during the delay, rather than finishing the attack.
+     */
+    @Test
+    public void testRetriggerDuringAttack() throws InterruptedException {
+        EnvelopeDAHDSR envelope = new EnvelopeDAHDSR();
+        synthesisEngine.add(envelope);
+
+        envelope.delay.set(0.0);
+        envelope.attack.set(1.0);
+        envelope.hold.set(0.0);
+        envelope.decay.set(1.0);
+        envelope.sustain.set(0.5);
+        envelope.release.set(1.0);
+
+        synthesisEngine.start();
+        envelope.start();
+        envelope.input.on();
+        time = synthesisEngine.getCurrentTime();
+        synthesisEngine.sleepUntil(time + 0.3);
+        double levelAtRetrigger = envelope.output.getValue();
+        assertEquals(0.3, levelAtRetrigger, 0.02, "partway up the attack");
+
+        // Use a delay so we can see that the envelope restarted.
+        envelope.delay.set(0.5);
+        envelope.input.trigger();
+        time = synthesisEngine.getCurrentTime();
+        synthesisEngine.sleepUntil(time + 0.2);
+        assertEquals(levelAtRetrigger, envelope.output.getValue(), 0.02,
+                "should hold the level while delaying after a retrigger");
+
+        // After the delay it attacks again from that level.
+        synthesisEngine.sleepUntil(time + 0.5 + 0.2);
+        assertEquals(levelAtRetrigger + 0.2, envelope.output.getValue(), 0.02,
+                "should attack again after the delay");
+    }
+
+    /**
+     * Trigger the envelope while it is holding. It should restart from the delay stage.
+     */
+    @Test
+    public void testRetriggerDuringHold() throws InterruptedException {
+        EnvelopeDAHDSR envelope = new EnvelopeDAHDSR();
+        synthesisEngine.add(envelope);
+
+        envelope.delay.set(0.0);
+        envelope.attack.set(0.01);
+        envelope.hold.set(1.0);
+        envelope.decay.set(0.1);
+        envelope.sustain.set(0.5);
+        envelope.release.set(1.0);
+
+        synthesisEngine.start();
+        envelope.start();
+        envelope.input.on();
+        time = synthesisEngine.getCurrentTime();
+        synthesisEngine.sleepUntil(time + 0.5);
+        assertEquals(1.0, envelope.output.getValue(), 0.01, "holding");
+
+        // Retrigger with a long hold. Without the retrigger the hold would end at 1.0 seconds.
+        envelope.input.trigger();
+        time = synthesisEngine.getCurrentTime();
+        synthesisEngine.sleepUntil(time + 0.8);
+        assertEquals(1.0, envelope.output.getValue(), 0.01,
+                "should still be holding after a retrigger restarted the hold");
+    }
+
 }
