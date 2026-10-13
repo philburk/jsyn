@@ -16,6 +16,8 @@ With the new inclusion of Gradle replacing ant (bye bye 2014) this brings some m
 
 ### Building Jar
 
+The resulting jar will be placed in "build/libs/".
+
 ```
 ./gradlew jar
 ```
