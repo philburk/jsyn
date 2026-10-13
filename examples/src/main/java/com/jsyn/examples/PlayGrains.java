@@ -59,7 +59,7 @@ public class PlayGrains extends JApplet {
     private WaveRecorder recorder;
     private final static boolean useRecorder = false;
 
-    private static final boolean useSample = true;
+    private static final boolean useSample = false;
     // If you enable useSample then you will need to replace the file name below with a valid
     // file name on your computer.
     private static final File sampleFile = new File("notes_to_tone.wav");

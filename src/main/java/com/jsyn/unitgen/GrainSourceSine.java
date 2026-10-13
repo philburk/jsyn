@@ -19,10 +19,18 @@ package com.jsyn.unitgen;
 /**
  * A simple sine wave generator for a Grain. This uses the same fast Taylor expansion that the
  * SineOscillator uses.
- * 
+ * <p>
+ * A rate of 1.0 plays concert A, 440 Hz, so a rate of Hz / 440 plays a given frequency. The pitch
+ * depends on the frame rate, so call setFrameRate() before setRate().
+ *
  * @author Phil Burk (C) 2011 Mobileer Inc
  */
 public class GrainSourceSine extends GrainCommon implements GrainSource {
+    /** Frequency in Hz played at a rate of 1.0. */
+    public static final double CONCERT_A = 440.0;
+
+    private static final double DEFAULT_FRAME_RATE = 44100.0;
+
     protected double phase;
     protected double phaseIncrement;
 
@@ -45,7 +53,11 @@ public class GrainSourceSine extends GrainCommon implements GrainSource {
 
     @Override
     public void setRate(double rate) {
-        setPhaseIncrement(rate * 0.1 / Math.PI);
+        // A new source has no frame rate yet, so assume the default rather than divide by zero.
+        double currentFrameRate = (frameRate > 0.0) ? frameRate : DEFAULT_FRAME_RATE;
+        // The phase runs from -1.0 to +1.0 over one cycle, so it advances
+        // 2 * frequency / frameRate per frame.
+        setPhaseIncrement(rate * 2.0 * CONCERT_A / currentFrameRate);
     }
 
 }
