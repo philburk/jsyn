@@ -31,6 +31,7 @@ public class RangeConverter extends UnitFilter {
 
     /* Define Unit Ports used by connect() and set(). */
     public RangeConverter() {
+        input.setup(-1.0, 0.0, 1.0);
         addPort(min = new UnitInputPort("Min", 40.0));
         addPort(max = new UnitInputPort("Max", 2000.0));
     }
