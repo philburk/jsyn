@@ -37,6 +37,18 @@ import com.jsyn.util.PseudoRandom;
  * @see RaisedCosineEnvelope
  */
 public class GrainFarm extends UnitGenerator implements UnitSource {
+    /**
+     * Choose a new gap when the density rises above this multiple of the density the gap was
+     * chosen at.
+     */
+    private static final double GAP_RECHOOSE_RATIO = 2.0;
+
+    /** Longest gap in frames, so a gap chosen at a density near zero still fits in an int. */
+    private static final double MAX_GAP_FRAMES = 1.0e9;
+
+    /** Used before the farm is added to a synthesizer. */
+    private static final int DEFAULT_FRAME_RATE = 44100;
+
     /** A scaler for playback rate. Nominally 1.0. */
     public UnitInputPort rate;
     public UnitInputPort rateRange;
@@ -73,6 +85,8 @@ public class GrainFarm extends UnitGenerator implements UnitSource {
         final static int STATE_RUNNING = 2;
         int state = STATE_IDLE;
         private double gapError;
+        /** The density when the current gap was chosen. */
+        private double gapDensity;
 
         public double next(int i) {
             double output = 0.0;
@@ -83,11 +97,25 @@ public class GrainFarm extends UnitGenerator implements UnitSource {
                     startGap(i);
                 }
             } else if (state == STATE_GAP) {
+                // A gap chosen at a very low density can be hours long. If the density has
+                // since risen a lot, for example an envelope coming back up from zero, choose
+                // a new gap rather than waiting out the old one.
+                if (density.getValues()[i] > gapDensity * GAP_RECHOOSE_RATIO) {
+                    startGap(i);
+                }
                 if (countdown > 0) {
                     countdown -= 1;
                 } else if (countdown == 0) {
                     state = STATE_RUNNING;
                     grain.reset();
+
+                    // The frame rate can change after allocate(), for example if the synth is
+                    // restarted at another rate. Set it before the grain's rate and duration,
+                    // which depend on it.
+                    double currentFrameRate = getFrameRate();
+                    if (grain.getFrameRate() != currentFrameRate) {
+                        grain.setFrameRate(currentFrameRate);
+                    }
 
                     setupGrain(grain, i);
 
@@ -111,20 +139,29 @@ public class GrainFarm extends UnitGenerator implements UnitSource {
         private void startGap(int i) {
             state = STATE_GAP;
             double dens = density.getValues()[i];
+            gapDensity = dens;
             double gap = scheduler.nextGap(lastDuration, dens) * getFrameRate();
             gap += gapError;
-            countdown = (int) gap;
-            gapError = gap - countdown;
+            double wholeFrames = Math.floor(gap);
+            countdown = (int) Math.min(wholeFrames, MAX_GAP_FRAMES);
+            // Only the fraction of a frame carries over to the next gap. Carrying the part of a
+            // huge gap that did not fit in countdown would make the next gap huge as well.
+            gapError = gap - wholeFrames;
         }
     }
 
+    /**
+     * Use these grains. The farm can be added to a synthesizer before or after this is called.
+     * Each grain is set to the current frame rate when it starts.
+     */
     public void setGrainArray(Grain[] grains) {
         countScaler = 1.0 / grains.length;
         states = new GrainState[grains.length];
+        int frameRate = (getSynthesisEngine() == null) ? DEFAULT_FRAME_RATE : getFrameRate();
         for (int i = 0; i < states.length; i++) {
             states[i] = new GrainState();
             states[i].grain = grains[i];
-            grains[i].setFrameRate(getSynthesisEngine().getFrameRate());
+            grains[i].setFrameRate(frameRate);
         }
     }
 
