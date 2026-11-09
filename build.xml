@@ -24,6 +24,7 @@
     <!-- Compile the java code from ${src} into ${build} -->
     <javac target="${java-version}" source="${java-version}"
         srcdir="${src.dir}" destdir="${build.dir}">
+      <compilerarg value="-parameters"/>
       <classpath>
         <pathelement path="libs/jportaudio.jar"/>
       </classpath>
